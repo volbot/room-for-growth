@@ -25,8 +25,8 @@ async fn main() {
         clear_background(GRAY);
         draw_world(&cam, &world, &tileset);
         draw_player(&cam, &player, &tileset);
-        player.person.walk();
-        input_player_target(&cam, &mut player);
+        player.person.walk(&world);
+        input_player_target(&cam, &mut player, &world);
         input_camera_movement(&mut cam);
 
         next_frame().await

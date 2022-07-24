@@ -1,5 +1,6 @@
 use crate::person::Person;
-use crate::world::screen_to_tiles;
+use crate::tile::TileType;
+use crate::world::{screen_to_tiles, World};
 use crate::camera::Camera;
 
 use macroquad::prelude::*;
@@ -16,10 +17,15 @@ impl Player {
     }
 }
 
-pub fn input_player_target(camera: &Camera, player: &mut Player) {
+pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) {
     let clicked = is_mouse_button_pressed(MouseButton::Left);
     if clicked {
         let (x, y) = screen_to_tiles(camera.project(mouse_position()));
-        player.person.target = Some((x,y))
+        match world.data[x][y].tipo {
+            TileType::Grass => {
+                player.person.target = Some((x,y))
+            }
+            _ => {}
+        }
     }
 }

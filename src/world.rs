@@ -8,12 +8,26 @@ pub struct World {
 
 impl World {
     pub fn new() -> World {
-        let tile_template = Tile {
-            tipo: TileType::Turf,
+        let grass_template = Tile {
+            tipo: TileType::Grass,
         };
-        World {
-            data: [[tile_template.clone(); 100]; 100],
+        let wall_template = Tile {
+            tipo: TileType::Wall,
+        };
+        let mut world = World {
+            data: [[grass_template.clone(); 100]; 100],
+        };
+        let mut x = 30;
+        let mut y = 30;
+        while x < 36 {
+            while y < 35 {
+                world.data[x][y] = wall_template.clone();
+                y += 1;
+            }
+            y = 30;
+            x += 1;
         }
+        world
     }
 }
 

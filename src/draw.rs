@@ -7,8 +7,8 @@ pub fn draw_player(cam: &Camera, player: &Player, tileset: &TileSet) {
         return
     }
     draw_texture(tileset.imgs[player.person.entity.tex_id].unwrap(),
-    ((player.person.entity.pos.0)*40) as f32 + cam.corner.0,
-    ((player.person.entity.pos.1)*40) as f32 + cam.corner.1, WHITE);
+    ((player.person.entity.pos.0)*40) as f32 * cam.scale + cam.corner.0,
+    ((player.person.entity.pos.1)*40) as f32 * cam.scale + cam.corner.1, WHITE);
 }
 
 pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
@@ -25,14 +25,14 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
                 continue
             }
             draw_texture(tileset.imgs[match world.data[x][y].tipo {
-                TileType::Turf => {
+                TileType::Grass => {
                     0
                 }
-                _ => {
-                    0
+                TileType::Wall => {
+                    2
                 }
-            }].unwrap(),(x * 40) as f32 + camera.corner.0,
-                        (y * 40) as f32 + camera.corner.1,WHITE);
+            }].unwrap(),(x * 40) as f32 * camera.scale + camera.corner.0,
+                        (y * 40) as f32 * camera.scale + camera.corner.1,WHITE);
             y += 1;
         }
         y = 0;
