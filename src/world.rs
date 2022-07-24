@@ -31,8 +31,8 @@ impl World {
     }
 }
 
-pub fn screen_to_tiles(screen_coords: (f32, f32)) -> (usize, usize) {
-    return (screen_coords.0 as usize / 40, screen_coords.1 as usize / 40)
+pub fn screen_to_tiles(screen_coords: (f32, f32)) -> (isize, isize) {
+    return (screen_coords.0 as isize / 40, screen_coords.1 as isize / 40)
 }
 
 pub fn tiles_to_screen(tile_coords: (usize, usize)) -> (f32, f32) {

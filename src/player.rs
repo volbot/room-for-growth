@@ -20,10 +20,14 @@ impl Player {
 pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) {
     let clicked = is_mouse_button_pressed(MouseButton::Left);
     if clicked {
-        let (x, y) = screen_to_tiles(camera.project(mouse_position()));
-        match world.data[x][y].tipo {
+        let mouse = mouse_position();
+        let (x, y) = screen_to_tiles(camera.project(mouse));
+        if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
+            return
+        }
+        match world.data[x as usize][y as usize].tipo {
             TileType::Grass => {
-                player.person.target = Some((x,y))
+                player.person.target = Some((x as usize,y as usize))
             }
             _ => {}
         }

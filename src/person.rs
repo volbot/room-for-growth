@@ -35,6 +35,10 @@ impl Person {
                             .into_iter().map(|p| (p, 1)),
                             |&(x, y)| heuristic((x,y), goal, world),
                             |&p| p == goal);
+            if result.is_none() {
+                self.target = None;
+                return
+            }
             let new_pos = *result.unwrap().0.get(1).unwrap();
             self.entity.pos = (new_pos.0 as usize, new_pos.1 as usize);
             self.last_act = time;
@@ -61,7 +65,9 @@ pub fn successors(pos: (i32, i32), world: &World) -> Vec<(i32, i32)> {
     let mut i = 0;
     while i < vec.len() {
         let curr = vec.get(i).unwrap();
-        if is_walkable(world.data[curr.0 as usize][curr.1 as usize]){
+        if curr.0 < world.data.len() as i32 && curr.1 < world.data[0].len() as i32 &&
+            curr.0 >= 0 && curr.1 >= 0 &&
+            is_walkable(world.data[curr.0 as usize][curr.1 as usize]){
             i+=1;
         } else {
             vec.remove(i);
