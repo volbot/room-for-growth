@@ -29,10 +29,15 @@ pub fn draw_world(world: &World, tileset: &TileSet) {
                 _ => {
                     0
                 }
-            }].unwrap(),(x * 40) as f32,(y * 30) as f32,WHITE);
+            }].unwrap(),(x * 40) as f32,(y * 40) as f32,WHITE);
             y += 1;
         }
         y = 0;
         x += 1;
     }
+}
+
+pub fn screen_to_tiles(screen_coords: (f32, f32)) -> (usize, usize) {
+    return (screen_coords.0 as usize / 40, screen_coords.1 as usize / 40)
+
 }

@@ -21,6 +21,7 @@ impl TileSet {
             imgs: [None; 2]
         };
         ts.imgs[0] = Some(load_texture("assets/turf.png").await.unwrap());
+        ts.imgs[1] = Some(load_texture("assets/gunder.png").await.unwrap());
         ts
     }
 }
