@@ -1,10 +1,10 @@
 use macroquad::prelude::*;
 
-use crate::world::{World, draw_world};
+use crate::world::World;
 use crate::tile::TileSet;
-use crate::entity::draw_entities;
-use crate::player::{Player, draw_player, input_player_target};
+use crate::player::{Player, input_player_target};
 use crate::camera::{Camera, input_camera_movement};
+use crate::draw::*;
 
 pub mod tile;
 pub mod world;
@@ -12,6 +12,7 @@ pub mod entity;
 pub mod player;
 pub mod person;
 pub mod camera;
+pub mod draw;
 
 #[macroquad::main("Bungo")]
 async fn main() {
@@ -26,7 +27,7 @@ async fn main() {
         draw_entities(&entities, &tileset);
         draw_player(&cam, &player, &tileset);
         player.person.walk();
-        input_player_target(&mut player);
+        input_player_target(&cam, &mut player);
         input_camera_movement(&mut cam);
 
         next_frame().await

@@ -18,9 +18,17 @@ impl Camera {
 
     pub fn is_tile_visible(&self, pos: (usize, usize)) -> bool {
         let screen_pos = (pos.0 as f32 * 40.0, pos.1 as f32 * 40.0);
-        let bounds = (-self.corner.0 + self.res.0 as f32 * self.scale,
-                      -self.corner.1 + self.res.1 as f32 * self.scale);
+        let bounds = self.bounds();
         screen_pos.0 >= -self.corner.0 - 40.0 && screen_pos.1 >= -self.corner.1 - 40.0 && screen_pos.0 <= bounds.0 && screen_pos.1 <= bounds.1
+    
+    }
+    pub fn project(&self, pos:(f32, f32)) -> (f32, f32) {
+        (pos.0 - self.corner.0, pos.1 - self.corner.1)
+    }
+
+    pub fn bounds(&self) -> (f32, f32) {
+        (-self.corner.0 + self.res.0 as f32 * self.scale,
+        -self.corner.1 + self.res.1 as f32 * self.scale)
     }
 }
 
