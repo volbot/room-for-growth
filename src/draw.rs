@@ -1,6 +1,5 @@
 use crate::{world::World, camera::Camera, player::Player};
 use crate::tile::{TileSet, TileType};
-use crate::entity::{Entity, EntityType};
 use macroquad::prelude::*;
 
 pub fn draw_player(cam: &Camera, player: &Player, tileset: &TileSet) {
@@ -10,19 +9,6 @@ pub fn draw_player(cam: &Camera, player: &Player, tileset: &TileSet) {
     draw_texture(tileset.imgs[player.person.entity.tex_id].unwrap(),
     ((player.person.entity.pos.0)*40) as f32 + cam.corner.0,
     ((player.person.entity.pos.1)*40) as f32 + cam.corner.1, WHITE);
-}
-
-pub fn draw_entities(entities: &Vec<Entity>, tileset: &TileSet) {
-    for entity in entities{
-        draw_texture(tileset.imgs[match entity.tipo {
-            EntityType::Player => {
-                1
-            }
-            _ => {
-                1
-            }
-        }].unwrap(),((entity.pos.0 - 1) * 40) as f32,((entity.pos.1-1) * 40) as f32,WHITE);
-                        }
 }
 
 pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {

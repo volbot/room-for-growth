@@ -20,11 +20,9 @@ async fn main() {
     let world = World::new();
     let mut player = Player::new((10,10));
     let mut cam = Camera::new((600,600),(0.0,0.0));
-    let entities = Vec::new();
     loop {
         clear_background(GRAY);
         draw_world(&cam, &world, &tileset);
-        draw_entities(&entities, &tileset);
         draw_player(&cam, &player, &tileset);
         player.person.walk();
         input_player_target(&cam, &mut player);
