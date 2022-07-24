@@ -1,19 +1,18 @@
 use crate::tile::TileSet;
 use crate::person::Person;
 use crate::world::screen_to_tiles;
+use crate::camera::Camera;
 
 use macroquad::prelude::*;
 
 pub struct Player {
-    pub tex_id: usize,
     pub person: Person,
 }
 
 impl Player {
-    pub fn new() -> Player {
+    pub fn new(pos: (usize, usize)) -> Player {
         Player {
-            tex_id: 1,
-            person: Person::new(),
+            person: Person::new(pos, 1),
         }
     }
 }
@@ -26,8 +25,11 @@ pub fn input_player_target(player: &mut Player) {
     }
 }
 
-pub fn draw_player(player: &Player, tileset: &TileSet) {
-    draw_texture(tileset.imgs[player.tex_id].unwrap(),
-                    ((player.person.entity.pos.0)*40) as f32,
-                    ((player.person.entity.pos.1)*40) as f32, WHITE);
+pub fn draw_player(camera: &Camera, player: &Player, tileset: &TileSet) {
+    if !camera.is_tile_visible(player.person.entity.pos) {
+        return
+    }
+    draw_texture(tileset.imgs[player.person.entity.tex_id].unwrap(),
+                    ((player.person.entity.pos.0)*40) as f32 + camera.corner.0,
+                    ((player.person.entity.pos.1)*40) as f32 + camera.corner.1, WHITE);
 }

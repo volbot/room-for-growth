@@ -9,10 +9,10 @@ pub struct Person {
 }
 
 impl Person {
-    pub fn new() -> Person {
+    pub fn new(pos: (usize, usize), tex_id: usize) -> Person {
         Person {
             target: None,
-            entity: Entity::new(),
+            entity: Entity::new(pos, tex_id),
             last_act: get_time(),
         }
     }

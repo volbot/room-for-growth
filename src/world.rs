@@ -1,6 +1,6 @@
 use macroquad::prelude::*;
 
-use crate::tile::{Tile, TileType, TileSet};
+use crate::{tile::{Tile, TileType, TileSet}, camera::Camera};
 
 pub struct World {
     data: [[Tile; 20]; 20]
@@ -17,11 +17,15 @@ impl World {
     }
 }
 
-pub fn draw_world(world: &World, tileset: &TileSet) {
+pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
     let mut x = 0;
     let mut y = 0;
     while x < 20 {
         while y < 20 {
+            if !camera.is_tile_visible((x,y)) {
+                y+=1;
+                continue
+            }
             draw_texture(tileset.imgs[match world.data[x][y].tipo {
                 TileType::Turf => {
                     0
@@ -29,7 +33,8 @@ pub fn draw_world(world: &World, tileset: &TileSet) {
                 _ => {
                     0
                 }
-            }].unwrap(),(x * 40) as f32,(y * 40) as f32,WHITE);
+            }].unwrap(),(x * 40) as f32 + camera.corner.0,
+                        (y * 40) as f32 + camera.corner.1,WHITE);
             y += 1;
         }
         y = 0;
