@@ -21,7 +21,7 @@ async fn main() {
     let mut cam = Camera::new((600,600),(0.0,0.0));
     let entities = Vec::new();
     loop {
-        clear_background(RED);
+        clear_background(GRAY);
         draw_world(&cam, &world, &tileset);
         draw_entities(&entities, &tileset);
         draw_player(&cam, &player, &tileset);
