@@ -1,4 +1,5 @@
 use macroquad::prelude::*;
+use world::tiles_to_screen;
 
 use crate::world::World;
 use crate::tile::TileSet;
@@ -18,8 +19,8 @@ pub mod draw;
 async fn main() {
     let tileset = TileSet::new().await;
     let world = World::new();
-    let mut player = Player::new((10,10));
-    let mut cam = Camera::new((600,600),(0.0,0.0));
+    let mut player = Player::new((50,50));
+    let mut cam = Camera::new((800,800),tiles_to_screen((40,40)));
     loop {
         clear_background(GRAY);
         draw_world(&cam, &world, &tileset);

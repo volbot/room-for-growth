@@ -18,8 +18,8 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
     }
     let mut x = 0;
     let mut y = 0;
-    while x < 20 {
-        while y < 20 {
+    while x < world.data.len() {
+        while y < world.data[0].len() {
             if !camera.is_tile_visible((x,y)) {
                 y+=1;
                 continue
