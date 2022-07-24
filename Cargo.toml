@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 
 macroquad = "0.3"
+pathfinding = "3.0.13"
