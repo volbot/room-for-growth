@@ -7,12 +7,13 @@ pub struct Interaction {
     pub tipo: InteractType,
     pub text: &'static str,
     pub text_button: &'static str,
+    pub data: Option<i32>,
 }
 
 impl Interaction {
-    pub fn new(tipo: InteractType, text: &'static str, text_button: &'static str) -> Interaction {
+    pub fn new(tipo: InteractType, text: &'static str, text_button: &'static str, data: Option<i32>) -> Interaction {
         Interaction {
-            tipo, text, text_button
+            tipo, text, text_button, data
         }
     }
 

@@ -22,10 +22,11 @@ pub mod pathing;
 
 #[macroquad::main("Bungo")]
 async fn main() {
-
+    //load font as bytes for buttons
     let font_bytes = include_bytes!("../assets/fonts/JMH Cthulhumbus Arcade.otf");
-
+    //generate the tileset from the assets folder
     let tileset = TileSet::new().await;
+    //create a button style for menus
     let button_style = root_ui().style_builder()
         .background(tileset.windows[0].unwrap().get_texture_data())
         .background_margin(RectOffset::new(67., 67., 18., 18.))
@@ -36,13 +37,18 @@ async fn main() {
         ..root_ui().default_skin()
     };
     root_ui().push_skin(&skin);
+    //create necessary variables
     let mut world = World::new();
     let mut player = Player::new((50,50));
+    //TEMP---------------
     let mut npc = Person::new((55,55), 1);
     npc.target = Some((34,34));
-    npc.interact = Some(Interaction::new(interact::InteractType::Quest, "Buzz off, pickloid.", "Ok"));
+    npc.interact = Some(Interaction::new(interact::InteractType::Quest, "Buzz off, pickloid.", "Ok", Some(0)));
     world.people.push(npc);
+    //END TEMP-----------
+    //set aside storage for an interaction to display
     let mut window_active: Option<Interaction> = None;
+    //create a camera struct to store data
     let mut cam = Camera::new((800,800),tiles_to_screen((40,40)));
     loop {
         clear_background(GRAY);
