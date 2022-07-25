@@ -1,13 +1,15 @@
 use crate::entity::Entity;
 use crate::world::World;
 use crate::tile::{TileType, is_walkable};
+use crate::interact::Interaction;
 use macroquad::prelude::*;
 use pathfinding::prelude::astar;
 
 pub struct Person {
     pub target: Option<(usize, usize)>,
     pub entity: Entity,
-    pub last_act: f64
+    pub last_act: f64,
+    pub interact: Option<Interaction>,
 }
 
 impl Person {
@@ -16,6 +18,7 @@ impl Person {
             target: None,
             entity: Entity::new(pos, tex_id),
             last_act: get_time(),
+            interact: None,
         }
     }
     pub fn walk(&mut self, world: &World) {
@@ -49,7 +52,7 @@ impl Person {
 pub fn heuristic(pos: (i32, i32), goal: (i32, i32), world: &World) -> i32 {
     let tile = world.data[pos.0 as usize][pos.1 as usize];
     match tile.tipo {
-        TileType::Grass => {
+        TileType::Grass | TileType::Boards => {
             ((goal.0.abs_diff(pos.0) + goal.1.abs_diff(pos.1)) / 3) as i32
         }
         _ => {

@@ -12,7 +12,7 @@ pub struct Player {
 impl Player {
     pub fn new(pos: (usize, usize)) -> Player {
         Player {
-            person: Person::new(pos, 1),
+            person: Person::new(pos, 0),
         }
     }
 }
@@ -26,7 +26,7 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
             return
         }
         match world.data[x as usize][y as usize].tipo {
-            TileType::Grass => {
+            TileType::Grass | TileType::Boards => {
                 player.person.target = Some((x as usize,y as usize))
             }
             _ => {}

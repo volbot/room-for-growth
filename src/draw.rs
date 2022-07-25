@@ -1,4 +1,4 @@
-use crate::{world::World, camera::Camera, entity::Entity};
+use crate::{person::Person, world::World, camera::Camera, entity::Entity};
 use crate::tile::{TileSet, TileType};
 use macroquad::prelude::*;
 
@@ -6,9 +6,23 @@ pub fn draw_entity(cam: &Camera, entity: &Entity, tileset: &TileSet) {
     if !cam.is_tile_visible(entity.pos) {
         return
     }
-    draw_texture(tileset.imgs[entity.tex_id].unwrap(),
+    draw_texture(tileset.people[entity.tex_id].unwrap(),
     ((entity.pos.0)*40) as f32 * cam.scale + cam.corner.0,
     ((entity.pos.1)*40) as f32 * cam.scale + cam.corner.1, WHITE);
+}
+
+pub fn draw_person(cam: &Camera, person: &Person, tileset: &TileSet) {
+    if !cam.is_tile_visible(person.entity.pos) {
+        return
+    }
+    draw_entity(cam, &person.entity, tileset);
+    if person.interact.is_some() {
+        draw_texture(
+            person.interact.unwrap().tex(tileset), 
+            ((person.entity.pos.0)*40) as f32 * cam.scale + cam.corner.0, 
+            ((person.entity.pos.1)*40-40) as f32 * cam.scale + cam.corner.1, 
+            WHITE);
+    }
 }
 
 pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
@@ -24,14 +38,20 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
                 y+=1;
                 continue
             }
-            draw_texture(tileset.imgs[match world.data[x][y].tipo {
+            draw_texture(tileset.tiles[match world.data[x][y].tipo {
                 TileType::Grass => {
                     0
                 }
                 TileType::Wall => {
-                    2
+                    1
                 }
                 TileType::Water => {
+                    2
+                }
+                TileType::Planks => {
+                    3
+                }
+                TileType::Boards => {
                     4
                 }
             }].unwrap(),(x * 40) as f32 * camera.scale + camera.corner.0,

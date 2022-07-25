@@ -47,6 +47,25 @@ impl World {
             y = 0;
             x += 1;
         }
+
+        x = 30;
+        y = 30;
+        while x < 38 {
+            while y < 37 {
+                if x == 37 || x == 30 || y == 36 || y == 30 {
+                    world.data[x][y].tipo = TileType::Planks;
+                } else {
+                    world.data[x][y].tipo = TileType::Boards;
+                }
+                if x == 34 && y == 36 {
+                    world.data[x][y].tipo = TileType::Boards;
+                }
+                y += 1;
+            }
+            y = 30;
+            x += 1;
+        }
+
         world
     }
 }
