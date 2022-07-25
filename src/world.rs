@@ -1,12 +1,13 @@
 use macroquad::prelude::*;
 
-use crate::tile::{Tile, TileType};
+use crate::{tile::{Tile, TileType}, person::Person};
 
 use noise::{Fbm, NoiseFn};
 
 pub struct World {
     pub data: [[Tile; 100]; 100],
-    noise: Fbm, 
+    pub people: Vec<Person>,
+    noise: Fbm,
 }
 
 impl World {
@@ -16,6 +17,7 @@ impl World {
         };
         let mut world = World {
             data: [[grass_template.clone(); 100]; 100],
+            people: Vec::new(),
             noise: Fbm::new(),
         };
         let mut x = 0;
