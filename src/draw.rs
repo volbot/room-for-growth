@@ -1,6 +1,8 @@
+use crate::interact::Interaction;
 use crate::{person::Person, world::World, camera::Camera, entity::Entity};
 use crate::tile::{TileSet, TileType};
 use macroquad::prelude::*;
+use macroquad::ui::*;
 
 pub fn draw_entity(cam: &Camera, entity: &Entity, tileset: &TileSet) {
     if !cam.is_tile_visible(entity.pos) {
@@ -61,4 +63,12 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
         y = 0;
         x += 1;                                                       
     }
+}
+
+pub fn draw_popup(interact: &Interaction, tileset: &TileSet) -> Result<Interaction, &'static str> {
+    draw_texture(tileset.windows[1].unwrap(), 150.0, 600.0, WHITE);
+    if root_ui().button(Vec2::new(405.0, 690.0), interact.text_button) {
+        return Err("window closed")
+    }
+    return Ok(*interact)
 }

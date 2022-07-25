@@ -1,3 +1,4 @@
+use crate::interact::Interaction;
 use crate::person::{Person, CanWalk};
 use crate::tile::TileType;
 use crate::world::{screen_to_tiles, World};
@@ -8,6 +9,7 @@ use macroquad::prelude::*;
 pub struct Player {
     pub person: Person,
     pub target_id: Option<usize>,
+
 }
 
 impl Player {
@@ -16,6 +18,25 @@ impl Player {
             person: Person::new(pos, 0),
             target_id: None,
         }
+    }
+
+    pub fn think(&mut self, world: &World) -> Result<Interaction, &'static str> {
+        self.walk(world);
+        if self.target_id.is_none() {
+            return Err("no target interactable");
+        }
+        let person = &world.people.get(self.target_id.unwrap()).unwrap();
+        if self.person.entity.distance(&person.entity) <= 1 {
+            let result = person.interact;
+            self.target_id = None;
+            self.person.target = None;
+            if result.is_none() {
+                return Err("no interactable at person");
+            } else {
+                return Ok(result.unwrap());
+            }
+        }
+        return Err("no target interactable");
     }
 }
 
@@ -26,10 +47,7 @@ impl CanWalk for Player {
             return
         }
         let person = &world.people.get(self.target_id.unwrap()).unwrap();
-        if self.person.entity.distance(&person.entity) <= 1 {
-            self.target_id = None;
-            self.person.target = None;
-        } else if person.entity.pos != self.person.target.unwrap() {
+        if person.entity.pos != self.person.target.unwrap() {
             self.person.target = Some(person.entity.pos);
         }
         self.person.walk(world);
