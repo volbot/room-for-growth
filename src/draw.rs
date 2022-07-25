@@ -31,6 +31,9 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
                 TileType::Wall => {
                     2
                 }
+                TileType::Water => {
+                    4
+                }
             }].unwrap(),(x * 40) as f32 * camera.scale + camera.corner.0,
                         (y * 40) as f32 * camera.scale + camera.corner.1,WHITE);
             y += 1;

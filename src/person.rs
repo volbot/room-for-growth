@@ -52,7 +52,7 @@ pub fn heuristic(pos: (i32, i32), goal: (i32, i32), world: &World) -> i32 {
         TileType::Grass => {
             ((goal.0.abs_diff(pos.0) + goal.1.abs_diff(pos.1)) / 3) as i32
         }
-        TileType::Wall => {
+        _ => {
             -1
         }
     }

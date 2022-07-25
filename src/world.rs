@@ -1,9 +1,14 @@
 use macroquad::prelude::*;
 
+use ::rand::prelude::*;
+
 use crate::tile::{Tile, TileType};
 
+use noise::{Fbm, NoiseFn};
+
 pub struct World {
-    pub data: [[Tile; 100]; 100]
+    pub data: [[Tile; 100]; 100],
+    noise: Fbm, 
 }
 
 impl World {
@@ -11,20 +16,37 @@ impl World {
         let grass_template = Tile {
             tipo: TileType::Grass,
         };
-        let wall_template = Tile {
-            tipo: TileType::Wall,
-        };
         let mut world = World {
             data: [[grass_template.clone(); 100]; 100],
+            noise: Fbm::new(),
         };
-        let mut x = 30;
-        let mut y = 30;
-        while x < 36 {
-            while y < 35 {
-                world.data[x][y] = wall_template.clone();
+        let mut x = 0;
+        let mut y = 0;
+        while x < 100 {
+            while y < 100 {
+                let val = 100.0*world.noise.get([(x*10) as f64, (y*10) as f64]);
+                if val > 20.0 {
+                    world.data[x][y].tipo = TileType::Wall;
+                } else if val < -17.0 {
+                    world.data[x][y].tipo = TileType::Water;
+                    if x > 0 && y > 0 && x < 99 && y < 99 && val < -20.0 {
+                        if ::rand::random(){
+                            world.data[x+1][y].tipo = TileType::Water;
+                        }
+                        if ::rand::random(){
+                            world.data[x][y+1].tipo = TileType::Water;
+                        }
+                        if ::rand::random(){
+                            world.data[x-1][y].tipo = TileType::Water;
+                        }
+                        if ::rand::random(){
+                            world.data[x][y-1].tipo = TileType::Water;
+                        }
+                    }
+                }
                 y += 1;
             }
-            y = 30;
+            y = 0;
             x += 1;
         }
         world
