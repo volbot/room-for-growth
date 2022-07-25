@@ -67,6 +67,12 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
 
 pub fn draw_popup(interact: &Interaction, tileset: &TileSet) -> Result<Interaction, &'static str> {
     draw_texture(tileset.windows[1].unwrap(), 150.0, 600.0, WHITE);
+    draw_text_ex(interact.text, 190.0, 640.0, TextParams {
+        font_size: 20,
+        font: tileset.font,
+        color: BLACK,
+        ..Default::default()
+    });
     if root_ui().button(Vec2::new(405.0, 690.0), interact.text_button) {
         return Err("window closed")
     }

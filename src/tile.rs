@@ -19,6 +19,7 @@ pub struct TileSet {
     pub people: [Option<Texture2D>; 2],
     pub icons: [Option<Texture2D>; 3],
     pub windows: [Option<Texture2D>; 2],
+    pub font: Font,
 }
 
 impl TileSet {
@@ -28,6 +29,7 @@ impl TileSet {
             people: [None; 2],
             icons: [None; 3],
             windows: [None; 2],
+            font: load_ttf_font("assets/fonts/JMH Cthulhumbus Arcade.otf").await.unwrap(),
         };
         ts.tiles[0] = Some(load_texture("assets/tiles/turf.png").await.unwrap());
         ts.tiles[1] = Some(load_texture("assets/tiles/wall.png").await.unwrap());

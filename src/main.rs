@@ -22,10 +22,13 @@ pub mod interact;
 #[macroquad::main("Bungo")]
 async fn main() {
 
+    let font_bytes = include_bytes!("../assets/fonts/JMH Cthulhumbus Arcade.otf");
+
     let tileset = TileSet::new().await;
     let button_style = root_ui().style_builder()
         .background(tileset.windows[0].unwrap().get_texture_data())
         .background_margin(RectOffset::new(67., 67., 18., 18.))
+        .font(font_bytes).unwrap()
         .build();
     let skin = Skin {
         button_style,
@@ -35,7 +38,7 @@ async fn main() {
     let mut world = World::new();
     let mut player = Player::new((50,50));
     let mut npc = Person::new((55,55), 1);
-    //npc.target = Some((34,34));
+    npc.target = Some((34,34));
     npc.interact = Some(Interaction::new(interact::InteractType::Quest, "Buzz off, pickloid.", "Ok"));
     world.people.push(npc);
     let mut window_active: Option<Interaction> = None;
