@@ -18,6 +18,7 @@ pub mod person;
 pub mod camera;
 pub mod draw;
 pub mod interact;
+pub mod pathing;
 
 #[macroquad::main("Bungo")]
 async fn main() {

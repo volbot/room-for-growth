@@ -24,7 +24,7 @@ impl Interaction {
             InteractType::Gift => {
                 tileset.icons[1].unwrap()
             }
-            InteractType::Declare => {
+            InteractType::Waiting => {
                 tileset.icons[2].unwrap()
             }
         }
@@ -35,5 +35,5 @@ impl Interaction {
 pub enum InteractType {
     Quest,
     Gift,
-    Declare,
+    Waiting,
 }
