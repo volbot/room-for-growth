@@ -21,8 +21,8 @@ impl Player {
     }
 
     pub fn think(&mut self, world: &World) -> Result<Interaction, &'static str> {
-        self.walk(world);
         if self.target_id.is_none() {
+            self.walk(world);
             return Err("no target interactable");
         }
         let person = &world.people.get(self.target_id.unwrap()).unwrap();
@@ -36,6 +36,7 @@ impl Player {
                 return Ok(result.unwrap());
             }
         }
+        self.walk(world);
         return Err("no target interactable");
     }
 }
