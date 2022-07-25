@@ -1,14 +1,14 @@
-use crate::{world::World, camera::Camera, player::Player};
+use crate::{world::World, camera::Camera, entity::Entity};
 use crate::tile::{TileSet, TileType};
 use macroquad::prelude::*;
 
-pub fn draw_player(cam: &Camera, player: &Player, tileset: &TileSet) {
-    if !cam.is_tile_visible(player.person.entity.pos) {
+pub fn draw_entity(cam: &Camera, entity: &Entity, tileset: &TileSet) {
+    if !cam.is_tile_visible(entity.pos) {
         return
     }
-    draw_texture(tileset.imgs[player.person.entity.tex_id].unwrap(),
-    ((player.person.entity.pos.0)*40) as f32 * cam.scale + cam.corner.0,
-    ((player.person.entity.pos.1)*40) as f32 * cam.scale + cam.corner.1, WHITE);
+    draw_texture(tileset.imgs[entity.tex_id].unwrap(),
+    ((entity.pos.0)*40) as f32 * cam.scale + cam.corner.0,
+    ((entity.pos.1)*40) as f32 * cam.scale + cam.corner.1, WHITE);
 }
 
 pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
