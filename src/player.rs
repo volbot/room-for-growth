@@ -1,4 +1,4 @@
-use crate::interact::Interaction;
+use crate::interact::{Interaction, InteractType};
 use crate::person::{Person, CanWalk};
 use crate::tile::is_walkable;
 use crate::world::{screen_to_tiles, World};
@@ -20,12 +20,12 @@ impl Player {
         }
     }
 
-    pub fn think(&mut self, world: &World) -> Result<Interaction, &'static str> {
+    pub fn think(&mut self, world: &mut World) -> Result<Interaction, &'static str> {
         if self.target_id.is_none() {
             self.walk(world);
             return Err("no target interactable");
         }
-        let person = &world.people.get(self.target_id.unwrap()).unwrap();
+        let person = &mut world.people.get_mut(self.target_id.unwrap()).unwrap();
         if self.person.entity.distance(&person.entity) <= 1 {
             let result = person.interact;
             self.target_id = None;
@@ -33,6 +33,15 @@ impl Player {
             if result.is_none() {
                 return Err("no interactable at person");
             } else {
+                match result.unwrap().tipo { 
+                    InteractType::Quest => {
+                        person.advance_quest();
+                    }
+                    InteractType::Gift => {
+                        //give item
+                    }
+                    _ => {}
+                }
                 return Ok(result.unwrap());
             }
         }

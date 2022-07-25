@@ -1,5 +1,7 @@
+use interact::InteractType;
 use macroquad::prelude::*;
 use macroquad::ui::*;
+use quest::get_quests;
 use world::tiles_to_screen;
 
 use crate::world::World;
@@ -19,6 +21,7 @@ pub mod camera;
 pub mod draw;
 pub mod interact;
 pub mod pathing;
+pub mod quest;
 
 #[macroquad::main("Bungo")]
 async fn main() {
@@ -40,10 +43,11 @@ async fn main() {
     //create necessary variables
     let mut world = World::new();
     let mut player = Player::new((50,50));
+    let quest_list = get_quests();
     //TEMP---------------
     let mut npc = Person::new((55,55), 1);
     npc.target = Some((34,34));
-    npc.interact = Some(Interaction::new(interact::InteractType::Quest, "Buzz off, pickloid.", "Ok", Some(0)));
+    npc.set_quest(&quest_list.get(0).unwrap());
     world.people.push(npc);
     //END TEMP-----------
     //set aside storage for an interaction to display
@@ -57,16 +61,26 @@ async fn main() {
         for person in &mut world.people {
             draw_person(&cam, &person, &tileset);
             person.walk(world_copy);
+            if person.quest.is_some() {
+                match person.interact.unwrap().tipo {
+                    InteractType::Waiting => {
+                        if person.quest.unwrap().is_completable(world_copy, &player) {
+                            person.advance_quest();
+                        }
+                    }
+                    _ => {}
+                }
+            }
         }
         draw_person(&cam, &player.person, &tileset);
-        match player.think(&world) {
+        match player.think(&mut world) {
             Ok(interact) => { window_active = Some(interact) }
-            Err(s) => {}
+            Err(_s) => {}
         }
         if window_active.is_some() {
             match draw_popup(&window_active.unwrap(), &tileset) {
                 Ok(interact) => { window_active = Some(interact); }
-                Err(_s) => { 
+                Err(_s) => {
                     window_active = None;
                 }
             }

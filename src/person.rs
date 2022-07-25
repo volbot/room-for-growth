@@ -1,4 +1,5 @@
 use crate::entity::Entity;
+use crate::quest::Quest;
 use crate::world::World;
 use crate::tile::TileType;
 use crate::interact::Interaction;
@@ -16,6 +17,7 @@ pub struct Person {
     pub entity: Entity,
     last_act: f64,
     pub interact: Option<Interaction>,
+    pub quest: Option<Quest>,
     pub speed: f64,
 }
 
@@ -26,8 +28,21 @@ impl Person {
             entity: Entity::new(pos, tex_id),
             last_act: get_time(),
             interact: None,
+            quest: None,
             speed: 1.0,
         }
+    }
+
+    pub fn set_quest(&mut self, quest: &Quest) {
+        self.quest = Some(*quest);
+        self.interact = Some(quest.msgs[0]);
+    }
+
+    pub fn advance_quest(&mut self) {
+        let mut quest = self.quest.unwrap();
+        quest.status += 1;
+        self.interact = Some(quest.msgs[quest.status]);
+        self.quest = Some(quest);
     }
 }
 
