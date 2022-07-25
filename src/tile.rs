@@ -18,6 +18,7 @@ pub struct TileSet {
     pub tiles: [Option<Texture2D>; 5],
     pub people: [Option<Texture2D>; 2],
     pub icons: [Option<Texture2D>; 3],
+    pub windows: [Option<Texture2D>; 2],
 }
 
 impl TileSet {
@@ -26,6 +27,7 @@ impl TileSet {
             tiles: [None; 5],
             people: [None; 2],
             icons: [None; 3],
+            windows: [None; 2],
         };
         ts.tiles[0] = Some(load_texture("assets/tiles/turf.png").await.unwrap());
         ts.tiles[1] = Some(load_texture("assets/tiles/wall.png").await.unwrap());
@@ -39,6 +41,10 @@ impl TileSet {
         ts.icons[0] = Some(load_texture("assets/ui/ingame/new_info.png").await.unwrap());
         ts.icons[1] = Some(load_texture("assets/ui/ingame/good_info.png").await.unwrap());
         ts.icons[2] = Some(load_texture("assets/ui/ingame/dec_info.png").await.unwrap());
+        
+        ts.windows[0] = Some(load_texture("assets/ui/windows/button_bg.png").await.unwrap());
+        ts.windows[1] = Some(load_texture("assets/ui/windows/popup_bg.png").await.unwrap());
+
         ts
     }
 }

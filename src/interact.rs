@@ -5,12 +5,14 @@ use macroquad::prelude::*;
 #[derive(Clone,Copy,Debug)]
 pub struct Interaction {
     pub tipo: InteractType,
+    pub text: &'static str,
+    pub text_button: &'static str,
 }
 
 impl Interaction {
-    pub fn new(tipo: InteractType) -> Interaction {
+    pub fn new(tipo: InteractType, text: &'static str, text_button: &'static str) -> Interaction {
         Interaction {
-            tipo,
+            tipo, text, text_button
         }
     }
 

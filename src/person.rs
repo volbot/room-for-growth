@@ -1,12 +1,13 @@
 use crate::entity::Entity;
-use crate::tile::{Tile, TileType, is_walkable};
+use crate::world::World;
+use crate::tile::{TileType, is_walkable};
 use crate::interact::Interaction;
 use macroquad::prelude::*;
 use pathfinding::prelude::astar;
 
 
 pub trait CanWalk {
-    fn walk(&mut self, world: &[[Tile; 100]; 100]);
+    fn walk(&mut self, world: &World);
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -29,7 +30,7 @@ impl Person {
 }
 
 impl CanWalk for Person {
-    fn walk(&mut self, world: &[[Tile; 100]; 100]) {
+    fn walk(&mut self, world: &World) {
         if self.target.is_none() {
             return
         }
@@ -57,8 +58,8 @@ impl CanWalk for Person {
     }
 }
 
-pub fn heuristic(pos: (i32, i32), goal: (i32, i32), world: &[[Tile; 100]; 100]) -> i32 {
-    let tile = world[pos.0 as usize][pos.1 as usize];
+pub fn heuristic(pos: (i32, i32), goal: (i32, i32), world: &World) -> i32 {
+    let tile = world.data[pos.0 as usize][pos.1 as usize];
     match tile.tipo {
         TileType::Grass | TileType::Boards => {
             ((goal.0.abs_diff(pos.0) + goal.1.abs_diff(pos.1)) / 3) as i32
@@ -69,16 +70,16 @@ pub fn heuristic(pos: (i32, i32), goal: (i32, i32), world: &[[Tile; 100]; 100]) 
     }
 }
 
-pub fn successors(pos: (i32, i32), world: &[[Tile; 100]; 100]) -> Vec<(i32, i32)> {
+pub fn successors(pos: (i32, i32), world: &World) -> Vec<(i32, i32)> {
     let x = pos.0;
     let y = pos.1;
     let mut vec = vec![(x+1, y), (x-1, y), (x, y+1), (x, y-1)];
     let mut i = 0;
     while i < vec.len() {
         let curr = vec.get(i).unwrap();
-        if curr.0 < world.len() as i32 && curr.1 < world[0].len() as i32 &&
+        if curr.0 < world.data.len() as i32 && curr.1 < world.data[0].len() as i32 &&
             curr.0 >= 0 && curr.1 >= 0 &&
-            is_walkable(world[curr.0 as usize][curr.1 as usize]){
+            is_walkable(world.data[curr.0 as usize][curr.1 as usize]){
             i+=1;
         } else {
             vec.remove(i);

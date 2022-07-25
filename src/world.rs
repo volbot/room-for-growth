@@ -4,6 +4,7 @@ use crate::{tile::{Tile, TileType}, person::Person};
 
 use noise::{Fbm, NoiseFn};
 
+#[derive(Clone, Debug)]
 pub struct World {
     pub data: [[Tile; 100]; 100],
     pub people: Vec<Person>,

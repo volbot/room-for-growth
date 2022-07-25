@@ -1,5 +1,5 @@
 use crate::person::{Person, CanWalk};
-use crate::tile::{TileType, Tile};
+use crate::tile::TileType;
 use crate::world::{screen_to_tiles, World};
 use crate::camera::Camera;
 
@@ -7,29 +7,30 @@ use macroquad::prelude::*;
 
 pub struct Player {
     pub person: Person,
-    pub interact_target: Option<Person>,
+    pub target_id: Option<usize>,
 }
 
 impl Player {
     pub fn new(pos: (usize, usize)) -> Player {
         Player {
             person: Person::new(pos, 0),
-            interact_target: None,
+            target_id: None,
         }
     }
 }
 
 impl CanWalk for Player {
-    fn walk(&mut self, world: &[[Tile; 100]; 100]) {
-        if self.interact_target.is_none() {
+    fn walk(&mut self, world: &World) {
+        if self.target_id.is_none() {
             self.person.walk(world);
             return
         }
-        if self.person.entity.distance(&self.interact_target.unwrap().entity) <= 1 {
-            self.interact_target = None;
+        let person = &world.people.get(self.target_id.unwrap()).unwrap();
+        if self.person.entity.distance(&person.entity) <= 1 {
+            self.target_id = None;
             self.person.target = None;
-        } else if self.interact_target.unwrap().entity.pos != self.person.target.unwrap() {
-            self.person.target = Some(self.interact_target.unwrap().entity.pos);
+        } else if person.entity.pos != self.person.target.unwrap() {
+            self.person.target = Some(person.entity.pos);
         }
         self.person.walk(world);
     }
@@ -49,10 +50,13 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
             }
             _ => {return}
         }
-        for person in &world.people {
-            if person.entity.pos == (x as usize,y as usize) {
-                player.interact_target = Some(*person);
+        let mut i = 0;
+        while i < world.people.len() {
+            if world.people.get(i).unwrap().entity.pos == (x as usize,y as usize) {
+                player.target_id = Some(i);
+                return
             }
+            i += 1;
         }
     }
 }

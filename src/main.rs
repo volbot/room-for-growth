@@ -25,19 +25,19 @@ async fn main() {
     let mut player = Player::new((50,50));
     let mut npc = Person::new((55,55), 1);
     npc.target = Some((34,34));
-    npc.interact = Some(Interaction::new(interact::InteractType::Quest));
+    npc.interact = Some(Interaction::new(interact::InteractType::Quest, "Buzz off, pickloid.", "Ok"));
     world.people.push(npc);
     let mut cam = Camera::new((800,800),tiles_to_screen((40,40)));
     loop {
         clear_background(GRAY);
         draw_world(&cam, &world, &tileset);
-        let world_copy = &world.data.clone();
+        let world_copy = &world.clone();
         for person in &mut world.people {
             draw_person(&cam, &person, &tileset);
             person.walk(world_copy);
         }
         draw_person(&cam, &player.person, &tileset);
-        player.walk(&world.data);
+        player.walk(&world);
         input_player_target(&cam, &mut player, &world);
         input_camera_movement(&mut cam);
 
