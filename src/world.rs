@@ -1,7 +1,5 @@
 use macroquad::prelude::*;
 
-use ::rand::prelude::*;
-
 use crate::tile::{Tile, TileType};
 
 use noise::{Fbm, NoiseFn};
