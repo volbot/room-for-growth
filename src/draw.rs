@@ -56,6 +56,9 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
                 TileType::Boards => {
                     4
                 }
+                TileType::Brush => {
+                    5
+                }
             }].unwrap(),(x * 40) as f32 * camera.scale + camera.corner.0,
                         (y * 40) as f32 * camera.scale + camera.corner.1,WHITE);
             y += 1;

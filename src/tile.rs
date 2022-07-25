@@ -12,10 +12,11 @@ pub enum TileType {
     Water,
     Planks,
     Boards,
+    Brush,
 }
 
 pub struct TileSet {
-    pub tiles: [Option<Texture2D>; 5],
+    pub tiles: [Option<Texture2D>; 6],
     pub people: [Option<Texture2D>; 2],
     pub icons: [Option<Texture2D>; 3],
     pub windows: [Option<Texture2D>; 2],
@@ -25,7 +26,7 @@ pub struct TileSet {
 impl TileSet {
     pub async fn new() -> TileSet {
         let mut ts = TileSet{
-            tiles: [None; 5],
+            tiles: [None; 6],
             people: [None; 2],
             icons: [None; 3],
             windows: [None; 2],
@@ -36,6 +37,7 @@ impl TileSet {
         ts.tiles[2] = Some(load_texture("assets/tiles/water.png").await.unwrap());
         ts.tiles[3] = Some(load_texture("assets/tiles/woodplank.png").await.unwrap());
         ts.tiles[4] = Some(load_texture("assets/tiles/woodboards.png").await.unwrap());
+        ts.tiles[5] = Some(load_texture("assets/tiles/brush.png").await.unwrap());
 
         ts.people[0] = Some(load_texture("assets/entities/people/gunder.png").await.unwrap());
         ts.people[1] = Some(load_texture("assets/entities/people/shortstack.png").await.unwrap());
@@ -43,7 +45,7 @@ impl TileSet {
         ts.icons[0] = Some(load_texture("assets/ui/ingame/new_info.png").await.unwrap());
         ts.icons[1] = Some(load_texture("assets/ui/ingame/good_info.png").await.unwrap());
         ts.icons[2] = Some(load_texture("assets/ui/ingame/dec_info.png").await.unwrap());
-        
+
         ts.windows[0] = Some(load_texture("assets/ui/windows/button_bg.png").await.unwrap());
         ts.windows[1] = Some(load_texture("assets/ui/windows/popup_bg.png").await.unwrap());
 
@@ -53,7 +55,7 @@ impl TileSet {
 
 pub fn is_walkable(tile: Tile) -> bool{
     match tile.tipo {
-        TileType::Grass | TileType::Boards => {true},
+        TileType::Grass | TileType::Boards | TileType::Brush => {true},
         _ => {false}
     }
 }

@@ -25,8 +25,10 @@ impl World {
         let mut y = 0;
         while x < 100 {
             while y < 100 {
-                let val = 100.0*world.noise.get([(x*10) as f64, (y*10) as f64]);
-                if val > 20.0 {
+                let val = 87.0*world.noise.get([(x*10) as f64, (y*10) as f64]);
+                if val > 15.0 {
+                    world.data[x][y].tipo = TileType::Brush;
+                } else if val > 20.0 {
                     world.data[x][y].tipo = TileType::Wall;
                 } else if val < -17.0 {
                     world.data[x][y].tipo = TileType::Water;

@@ -14,8 +14,9 @@ pub trait CanWalk {
 pub struct Person {
     pub target: Option<(usize, usize)>,
     pub entity: Entity,
-    pub last_act: f64,
+    last_act: f64,
     pub interact: Option<Interaction>,
+    pub speed: f64,
 }
 
 impl Person {
@@ -25,6 +26,7 @@ impl Person {
             entity: Entity::new(pos, tex_id),
             last_act: get_time(),
             interact: None,
+            speed: 1.0,
         }
     }
 }
@@ -35,7 +37,11 @@ impl CanWalk for Person {
             return
         }
         let time = get_time();
-        if time >= self.last_act + 0.25 {
+        let mult = match world.data[self.entity.pos.0][self.entity.pos.1].tipo {
+            TileType::Brush => {2.0}
+            _ => {1.0}
+        };
+        if time >= self.last_act + 0.25 * self.speed * mult {
             let goal: (i32, i32) = (self.target.unwrap().0 as i32, self.target.unwrap().1 as i32);
             let curr: (i32, i32) = (self.entity.pos.0 as i32, self.entity.pos.1 as i32);
             if goal == curr {
@@ -61,8 +67,16 @@ impl CanWalk for Person {
 pub fn heuristic(pos: (i32, i32), goal: (i32, i32), world: &World) -> i32 {
     let tile = world.data[pos.0 as usize][pos.1 as usize];
     match tile.tipo {
-        TileType::Grass | TileType::Boards => {
-            ((goal.0.abs_diff(pos.0) + goal.1.abs_diff(pos.1)) / 3) as i32
+        TileType::Grass | TileType::Boards |  TileType::Brush => {
+            let h = ((goal.0.abs_diff(pos.0) + goal.1.abs_diff(pos.1)) / 3) as i32;
+            match tile.tipo {
+                TileType::Brush => {
+                    h*2+4
+                }
+                _ => {
+                    h
+                }
+            }
         }
         _ => {
             -1

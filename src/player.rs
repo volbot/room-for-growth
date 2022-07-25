@@ -1,6 +1,6 @@
 use crate::interact::Interaction;
 use crate::person::{Person, CanWalk};
-use crate::tile::TileType;
+use crate::tile::is_walkable;
 use crate::world::{screen_to_tiles, World};
 use crate::camera::Camera;
 
@@ -63,11 +63,10 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
         if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
             return
         }
-        match world.data[x as usize][y as usize].tipo {
-            TileType::Grass | TileType::Boards => {
-                player.person.target = Some((x as usize,y as usize))
-            }
-            _ => {return}
+        if is_walkable(world.data[x as usize][y as usize]) {
+            player.person.target = Some((x as usize, y as usize));
+        } else {
+            return
         }
         let mut i = 0;
         while i < world.people.len() {
