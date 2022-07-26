@@ -1,3 +1,4 @@
+use buildmenu::BuildMenu;
 use interact::InteractType;
 use macroquad::prelude::*;
 use macroquad::ui::*;
@@ -24,6 +25,7 @@ pub mod pathing;
 pub mod quest;
 pub mod inventory;
 pub mod item;
+pub mod buildmenu;
 
 #[macroquad::main("Bungo")]
 async fn main() {
@@ -84,6 +86,14 @@ async fn main() {
                      Ok(_i) => {}
                      Err(_s) => {window_active = None}
                  }
+            } else if window_active.unwrap().text == "**Building" {
+                match draw_build_menu(&BuildMenu::new(&player.inventory), &tileset) {
+                    Ok(i) => {
+                        player.target_id = Some(i.tile.id);
+                    }
+                    Err(_s) => {window_active = None}
+                }
+
             } else {
                 match draw_popup(&window_active.unwrap(), &tileset) {
                     Ok(interact) => { window_active = Some(interact); }

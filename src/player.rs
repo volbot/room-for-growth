@@ -67,15 +67,24 @@ impl Player {
                     if time >= self.person.last_act + 1.0 * self.person.speed {
                         self.person.last_act = time;
                         self.inventory.push(Item::new(
-                                match world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].tipo {
+                                match world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].tipo() {
                                     TileType::Brush => {0}
                                     _ => {0}
                                 }, 5));
-                        world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].tipo = TileType::Grass;
+                        world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].id = TileType::Grass.id();
                         self.person.target = None;
                     }
                 } else {
                     self.walk(world);
+                }
+            }
+            PlayerMode::Build => {
+                if self.person.target.is_some() && self.person.entity.distance_pos(self.person.target.unwrap()) <= 1 {
+                    if self.target_id.is_some() {
+                        world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].id = self.target_id.unwrap();
+                    }
+                    self.person.target = None;
+                    self.target_id = None;
                 }
             }
         }
@@ -111,6 +120,7 @@ impl CanWalk for Player {
 pub enum PlayerMode {
     Talk,
     Mine,
+    Build, 
 }
 
 pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) {
@@ -149,7 +159,7 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
         if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
             return
         }
-        if player.is_minable(world.data[x as usize][y as usize].tipo) && (
+        if player.is_minable(world.data[x as usize][y as usize].tipo()) && (
             is_walkable(world.data[x as usize+1][y as usize]) || 
             is_walkable(world.data[x as usize-1][y as usize]) || 
             is_walkable(world.data[x as usize][y as usize+1]) || 
@@ -162,8 +172,12 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
 }
 
 pub fn input_player_keys(player: &mut Player) -> Option<Interaction> {
-    if is_key_pressed(KeyCode::I) {
+    if is_key_pressed(KeyCode::E) {
         return Some(Interaction::new(InteractType::Complete, "**Inventory", "", None));
+    }
+    if is_key_pressed(KeyCode::Q) {
+        player.mode = PlayerMode::Build;
+        return Some(Interaction::new(InteractType::Complete, "**Building", "", None));
     }
     return None
 }

@@ -52,7 +52,7 @@ impl CanWalk for Person {
             return
         }
         let time = get_time();
-        let mult = match world.data[self.entity.pos.0][self.entity.pos.1].tipo {
+        let mult = match world.data[self.entity.pos.0][self.entity.pos.1].tipo() {
             TileType::Brush => {2.0}
             _ => {1.0}
         };

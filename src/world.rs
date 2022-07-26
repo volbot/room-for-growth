@@ -14,9 +14,7 @@ pub struct World {
 
 impl World {
     pub fn new() -> World {
-        let grass_template = Tile {
-            tipo: TileType::Grass,
-        };
+        let grass_template = Tile::new(TileType::Grass.id());
         let mut world = World {
             data: [[grass_template.clone(); 100]; 100],
             people: Vec::new(),
@@ -29,23 +27,23 @@ impl World {
             while y < 100 {
                 let val = 87.0*world.noise.get([(x*10) as f64, (y*10) as f64]);
                 if val > 15.0 {
-                    world.data[x][y].tipo = TileType::Brush;
+                    world.data[x][y].id = TileType::Brush.id();
                 } else if val > 20.0 {
-                    world.data[x][y].tipo = TileType::Wall;
+                    world.data[x][y].id = TileType::Wall.id();
                 } else if val < -17.0 {
-                    world.data[x][y].tipo = TileType::Water;
+                    world.data[x][y].id = TileType::Water.id();
                     if x > 0 && y > 0 && x < 99 && y < 99 && val < -20.0 {
                         if ::rand::random(){
-                            world.data[x+1][y].tipo = TileType::Water;
+                            world.data[x+1][y].id = TileType::Water.id();
                         }
                         if ::rand::random(){
-                            world.data[x][y+1].tipo = TileType::Water;
+                            world.data[x][y+1].id = TileType::Water.id();
                         }
                         if ::rand::random(){
-                            world.data[x-1][y].tipo = TileType::Water;
+                            world.data[x-1][y].id = TileType::Water.id();
                         }
                         if ::rand::random(){
-                            world.data[x][y-1].tipo = TileType::Water;
+                            world.data[x][y-1].id = TileType::Water.id();
                         }
                     }
                 }
@@ -61,13 +59,13 @@ impl World {
             while y < 37 {
                 if x == 37 || x == 30 || y == 36 || y == 30 {
                     if ::rand::random() {
-                        world.data[x][y].tipo = TileType::Planks;
+                        world.data[x][y].id = TileType::Planks.id();
                     }
                 } else {
-                    world.data[x][y].tipo = TileType::Boards;
+                    world.data[x][y].id = TileType::Boards.id();
                 }
                 if x == 34 && y == 36 {
-                    world.data[x][y].tipo = TileType::Boards;
+                    world.data[x][y].id = TileType::Boards.id();
                 }
                 y += 1;
             }

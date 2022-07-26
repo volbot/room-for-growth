@@ -3,10 +3,10 @@ use crate::tile::{TileType, is_walkable};
 
 pub fn heuristic(pos: (i32, i32), goal: (i32, i32), world: &World) -> i32 {
     let tile = world.data[pos.0 as usize][pos.1 as usize];
-    match tile.tipo {
+    match tile.tipo() {
         TileType::Grass | TileType::Boards |  TileType::Brush => {
             let h = ((goal.0.abs_diff(pos.0) + goal.1.abs_diff(pos.1)) / 3) as i32;
-            match tile.tipo {
+            match tile.tipo() {
                 TileType::Brush => {
                     h*2+4
                 }

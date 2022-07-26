@@ -2,7 +2,26 @@ use macroquad::prelude::*;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Tile {
-    pub tipo: TileType,
+    pub id: usize,
+}
+
+impl Tile {
+    pub fn new(id: usize) -> Tile {
+        Tile {
+            id
+        }
+    }
+    pub fn tipo(&self) -> TileType {
+        match self.id {
+            0 => {TileType::Grass}
+            1 => {TileType::Wall}
+            2 => {TileType::Water}
+            3 => {TileType::Planks}
+            4 => {TileType::Boards}
+            5 => {TileType::Brush}
+            _ => {TileType::Grass}
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -13,6 +32,29 @@ pub enum TileType {
     Planks,
     Boards,
     Brush,
+}
+
+impl TileType {
+    pub fn name(&self) -> &str {
+        match self {
+            TileType::Grass => {"Grass"}
+            TileType::Wall => {"Wall"}
+            TileType::Water => {"Water"}
+            TileType::Planks => {"Planks"}
+            TileType::Boards => {"Boards"}
+            TileType::Brush => {"Brush"}
+        }
+    }
+    pub fn id(&self) -> usize {
+        match self {
+            TileType::Grass => {0}
+            TileType::Wall => {1}
+            TileType::Water => {2}
+            TileType::Planks => {3}
+            TileType::Boards => {4}
+            TileType::Brush => {5}
+        }
+    }
 }
 
 pub struct TileSet {
@@ -55,7 +97,7 @@ impl TileSet {
 }
 
 pub fn is_walkable(tile: Tile) -> bool{
-    match tile.tipo {
+    match tile.tipo() {
         TileType::Grass | TileType::Boards | TileType::Brush => {true},
         _ => {false}
     }

@@ -1,7 +1,8 @@
+use crate::buildmenu::{BuildChoice, BuildMenu};
 use crate::interact::Interaction;
 use crate::inventory::Inventory;
 use crate::{person::Person, world::World, camera::Camera, entity::Entity};
-use crate::tile::{TileSet, TileType};
+use crate::tile::TileSet;
 use macroquad::prelude::*;
 use macroquad::ui::*;
 
@@ -41,26 +42,7 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
                 y+=1;
                 continue
             }
-            draw_texture(tileset.tiles[match world.data[x][y].tipo {
-                TileType::Grass => {
-                    0
-                }
-                TileType::Wall => {
-                    1
-                }
-                TileType::Water => {
-                    2
-                }
-                TileType::Planks => {
-                    3
-                }
-                TileType::Boards => {
-                    4
-                }
-                TileType::Brush => {
-                    5
-                }
-            }].unwrap(),(x * 40) as f32 * camera.scale + camera.corner.0,
+            draw_texture(tileset.tiles[world.data[x][y].id].unwrap(),(x * 40) as f32 * camera.scale + camera.corner.0,
                         (y * 40) as f32 * camera.scale + camera.corner.1,WHITE);
             y += 1;
         }
@@ -113,7 +95,7 @@ pub fn draw_inventory(inventory: &Inventory, tileset: &TileSet) -> Result<Invent
                 tooltip.push_str(" x");
                 tooltip.push_str(&item.quant.to_string());
                 draw_text_ex(&tooltip, corner.0, corner.1+69.0, TextParams {
-                    font_size: 12,
+                    font_size: 10,
                     font: tileset.font,
                     color: BLACK,
                     ..Default::default()
@@ -128,4 +110,40 @@ pub fn draw_inventory(inventory: &Inventory, tileset: &TileSet) -> Result<Invent
         return Err("window closed")
     }
     return Ok(*inventory)
+}
+
+pub fn draw_build_menu(menu: &BuildMenu, tileset: &TileSet) -> Result<BuildChoice, &'static str> {
+    draw_texture(tileset.windows[2].unwrap(), 150.0, 200.0, WHITE);
+    draw_text_ex("Building", 185.0, 255.0, TextParams {
+        font_size: 30,
+        font: tileset.font,
+        color: BLACK,
+        ..Default::default()
+    });
+    let mut i = 0;
+    let mut j = 0;
+    while i < 9 {
+        while j < 4 {
+            let corner = (52.0 * i as f32 + 168.0, 75.0 * j as f32 + 285.0);
+            if menu.data[j][i].is_some() {
+                let item = menu.data[j][i].unwrap();
+                let mut tooltip: String = item.tile.tipo().name().to_string();
+                tooltip.push_str(" x");
+                tooltip.push_str(&item.count.to_string());
+                draw_text_ex(&tooltip, corner.0, corner.1+69.0, TextParams {
+                    font_size: 10,
+                    font: tileset.font,
+                    color: BLACK,
+                    ..Default::default()
+                });
+            }
+            j += 1;
+        }
+        j = 0;
+        i += 1;
+    }
+    if root_ui().button(Vec2::new(445.0, 215.0), "Done") {
+        return Err("window closed")
+    }
+    return Ok(menu.data[0][0].unwrap())
 }
