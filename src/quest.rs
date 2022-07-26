@@ -35,9 +35,9 @@ pub enum QuestObjective {
 pub fn get_quests() -> Vec<Quest> {
     vec![
         Quest::new(QuestObjective::Materials, [
-                "Welcome to Picklandia! Bring me \n20 Logs and we can get started.", "Ok",
-                "Bring me 20 Logs and we can continue.", "Ok",
-                "Good job!", "Thanks"], 
+                "Welcome to Picklandia! Bring me^^20 Logs and we can get started.", "Ok",
+                "Bring me 20 Logs and we can^^continue.", "Ok",
+                "Good job!^^", "Thanks"], 
                 Some(1)),
     ]
 }

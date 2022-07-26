@@ -70,7 +70,18 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
 
 pub fn draw_popup(interact: &Interaction, tileset: &TileSet) -> Result<Interaction, &'static str> {
     draw_texture(tileset.windows[1].unwrap(), 150.0, 600.0, WHITE);
-    draw_text_ex(interact.text, 190.0, 640.0, TextParams {
+    let split = interact.text.split("^^");
+    let mut vec = Vec::new();
+    for s in split {
+        vec.push(s);
+    }
+    draw_text_ex(vec.get(0).unwrap(), 190.0, 640.0, TextParams {
+        font_size: 20,
+        font: tileset.font,
+        color: BLACK,
+        ..Default::default()
+    });
+    draw_text_ex(vec.get(1).unwrap(), 190.0, 663.0, TextParams {
         font_size: 20,
         font: tileset.font,
         color: BLACK,
