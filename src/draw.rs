@@ -1,4 +1,5 @@
 use crate::interact::Interaction;
+use crate::inventory::Inventory;
 use crate::{person::Person, world::World, camera::Camera, entity::Entity};
 use crate::tile::{TileSet, TileType};
 use macroquad::prelude::*;
@@ -87,8 +88,22 @@ pub fn draw_popup(interact: &Interaction, tileset: &TileSet) -> Result<Interacti
         color: BLACK,
         ..Default::default()
     });
-    if root_ui().button(Vec2::new(405.0, 690.0), interact.text_button) {
+    if root_ui().button(Vec2::new(445.0, 690.0), interact.text_button) {
         return Err("window closed")
     }
     return Ok(*interact)
+}
+
+pub fn draw_inventory(inventory: &Inventory, tileset: &TileSet) -> Result<Inventory, &'static str> {
+    draw_texture(tileset.windows[2].unwrap(), 150.0, 200.0, WHITE);
+    draw_text_ex("Inventory", 185.0, 255.0, TextParams {
+        font_size: 30,
+        font: tileset.font,
+        color: BLACK,
+        ..Default::default()
+    });
+    if root_ui().button(Vec2::new(445.0, 215.0), "Done") {
+        return Err("window closed")
+    }
+    return Ok(*inventory)
 }

@@ -60,7 +60,9 @@ impl World {
         while x < 38 {
             while y < 37 {
                 if x == 37 || x == 30 || y == 36 || y == 30 {
-                    world.data[x][y].tipo = TileType::Planks;
+                    if ::rand::random() {
+                        world.data[x][y].tipo = TileType::Planks;
+                    }
                 } else {
                     world.data[x][y].tipo = TileType::Boards;
                 }

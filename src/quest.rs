@@ -40,6 +40,13 @@ impl Quest {
                     false
                 }
             }
+            QuestType::Build => {
+                if self.status == 2 {
+                    true
+                } else {
+                    false
+                }
+            }
             _ => {true}
         }
     }

@@ -160,3 +160,10 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
         }
     }
 }
+
+pub fn input_player_keys(player: &mut Player) -> Option<Interaction> {
+    if is_key_pressed(KeyCode::I) {
+        return Some(Interaction::new(InteractType::Complete, "**Inventory", "", None));
+    }
+    return None
+}

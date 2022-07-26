@@ -1,6 +1,7 @@
 use interact::InteractType;
 use macroquad::prelude::*;
 use macroquad::ui::*;
+use player::input_player_keys;
 use world::tiles_to_screen;
 
 use crate::world::World;
@@ -78,15 +79,23 @@ async fn main() {
             Err(_s) => {}
         }
         if window_active.is_some() {
-            match draw_popup(&window_active.unwrap(), &tileset) {
-                Ok(interact) => { window_active = Some(interact); }
-                Err(_s) => {
-                    window_active = None;
+            if window_active.unwrap().text == "**Inventory" {
+                 match draw_inventory(&player.inventory, &tileset) {
+                     Ok(_i) => {}
+                     Err(_s) => {window_active = None}
+                 }
+            } else {
+                match draw_popup(&window_active.unwrap(), &tileset) {
+                    Ok(interact) => { window_active = Some(interact); }
+                    Err(_s) => {
+                        window_active = None;
+                    }
                 }
             }
         } else {
             input_camera_movement(&mut cam);
             input_player_target(&cam, &mut player, &world);
+            window_active = input_player_keys(&mut player);
         }
 
         next_frame().await
