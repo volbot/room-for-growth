@@ -64,12 +64,11 @@ impl CanWalk for Person {
                 return
             }
             let result = astar( &(curr),
-                            |&(x, y)| successors((x, y), world)
+                            |&(x, y)| successors((x,y), goal, world)
                             .into_iter().map(|p| (p, 1)),
                             |&(x, y)| heuristic((x,y), goal, world),
                             |&p| p == goal);
             if result.is_none() {
-                println!("boowomp");
                 self.target = None;
                 return
             }
