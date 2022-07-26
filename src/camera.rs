@@ -38,7 +38,7 @@ pub fn input_camera_movement(cam: &mut Camera) {
         cam.corner.0 += mouse.0 - cam.grab_loc.unwrap().0;
         cam.corner.1 += mouse.1 - cam.grab_loc.unwrap().1;
     }
-    if is_mouse_button_down(MouseButton::Right) {
+    if is_mouse_button_down(MouseButton::Middle) {
         cam.grab_loc = Some(mouse_position());
     } else {
         cam.grab_loc = None;

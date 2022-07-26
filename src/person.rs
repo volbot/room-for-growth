@@ -15,7 +15,7 @@ pub trait CanWalk {
 pub struct Person {
     pub target: Option<(usize, usize)>,
     pub entity: Entity,
-    last_act: f64,
+    pub last_act: f64,
     pub interact: Option<Interaction>,
     pub quest: Option<Quest>,
     pub speed: f64,

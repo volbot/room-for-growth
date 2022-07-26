@@ -12,7 +12,11 @@ impl Entity {
     }
 
     pub fn distance(&self, entity: &Entity) -> isize {
-        let dist = (entity.pos.0.abs_diff(self.pos.0) + entity.pos.1.abs_diff(self.pos.1)) as isize;
-        return dist
+        return self.distance_pos(entity.pos)
+    }
+
+    pub fn distance_pos(&self, pos: (usize, usize)) -> isize {
+        let dist = (pos.0.abs_diff(self.pos.0) + pos.1.abs_diff(self.pos.1)) as isize;
+        dist
     }
 }

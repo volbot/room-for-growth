@@ -85,8 +85,8 @@ async fn main() {
                 }
             }
         } else {
-            input_player_target(&cam, &mut player, &world);
             input_camera_movement(&mut cam);
+            input_player_target(&cam, &mut player, &world);
         }
 
         next_frame().await
