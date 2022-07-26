@@ -29,8 +29,11 @@ impl Tile {
             5 => {
                 Item::new(0,5)
             }
-            3 | 4 => {
-                Item::new(0,2)
+            3 => {
+                Item::new(0,4)
+            }
+            4 => {
+                Item::new(0,3)
             }
             _ => {
                 Item::new(0,0)

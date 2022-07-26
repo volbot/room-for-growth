@@ -1,7 +1,7 @@
 use crate::interact::{Interaction, InteractType};
 use crate::inventory::Inventory;
 use crate::person::{Person, CanWalk};
-use crate::tile::{is_walkable, TileType};
+use crate::tile::{is_walkable, TileType, Tile};
 use crate::world::{screen_to_tiles, World};
 use crate::camera::Camera;
 
@@ -76,9 +76,15 @@ impl Player {
             PlayerMode::Build => {
                 if self.person.target.is_some() && self.person.entity.distance_pos(self.person.target.unwrap()) == 1 {
                     if self.target_id.is_some() {
-                        world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].id = self.target_id.unwrap();
+                        let tile = Tile::new(self.target_id.unwrap());
+                        if self.inventory.item_count(tile.resources().id) >= tile.resources().quant as isize{
+                            self.inventory.pop(tile.resources());
+                            world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].id = self.target_id.unwrap();
+                        } else {
+                            self.target_id = None;
+                        }
+                        self.person.target = None;
                     }
-                    self.person.target = None;
                 } else {
                     self.person.walk(world);
                 }
@@ -127,10 +133,13 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
                 player.person.target = None;
                 let mouse = mouse_position();
                 let (x, y) = screen_to_tiles(camera.project(mouse));
-                if player.target_id.is_none() || x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
+                if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
                     return
                 }
                 if is_walkable(world.data[x as usize][y as usize]) {
+                    if player.target_id.is_none() {
+                        player.mode = PlayerMode::Talk;
+                    }
                     player.person.target = Some((x as usize, y as usize));
                 }
 
