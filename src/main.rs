@@ -1,7 +1,6 @@
 use interact::InteractType;
 use macroquad::prelude::*;
 use macroquad::ui::*;
-use quest::get_quests;
 use world::tiles_to_screen;
 
 use crate::world::World;
@@ -43,11 +42,10 @@ async fn main() {
     //create necessary variables
     let mut world = World::new();
     let mut player = Player::new((50,50));
-    let quest_list = get_quests();
     //TEMP---------------
     let mut npc = Person::new((55,55), 1);
     npc.target = Some((34,34));
-    npc.set_quest(&quest_list.get(0).unwrap());
+    npc.set_quest(&world.quest_list.get(0).unwrap());
     world.people.push(npc);
     //END TEMP-----------
     //set aside storage for an interaction to display

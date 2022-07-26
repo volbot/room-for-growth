@@ -39,5 +39,10 @@ pub fn get_quests() -> Vec<Quest> {
                 "Bring me 20 Logs and we can^^continue.", "Ok",
                 "Good job!^^", "Thanks"], 
                 Some(1)),
+        Quest::new(QuestObjective::Build, [
+                "Could you help replace my walls?^^Bandits ran my fade!", "Sure",
+                "Please replace my walls!", "Ok",
+                "Thank you! It's like I can^^finally think straight.", "Ok"], 
+                None),
     ]
 }
