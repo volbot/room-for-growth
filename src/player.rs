@@ -92,16 +92,6 @@ impl Player {
         }
         return Err("no target interactable");
     }
-    pub fn is_minable(&self, tile: TileType) -> bool {
-        match tile {
-            TileType::Brush | TileType::Planks | TileType::Boards => {
-                true
-            }
-            _ => {
-                false
-            }
-        }
-    }
 }
 
 impl CanWalk for Player {
@@ -137,12 +127,13 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
                     return
                 }
                 if is_walkable(world.data[x as usize][y as usize]) {
-                    if player.target_id.is_none() {
+                    if player.target_id.is_none() || world.data[x as usize][y as usize].id != 0 {
                         player.mode = PlayerMode::Talk;
+                        input_player_target(camera, player, world);
+                        return
                     }
                     player.person.target = Some((x as usize, y as usize));
                 }
-
             }
             _ => {
                 player.mode = PlayerMode::Talk;
@@ -180,7 +171,7 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
         if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
             return
         }
-        if player.is_minable(world.data[x as usize][y as usize].tipo()) && (
+        if world.data[x as usize][y as usize].is_mineable() && (
             is_walkable(world.data[x as usize+1][y as usize]) || 
             is_walkable(world.data[x as usize-1][y as usize]) || 
             is_walkable(world.data[x as usize][y as usize+1]) || 

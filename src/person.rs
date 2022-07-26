@@ -69,6 +69,7 @@ impl CanWalk for Person {
                             |&(x, y)| heuristic((x,y), goal, world),
                             |&p| p == goal);
             if result.is_none() {
+                println!("boowomp");
                 self.target = None;
                 return
             }

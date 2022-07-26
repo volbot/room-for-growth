@@ -40,6 +40,16 @@ impl Tile {
             }
         }
     }
+    pub fn is_mineable(&self) -> bool {
+        match self.id {
+            3 | 4 | 5 => {
+                true
+            }
+            _ => {
+                false
+            }
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug)]
