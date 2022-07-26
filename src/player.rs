@@ -38,7 +38,10 @@ impl Player {
                         person.advance_quest();
                     }
                     InteractType::Complete => {
-                        person.set_quest(world.quest_list.get(person.interact.unwrap().data.unwrap() as usize).unwrap());
+                        let next = person.interact.unwrap().data;
+                        if next.is_some() {
+                        person.set_quest(world.quest_list.get(next.unwrap() as usize).unwrap());
+                        }
                     }
                     InteractType::Gift => {
                         //give item
