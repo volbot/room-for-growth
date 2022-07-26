@@ -82,7 +82,7 @@ pub fn get_quests() -> Vec<Quest> {
                 Some(1)),
         Quest::new(QuestObjective::new(QuestType::Build,None,None), [
                 "Could you help replace my walls?^^Bandits ran my fade!", "Sure",
-                "Please replace my walls!", "Ok",
+                "Please replace my walls!^^", "Ok",
                 "Thank you! It's like I can^^finally think straight.", "Ok"], 
                 None),
     ]

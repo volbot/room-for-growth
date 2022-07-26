@@ -10,4 +10,11 @@ impl Item {
             id, quant
         }
     }
+
+    pub fn name(&self) -> &str {
+        match self.id {
+            0 => {"Log"}
+            _ => {"None"}
+        }
+    }
 }

@@ -102,6 +102,28 @@ pub fn draw_inventory(inventory: &Inventory, tileset: &TileSet) -> Result<Invent
         color: BLACK,
         ..Default::default()
     });
+    let mut i = 0;
+    let mut j = 0;
+    while i < 9 {
+        while j < 4 {
+            let corner = (52.0 * i as f32 + 168.0, 75.0 * j as f32 + 285.0);
+            if inventory.data[j][i].is_some() {
+                let item = inventory.data[j][i].unwrap();
+                let mut tooltip: String = item.name().to_string();
+                tooltip.push_str(" x");
+                tooltip.push_str(&item.quant.to_string());
+                draw_text_ex(&tooltip, corner.0, corner.1+69.0, TextParams {
+                    font_size: 12,
+                    font: tileset.font,
+                    color: BLACK,
+                    ..Default::default()
+                });
+            }
+            j += 1;
+        }
+        j = 0;
+        i += 1;
+    }
     if root_ui().button(Vec2::new(445.0, 215.0), "Done") {
         return Err("window closed")
     }
