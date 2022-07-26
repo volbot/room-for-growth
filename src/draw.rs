@@ -2,7 +2,7 @@ use crate::buildmenu::{BuildChoice, BuildMenu};
 use crate::interact::Interaction;
 use crate::inventory::Inventory;
 use crate::{person::Person, world::World, camera::Camera, entity::Entity};
-use crate::tile::TileSet;
+use crate::tile::{TileSet, Tile};
 use macroquad::prelude::*;
 use macroquad::ui::*;
 
@@ -145,5 +145,16 @@ pub fn draw_build_menu(menu: &BuildMenu, tileset: &TileSet) -> Result<BuildChoic
     if root_ui().button(Vec2::new(445.0, 215.0), "Done") {
         return Err("window closed")
     }
-    return Ok(menu.data[0][0].unwrap())
+    if is_mouse_button_pressed(MouseButton::Left) {
+        let mouse = mouse_position();
+        if mouse.0 > 168.0 && mouse.0 < 636.0 && mouse.1 > 285.0 && mouse.1 < 585.0 {
+            let x = (mouse.0 as usize - 168) / 52;
+            let y = (mouse.1 as usize - 285) / 75;
+            let dat = menu.data[y][x];
+            if dat.is_some() {
+                return Ok(dat.unwrap())
+            }
+        }
+    }
+    return Ok(BuildChoice::new(Tile::new(0),1000000));
 }

@@ -44,4 +44,19 @@ impl Inventory {
             i += 1;
         }
     }
+
+    pub fn item_count(&self, id: usize) -> isize {
+        let mut total = 0;
+        for arr in self.data {
+            for slot in arr {
+                if slot.is_some() {
+                    let item = slot.unwrap();
+                    if item.id == id {
+                        total += item.quant;
+                    }
+                }
+            }
+        }
+        total as isize
+    }
 }

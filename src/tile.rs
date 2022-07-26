@@ -1,5 +1,7 @@
 use macroquad::prelude::*;
 
+use crate::item::Item;
+
 #[derive(Clone, Copy, Debug)]
 pub struct Tile {
     pub id: usize,
@@ -20,6 +22,19 @@ impl Tile {
             4 => {TileType::Boards}
             5 => {TileType::Brush}
             _ => {TileType::Grass}
+        }
+    }
+    pub fn resources(&self) -> Item {
+        match self.id {
+            5 => {
+                Item::new(0,5)
+            }
+            3 | 4 => {
+                Item::new(0,2)
+            }
+            _ => {
+                Item::new(0,0)
+            }
         }
     }
 }

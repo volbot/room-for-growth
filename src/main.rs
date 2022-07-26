@@ -90,8 +90,14 @@ async fn main() {
                 match draw_build_menu(&BuildMenu::new(&player.inventory), &tileset) {
                     Ok(i) => {
                         player.target_id = Some(i.tile.id);
+                        if i.count != 1000000 {
+                            window_active = None;
+                        }
                     }
-                    Err(_s) => {window_active = None}
+                    Err(_s) => {
+                        player.target_id = None;
+                        window_active = None;
+                    }
                 }
 
             } else {

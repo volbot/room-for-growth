@@ -1,6 +1,5 @@
 use crate::interact::{Interaction, InteractType};
 use crate::inventory::Inventory;
-use crate::item::Item;
 use crate::person::{Person, CanWalk};
 use crate::tile::{is_walkable, TileType};
 use crate::world::{screen_to_tiles, World};
@@ -66,11 +65,7 @@ impl Player {
                     let time = get_time();
                     if time >= self.person.last_act + 1.0 * self.person.speed {
                         self.person.last_act = time;
-                        self.inventory.push(Item::new(
-                                match world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].tipo() {
-                                    TileType::Brush => {0}
-                                    _ => {0}
-                                }, 5));
+                        self.inventory.push(world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].resources());
                         world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].id = TileType::Grass.id();
                         self.person.target = None;
                     }
@@ -79,12 +74,13 @@ impl Player {
                 }
             }
             PlayerMode::Build => {
-                if self.person.target.is_some() && self.person.entity.distance_pos(self.person.target.unwrap()) <= 1 {
+                if self.person.target.is_some() && self.person.entity.distance_pos(self.person.target.unwrap()) == 1 {
                     if self.target_id.is_some() {
                         world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].id = self.target_id.unwrap();
                     }
                     self.person.target = None;
-                    self.target_id = None;
+                } else {
+                    self.person.walk(world);
                 }
             }
         }
@@ -92,7 +88,7 @@ impl Player {
     }
     pub fn is_minable(&self, tile: TileType) -> bool {
         match tile {
-            TileType::Brush => {
+            TileType::Brush | TileType::Planks | TileType::Boards => {
                 true
             }
             _ => {
@@ -126,27 +122,43 @@ pub enum PlayerMode {
 pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) {
     let clicked = is_mouse_button_pressed(MouseButton::Left);
     if clicked {
-        player.mode = PlayerMode::Talk;
-        player.person.target = None;
-        player.target_id = None;
-        let mouse = mouse_position();
-        let (x, y) = screen_to_tiles(camera.project(mouse));
-        if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
-            return
-        }
-        if is_walkable(world.data[x as usize][y as usize]) {
-            player.person.target = Some((x as usize, y as usize));
-        } else {
-            player.person.target = None;
-            return
-        }
-        let mut i = 0;
-        while i < world.people.len() {
-            if world.people.get(i).unwrap().entity.pos == (x as usize,y as usize) {
-                player.target_id = Some(i);
-                return
+        match player.mode {
+            PlayerMode::Build => {
+                player.person.target = None;
+                let mouse = mouse_position();
+                let (x, y) = screen_to_tiles(camera.project(mouse));
+                if player.target_id.is_none() || x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
+                    return
+                }
+                if is_walkable(world.data[x as usize][y as usize]) {
+                    player.person.target = Some((x as usize, y as usize));
+                }
+
             }
-            i += 1;
+            _ => {
+                player.mode = PlayerMode::Talk;
+                player.person.target = None;
+                player.target_id = None;
+                let mouse = mouse_position();
+                let (x, y) = screen_to_tiles(camera.project(mouse));
+                if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
+                    return
+                }
+                if is_walkable(world.data[x as usize][y as usize]) {
+                    player.person.target = Some((x as usize, y as usize));
+                } else {
+                    player.person.target = None;
+                    return
+                }
+                let mut i = 0;
+                while i < world.people.len() {
+                    if world.people.get(i).unwrap().entity.pos == (x as usize,y as usize) {
+                        player.target_id = Some(i);
+                        return
+                    }
+                    i += 1;
+                }
+            }
         }
     }
     let clicked = is_mouse_button_pressed(MouseButton::Right);
