@@ -1,4 +1,5 @@
 use crate::interact::{Interaction, InteractType};
+use crate::inventory::Inventory;
 use crate::person::{Person, CanWalk};
 use crate::tile::is_walkable;
 use crate::world::{screen_to_tiles, World};
@@ -9,7 +10,7 @@ use macroquad::prelude::*;
 pub struct Player {
     pub person: Person,
     pub target_id: Option<usize>,
-
+    pub inventory: Inventory,
 }
 
 impl Player {
@@ -17,6 +18,7 @@ impl Player {
         Player {
             person: Person::new(pos, 0),
             target_id: None,
+            inventory: Inventory::new(),
         }
     }
 

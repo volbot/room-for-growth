@@ -21,6 +21,8 @@ pub mod draw;
 pub mod interact;
 pub mod pathing;
 pub mod quest;
+pub mod inventory;
+pub mod item;
 
 #[macroquad::main("Bungo")]
 async fn main() {
@@ -86,7 +88,6 @@ async fn main() {
             input_player_target(&cam, &mut player, &world);
             input_camera_movement(&mut cam);
         }
-
 
         next_frame().await
     }
