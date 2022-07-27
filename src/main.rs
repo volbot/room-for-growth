@@ -50,9 +50,11 @@ async fn main() {
         button_style,
         ..root_ui().default_skin()
     };
+    let mut w = World::new();
+    let p = Player::new((50, 50), &mut w);
     let mut game = Game {
-        world: World::new(),
-        player: Player::new((50,50)),
+        world: w,
+        player: p,
         camera: Camera::new((800,800),tiles_to_screen((40,40))),
         window_active: None
     };

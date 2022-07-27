@@ -15,7 +15,19 @@ pub struct Player {
 }
 
 impl Player {
-    pub fn new(pos: (usize, usize)) -> Player {
+    pub fn new(pos: (usize, usize), world: &mut World) -> Player {
+        let mut x: isize = pos.0 as isize-1;
+        let mut y: isize = pos.1 as isize-1;
+        while x <= pos.0 as isize+1 {
+            while y <= pos.1 as isize+1 {
+                if x >= 0 && y >= 0 && x < world.data.len() as isize && y < world.data[0].len() as isize {
+                    world.data[x as usize][y as usize].id = TileType::Grass.id();
+                }
+                y += 1;
+            }
+            y = pos.1 as isize -1;
+            x += 1;
+        }
         Player {
             person: Person::new(pos, 0),
             target_id: None,
