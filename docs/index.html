@@ -2,11 +2,15 @@
 
 <head>
     <meta charset="utf-8">
-    <title>TITLE</title>
+    <title>(WIP) Room for Growth</title>
     <style>
         html,
-        body {
-            justify-content: center;
+        body,
+        .row {
+            width: 100%;
+            display: flex;
+            justify-content: left;
+            background: SlateGray;
         }
         canvas {
             margin: 0px;
@@ -21,11 +25,18 @@
     </style>
 </head>
 
-<body>
-    <canvas id="glcanvas" tabindex='1' width=800px height=800px></canvas>
-    <!-- Minified and statically hosted version of https://github.com/not-fl3/miniquad/blob/master/native/sapp-wasm/js/gl.js -->
-    <script src="https://not-fl3.github.io/miniquad-samples/gl.js"></script>
-    <script>load("pickloid-chindale.wasm");</script> <!-- Your compiled wasm file -->
+<body oncontextmenu="return false;">
+    <div class="row">
+        <div style="margin: 0; max-width: 20%; padding: 10px;">
+            <h3>INTERACT: L-click<br>MINE: R-click<br>CAMERA: M-click<br>INVENTORY: E<br>BUILD MENU: Q</h3>
+        </div>
+        <div style="margin: 0;">
+            <canvas id="glcanvas" tabindex='1' width=800px height=800px></canvas>
+            <!-- Minified and statically hosted version of https://github.com/not-fl3/miniquad/blob/master/native/sapp-wasm/js/gl.js -->
+            <script src="https://not-fl3.github.io/miniquad-samples/gl.js"></script>
+            <script>load("pickloid-chindale.wasm");</script> <!-- Your compiled wasm file -->
+        </div>
+    </div>
 </body>
 
 </html>
