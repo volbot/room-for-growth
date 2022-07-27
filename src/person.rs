@@ -1,8 +1,9 @@
 use crate::entity::Entity;
+use crate::player::Player;
 use crate::quest::Quest;
 use crate::world::World;
 use crate::tile::TileType;
-use crate::interact::Interaction;
+use crate::interact::{Interaction, InteractType};
 use macroquad::prelude::*;
 use pathfinding::prelude::astar;
 use crate::pathing::*;
@@ -43,6 +44,20 @@ impl Person {
         quest.status += 1;
         self.interact = Some(quest.msgs[quest.status]);
         self.quest = Some(quest);
+    }
+
+    pub fn update_quest(&mut self, player: &Player) {
+        if self.quest.is_none() {
+            return
+        }
+        match self.interact.unwrap().tipo {
+            InteractType::Waiting => {
+                if self.quest.unwrap().is_completable(player) {
+                    self.advance_quest();
+                }
+            }
+            _ => {}
+        }
     }
 }
 

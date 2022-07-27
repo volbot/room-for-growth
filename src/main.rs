@@ -1,12 +1,11 @@
 use buildmenu::BuildMenu;
-use interact::InteractType;
 use macroquad::prelude::*;
 use macroquad::ui::*;
 use player::input_player_keys;
 use world::tiles_to_screen;
 
 use crate::world::World;
-use crate::tile::TileSet;
+use crate::tileset::TileSet;
 use crate::person::{Person, CanWalk};
 use crate::player::{Player, input_player_target};
 use crate::camera::{Camera, input_camera_movement};
@@ -26,6 +25,14 @@ pub mod quest;
 pub mod inventory;
 pub mod item;
 pub mod buildmenu;
+pub mod tileset;
+
+pub struct Game {
+    pub world: World,
+    pub player: Player,
+    pub camera: Camera,
+    pub window_active: Option<Interaction>,
+}
 
 #[macroquad::main("Bungo")]
 async fn main() {
@@ -43,75 +50,45 @@ async fn main() {
         button_style,
         ..root_ui().default_skin()
     };
+    let mut game = Game {
+        world: World::new(),
+        player: Player::new((50,50)),
+        camera: Camera::new((800,800),tiles_to_screen((40,40))),
+        window_active: None
+    };
     root_ui().push_skin(&skin);
-    //create necessary variables
-    let mut world = World::new();
-    let mut player = Player::new((50,50));
     //TEMP---------------
     let mut npc = Person::new((55,55), 1);
     npc.target = Some((34,34));
-    npc.set_quest(&world.quest_list.get(0).unwrap());
-    world.people.push(npc);
+    npc.set_quest(&game.world.quest_list.get(0).unwrap());
+    game.world.people.push(npc);
     //END TEMP-----------
-    //set aside storage for an interaction to display
-    let mut window_active: Option<Interaction> = None;
-    //create a camera struct to store data
-    let mut cam = Camera::new((800,800),tiles_to_screen((40,40)));
     loop {
         clear_background(GRAY);
-        draw_world(&cam, &world, &tileset);
-        let world_copy = &world.clone();
-        for person in &mut world.people {
-            draw_person(&cam, &person, &tileset);
+        draw_world(&game.camera, &game.world, &tileset);
+        let world_copy = &game.world.clone();
+        for person in &mut game.world.people {
+            draw_person(&game.camera, &person, &tileset);
             person.walk(world_copy);
-            if person.quest.is_some() {
-                match person.interact.unwrap().tipo {
-                    InteractType::Waiting => {
-                        if person.quest.unwrap().is_completable(world_copy, &player) {
-                            person.advance_quest();
-                        }
-                    }
-                    _ => {}
-                }
-            }
+            person.update_quest(&game.player);
         }
-        draw_person(&cam, &player.person, &tileset);
-        match player.think(&mut world) {
-            Ok(interact) => { window_active = Some(interact) }
+        draw_person(&game.camera, &game.player.person, &tileset);
+        match game.player.think(&mut game.world) {
+            Ok(interact) => { game.window_active = Some(interact) }
             Err(_s) => {}
         }
-        if window_active.is_some() {
-            if window_active.unwrap().text == "**Inventory" {
-                 match draw_inventory(&player.inventory, &tileset) {
-                     Ok(_i) => {}
-                     Err(_s) => {window_active = None}
-                 }
-            } else if window_active.unwrap().text == "**Building" {
-                match draw_build_menu(&BuildMenu::new(&player.inventory), &tileset) {
-                    Ok(i) => {
-                        player.target_id = Some(i.tile.id);
-                        if i.count != 1000000 {
-                            window_active = None;
-                        }
-                    }
-                    Err(_s) => {
-                        player.target_id = None;
-                        window_active = None;
-                    }
-                }
-
+        if game.window_active.is_some() {
+            if game.window_active.unwrap().text == "**Inventory" {
+                draw_inventory(&mut game, &tileset);
+            } else if game.window_active.unwrap().text == "**Building" {
+                draw_build_menu(&BuildMenu::new(&game.player.inventory), &mut game, &tileset);
             } else {
-                match draw_popup(&window_active.unwrap(), &tileset) {
-                    Ok(interact) => { window_active = Some(interact); }
-                    Err(_s) => {
-                        window_active = None;
-                    }
-                }
+                draw_popup(&game.window_active.unwrap(), &mut game, &tileset); 
             }
         } else {
-            input_camera_movement(&mut cam);
-            input_player_target(&cam, &mut player, &world);
-            window_active = input_player_keys(&mut player);
+            input_camera_movement(&mut game.camera);
+            input_player_target(&game.camera, &mut game.player, &game.world);
+            game.window_active = input_player_keys(&mut game.player);
         }
 
         next_frame().await

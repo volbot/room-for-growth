@@ -1,8 +1,8 @@
-use crate::buildmenu::{BuildChoice, BuildMenu};
+use crate::Game;
+use crate::buildmenu::BuildMenu;
 use crate::interact::Interaction;
-use crate::inventory::Inventory;
 use crate::{person::Person, world::World, camera::Camera, entity::Entity};
-use crate::tile::{TileSet, Tile};
+use crate::tileset::TileSet;
 use macroquad::prelude::*;
 use macroquad::ui::*;
 
@@ -51,7 +51,7 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
     }
 }
 
-pub fn draw_popup(interact: &Interaction, tileset: &TileSet) -> Result<Interaction, &'static str> {
+pub fn draw_popup(interact: &Interaction, game: &mut Game, tileset: &TileSet) {
     draw_texture(tileset.windows[1].unwrap(), 150.0, 600.0, WHITE);
     let split = interact.text.split("^^");
     let mut vec = Vec::new();
@@ -71,12 +71,12 @@ pub fn draw_popup(interact: &Interaction, tileset: &TileSet) -> Result<Interacti
         ..Default::default()
     });
     if root_ui().button(Vec2::new(445.0, 690.0), interact.text_button) {
-        return Err("window closed")
+        game.window_active = None;
     }
-    return Ok(*interact)
 }
 
-pub fn draw_inventory(inventory: &Inventory, tileset: &TileSet) -> Result<Inventory, &'static str> {
+pub fn draw_inventory(game: &mut Game, tileset: &TileSet) {
+    let inventory = game.player.inventory;
     draw_texture(tileset.windows[2].unwrap(), 150.0, 200.0, WHITE);
     draw_text_ex("Inventory", 185.0, 255.0, TextParams {
         font_size: 30,
@@ -107,12 +107,11 @@ pub fn draw_inventory(inventory: &Inventory, tileset: &TileSet) -> Result<Invent
         i += 1;
     }
     if root_ui().button(Vec2::new(445.0, 215.0), "Done") {
-        return Err("window closed")
+        game.window_active = None;
     }
-    return Ok(*inventory)
 }
 
-pub fn draw_build_menu(menu: &BuildMenu, tileset: &TileSet) -> Result<BuildChoice, &'static str> {
+pub fn draw_build_menu(menu: &BuildMenu, game: &mut Game, tileset: &TileSet) {
     draw_texture(tileset.windows[2].unwrap(), 150.0, 200.0, WHITE);
     draw_text_ex("Building", 185.0, 255.0, TextParams {
         font_size: 30,
@@ -127,7 +126,7 @@ pub fn draw_build_menu(menu: &BuildMenu, tileset: &TileSet) -> Result<BuildChoic
             let corner = (52.0 * i as f32 + 168.0, 75.0 * j as f32 + 285.0);
             if menu.data[j][i].is_some() {
                 let item = menu.data[j][i].unwrap();
-                let mut tooltip: String = item.tile.tipo().name().to_string();
+                let mut tooltip: String = item.tile.name().to_string();
                 tooltip.push_str(" x");
                 tooltip.push_str(&item.count.to_string());
                 draw_text_ex(&tooltip, corner.0, corner.1+69.0, TextParams {
@@ -143,7 +142,9 @@ pub fn draw_build_menu(menu: &BuildMenu, tileset: &TileSet) -> Result<BuildChoic
         i += 1;
     }
     if root_ui().button(Vec2::new(445.0, 215.0), "Done") {
-        return Err("window closed")
+        game.player.target_id = None;
+        game.window_active = None;
+        return
     }
     if is_mouse_button_pressed(MouseButton::Left) {
         let mouse = mouse_position();
@@ -152,9 +153,9 @@ pub fn draw_build_menu(menu: &BuildMenu, tileset: &TileSet) -> Result<BuildChoic
             let y = (mouse.1 as usize - 285) / 75;
             let dat = menu.data[y][x];
             if dat.is_some() {
-                return Ok(dat.unwrap())
+                game.player.target_id = Some(dat.unwrap().tile.id);
+                game.window_active = None;
             }
         }
     }
-    return Ok(BuildChoice::new(Tile::new(0),1000000));
 }

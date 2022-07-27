@@ -1,4 +1,4 @@
-use crate::tile::TileSet;
+use crate::tileset::TileSet;
 
 use macroquad::prelude::*;
 

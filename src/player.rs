@@ -1,7 +1,7 @@
 use crate::interact::{Interaction, InteractType};
 use crate::inventory::Inventory;
 use crate::person::{Person, CanWalk};
-use crate::tile::{is_walkable, TileType, Tile};
+use crate::tile::{TileType, Tile};
 use crate::world::{screen_to_tiles, World};
 use crate::camera::Camera;
 
@@ -126,7 +126,7 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
                 if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
                     return
                 }
-                if is_walkable(world.data[x as usize][y as usize]) {
+                if world.data[x as usize][y as usize].is_walkable() {
                     if player.target_id.is_none() || world.data[x as usize][y as usize].id != 0 {
                         player.mode = PlayerMode::Talk;
                         input_player_target(camera, player, world);
@@ -144,7 +144,7 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
                 if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
                     return
                 }
-                if is_walkable(world.data[x as usize][y as usize]) {
+                if world.data[x as usize][y as usize].is_walkable() {
                     player.person.target = Some((x as usize, y as usize));
                 } else {
                     player.person.target = None;
@@ -172,10 +172,10 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
             return
         }
         if world.data[x as usize][y as usize].is_mineable() && (
-            is_walkable(world.data[x as usize+1][y as usize]) || 
-            is_walkable(world.data[x as usize-1][y as usize]) || 
-            is_walkable(world.data[x as usize][y as usize+1]) || 
-            is_walkable(world.data[x as usize][y as usize-1]) ) {
+            world.data[x as usize+1][y as usize].is_walkable() || 
+            world.data[x as usize-1][y as usize].is_walkable() || 
+            world.data[x as usize][y as usize+1].is_walkable() || 
+            world.data[x as usize][y as usize-1].is_walkable() ) {
             player.person.target = Some((x as usize, y as usize));
         } else {
             return

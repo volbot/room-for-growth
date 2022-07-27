@@ -1,6 +1,5 @@
 use crate::interact::{Interaction, InteractType};
 use crate::player::Player;
-use crate::world::World;
 
 #[derive(Clone,Copy,Debug)]
 pub struct Quest {
@@ -21,7 +20,7 @@ impl Quest {
             status: 0,
         }
     }
-    pub fn is_completable(&self, world: &World, player: &Player) -> bool {
+    pub fn is_completable(&self, player: &Player) -> bool {
         match self.objec.tipo {
             QuestType::Materials => {
                 let id = self.objec.goal_type.unwrap();
@@ -47,7 +46,6 @@ impl Quest {
                     false
                 }
             }
-            _ => {true}
         }
     }
 }
