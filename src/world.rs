@@ -1,4 +1,5 @@
-use macroquad::prelude::*;
+use macroquad::{prelude::*};
+use macroquad::rand::gen_range;
 
 use crate::{tile::{Tile, TileType}, person::Person, quest::{get_quests, Quest}};
 
@@ -33,16 +34,16 @@ impl World {
                 } else if val < -17.0 {
                     world.data[x][y].id = TileType::Water.id();
                     if x > 0 && y > 0 && x < 99 && y < 99 && val < -20.0 {
-                        if ::rand::random(){
+                        if gen_range(0,2)==1{
                             world.data[x+1][y].id = TileType::Water.id();
                         }
-                        if ::rand::random(){
+                        if gen_range(0,2)==1{
                             world.data[x][y+1].id = TileType::Water.id();
                         }
-                        if ::rand::random(){
+                        if gen_range(0,2)==1{
                             world.data[x-1][y].id = TileType::Water.id();
                         }
-                        if ::rand::random(){
+                        if gen_range(0,2)==1{
                             world.data[x][y-1].id = TileType::Water.id();
                         }
                     }
@@ -58,7 +59,7 @@ impl World {
         while x < 38 {
             while y < 37 {
                 if x == 37 || x == 30 || y == 36 || y == 30 {
-                    if ::rand::random() {
+                    if gen_range(0,2)<1 {
                         world.data[x][y].id = TileType::Planks.id();
                     }
                 } else {
