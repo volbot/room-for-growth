@@ -11,3 +11,4 @@ macroquad = "0.3"
 pathfinding = "3.0.13"
 noise = "0.7.0"
 getrandom = { version = "0.2.7", features = ["js"] }
+chrono = "0.4"

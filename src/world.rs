@@ -3,7 +3,7 @@ use macroquad::rand::gen_range;
 
 use crate::{tile::{Tile, TileType}, person::Person, quest::{get_quests, Quest}};
 
-use noise::{Fbm, NoiseFn};
+use noise::{Fbm, NoiseFn, Seedable};
 
 #[derive(Clone, Debug)]
 pub struct World {
@@ -22,6 +22,7 @@ impl World {
             quest_list: get_quests(),
             noise: Fbm::new(),
         };
+        world.noise = world.noise.set_seed(gen_range(0,12421242));
         let mut x = 0;
         let mut y = 0;
         while x < 100 {
