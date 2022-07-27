@@ -10,7 +10,6 @@
             width: 100%;
             display: inline-block;
             justify-content: center;
-            margin: 0 auto;
             background: SlateGray;
         }
         canvas {
@@ -28,10 +27,10 @@
 
 <body oncontextmenu="return false;">
     <div style="display: flex">
-        <div width=20%>
+        <div width=20% style="margin 0 auto">
             <h3>INTERACT: L-click<br>MINE: R-click<br>CAMERA: M-click<br>INVENTORY: E<br>BUILD MENU: Q</h3>
         </div>
-        <div width=80%>
+        <div width=80% style="margin: 0 auto">
             <canvas id="glcanvas" tabindex='1' width=800px height=800px></canvas>
             <!-- Minified and statically hosted version of https://github.com/not-fl3/miniquad/blob/master/native/sapp-wasm/js/gl.js -->
             <script src="https://not-fl3.github.io/miniquad-samples/gl.js"></script>
