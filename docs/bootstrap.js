@@ -1,2 +1,2 @@
-import("./index.js")
-  .catch(e => console.error("Error importing `index.js`:", e));
+import("../out/pickloid-chindale.js")
+  .catch(e => console.error("Error importing:", e));
