@@ -1,6 +1,5 @@
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
-use std::time::SystemTime;
 
 use buildmenu::BuildMenu;
 use macroquad::prelude::*;
@@ -42,7 +41,7 @@ pub struct Game {
 #[macroquad::main("Bungo")]
 async fn main() {
     let mut hash = DefaultHasher::new();
-    SystemTime::now().hash(&mut hash);
+    1.hash(&mut hash);
     srand(hash.finish());
     //load font as bytes for buttons
     let font_bytes = include_bytes!("../assets/fonts/JMH Cthulhumbus Arcade.otf");
