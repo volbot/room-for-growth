@@ -1,2 +1,2 @@
-import("/out/pickloid-chindale.js")
+import("pickloid-chindale.js")
   .catch(e => console.error("Error importing:", e));
