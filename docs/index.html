@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>TITLE</title>
+    <title>(WIP) Room for Growth</title>
     <style>
         html,
         body,
@@ -10,6 +10,7 @@
             width: 100%;
             display: flex;
             justify-content: center;
+            background: SlateGray;
         }
         canvas {
             margin: 0px;
@@ -30,6 +31,17 @@
         <!-- Minified and statically hosted version of https://github.com/not-fl3/miniquad/blob/master/native/sapp-wasm/js/gl.js -->
         <script src="https://not-fl3.github.io/miniquad-samples/gl.js"></script>
         <script>load("pickloid-chindale.wasm");</script> <!-- Your compiled wasm file -->
+        <script>
+            function gfg_Run() {
+                document.addEventListener("contextmenu",
+
+                function(e) {
+                    if (e.target.id === "glcanvas") {
+                        e.preventDefault();
+                    }
+                }, false);
+            }
+        </script>
     </div>
 </body>
 
