@@ -5,7 +5,10 @@
     <title>TITLE</title>
     <style>
         html,
-        body {
+        body,
+        div {
+            width: 100%;
+            display: flex;
             justify-content: center;
         }
         canvas {
@@ -22,10 +25,12 @@
 </head>
 
 <body>
-    <canvas id="glcanvas" tabindex='1' width=800px height=800px></canvas>
-    <!-- Minified and statically hosted version of https://github.com/not-fl3/miniquad/blob/master/native/sapp-wasm/js/gl.js -->
-    <script src="https://not-fl3.github.io/miniquad-samples/gl.js"></script>
-    <script>load("pickloid-chindale.wasm");</script> <!-- Your compiled wasm file -->
+    <div>
+        <canvas id="glcanvas" tabindex='1' width=800px height=800px></canvas>
+        <!-- Minified and statically hosted version of https://github.com/not-fl3/miniquad/blob/master/native/sapp-wasm/js/gl.js -->
+        <script src="https://not-fl3.github.io/miniquad-samples/gl.js"></script>
+        <script>load("pickloid-chindale.wasm");</script> <!-- Your compiled wasm file -->
+    </div>
 </body>
 
 </html>
