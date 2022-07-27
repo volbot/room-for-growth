@@ -7,6 +7,7 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly main: (a: number, b: number) => number;
   readonly macroquad_audio_crate_version: () => number;
+  readonly file_loaded: (a: number) => void;
   readonly crate_version: () => number;
   readonly allocate_vec_u8: (a: number) => number;
   readonly on_clipboard_paste: (a: number, b: number) => void;
@@ -24,7 +25,6 @@ export interface InitOutput {
   readonly on_files_dropped_start: () => void;
   readonly on_files_dropped_finish: () => void;
   readonly on_file_dropped: (a: number, b: number, c: number, d: number) => void;
-  readonly file_loaded: (a: number) => void;
   readonly __wbindgen_start: () => void;
 }
 

@@ -3,6 +3,7 @@
 export const memory: WebAssembly.Memory;
 export function main(a: number, b: number): number;
 export function macroquad_audio_crate_version(): number;
+export function file_loaded(a: number): void;
 export function crate_version(): number;
 export function allocate_vec_u8(a: number): number;
 export function on_clipboard_paste(a: number, b: number): void;
@@ -20,5 +21,4 @@ export function touch(a: number, b: number, c: number, d: number): void;
 export function on_files_dropped_start(): void;
 export function on_files_dropped_finish(): void;
 export function on_file_dropped(a: number, b: number, c: number, d: number): void;
-export function file_loaded(a: number): void;
 export function __wbindgen_start(): void;
