@@ -25,7 +25,6 @@ export interface InitOutput {
   readonly on_files_dropped_finish: () => void;
   readonly on_file_dropped: (a: number, b: number, c: number, d: number) => void;
   readonly file_loaded: (a: number) => void;
-  readonly __wbindgen_exn_store: (a: number) => void;
   readonly __wbindgen_start: () => void;
 }
 

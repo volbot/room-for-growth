@@ -21,5 +21,4 @@ export function on_files_dropped_start(): void;
 export function on_files_dropped_finish(): void;
 export function on_file_dropped(a: number, b: number, c: number, d: number): void;
 export function file_loaded(a: number): void;
-export function __wbindgen_exn_store(a: number): void;
 export function __wbindgen_start(): void;
