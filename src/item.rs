@@ -14,6 +14,7 @@ impl Item {
     pub fn name(&self) -> &str {
         match self.id {
             0 => {"Log"}
+            1 => {"Dirt"}
             _ => {"None"}
         }
     }

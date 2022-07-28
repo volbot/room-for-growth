@@ -26,6 +26,9 @@ impl Tile {
     }
     pub fn resources(&self) -> Item {
         match self.id {
+            0 => {
+                Item::new(1,4)
+            }
             5 => {
                 Item::new(0,5)
             }
@@ -42,7 +45,7 @@ impl Tile {
     }
     pub fn is_mineable(&self) -> bool {
         match self.id {
-            3 | 4 | 5 => {
+            0 | 3 | 4 | 5 => {
                 true
             }
             _ => {

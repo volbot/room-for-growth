@@ -14,6 +14,8 @@ impl BuildMenu {
         menu.data[0][0] = Some(BuildChoice::new(Tile::new(TileType::Planks.id()),possible as usize));
         possible = (inv.item_count(0) as f32/3.).floor() as usize;
         menu.data[0][1] = Some(BuildChoice::new(Tile::new(TileType::Boards.id()),possible as usize)); 
+        possible = (inv.item_count(1) as f32/4.).floor() as usize;
+        menu.data[0][2] = Some(BuildChoice::new(Tile::new(TileType::Grass.id()),possible as usize));
         menu
     }
 }

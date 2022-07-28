@@ -77,8 +77,13 @@ impl Player {
                     let time = get_time();
                     if time >= self.person.last_act + 1.0 * self.person.speed {
                         self.person.last_act = time;
-                        self.inventory.push(world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].resources());
-                        world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].id = TileType::Grass.id();
+                        let target = self.person.target.unwrap().clone();
+                        self.inventory.push(world.data[target.0][target.1].resources());
+                        world.data[target.0][target.1].id = if world.data[target.0][target.1].id == TileType::Grass.id() {
+                            TileType::Water.id()
+                        } else {
+                            TileType::Grass.id()
+                        };
                         self.person.target = None;
                     }
                 } else {
@@ -138,13 +143,14 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
                 if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
                     return
                 }
-                if world.data[x as usize][y as usize].is_walkable() {
-                    if player.target_id.is_none() || world.data[x as usize][y as usize].id != 0 {
-                        player.mode = PlayerMode::Talk;
-                        input_player_target(camera, player, world);
-                        return
-                    }
+                if player.target_id.is_some() && world.data[x as usize][y as usize].id == match player.target_id.unwrap() {
+                    0 => {TileType::Water.id()}
+                    _ => {TileType::Grass.id()}
+                }{
                     player.person.target = Some((x as usize, y as usize));
+                } else {
+                    player.mode = PlayerMode::Talk;
+                    input_player_target(camera, player, world);
                 }
             }
             _ => {

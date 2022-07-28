@@ -15,33 +15,29 @@ impl Inventory {
     pub fn push(&mut self, item: Item) {
         let mut i = 0;
         let mut j = 0;
-        while i < 9 {
-            while j < 4 {
-                if self.data[j][i].is_some() {
-                    let mut curr_item = self.data[j][i].unwrap();
+        let mut first_none: Option<(usize, usize)> = None;
+        while i < 4 {
+            while j < 9 {
+                if self.data[i][j].is_some() {
+                    let mut curr_item = self.data[i][j].unwrap();
                     if curr_item.id == item.id {
                         curr_item.quant += item.quant;
+                        self.data[i][j] = Some(curr_item);
+                        return
                     }
-                    self.data[j][i] = Some(curr_item);
-                    return
+                } else {
+                    if first_none.is_none() {
+                        first_none = Some((i, j));
+                    }
                 }
                 j += 1;
             }
             j = 0;
             i += 1;
         }
-        i = 0;
-        j = 0;
-        while i < 9 {
-            while j < 4 {
-                if self.data[j][i].is_none() {
-                    self.data[j][i] = Some(item);
-                    return
-                }
-                j += 1;
-            }
-            j = 0;
-            i += 1;
+        if first_none.is_some() {
+            let coords = first_none.unwrap();
+            self.data[coords.0][coords.1]  = Some(item);
         }
     }
 
@@ -49,21 +45,20 @@ impl Inventory {
         let mut work_item = item.clone();
         let mut i = 0;
         let mut j = 0;
-        while i < 9 {
-            while j < 4 {
-                if self.data[j][i].is_some() {
-                    let mut curr_item = self.data[j][i].unwrap();
+        while i < 4 {
+            while j < 9 {
+                if self.data[i][j].is_some() {
+                    let mut curr_item = self.data[i][j].unwrap();
                     if curr_item.id == item.id {
                         if curr_item.quant >= work_item.quant {
                             curr_item.quant -= work_item.quant;
-                            self.data[j][i] = Some(curr_item);
+                            self.data[i][j] = Some(curr_item);
                             return
                         } else {
                             work_item.quant -= curr_item.quant;
-                            self.data[j][i] = None;
+                            self.data[i][j] = None;
                         }
                     }
-                    return
                 }
                 j += 1;
             }
