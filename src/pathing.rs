@@ -28,8 +28,9 @@ pub fn successors(pos: (i32, i32), goal: (i32, i32), world: &World) -> Vec<(i32,
         if curr.0 < world.data.len() as i32 && curr.1 < world.data[0].len() as i32 && //WorldLim
             curr.0 >= 0 && curr.1 >= 0 && //WorldLim
                 (world.data[curr.0 as usize][curr.1 as usize].is_walkable() || //Walkable, or
-                 (curr.0 == goal.0 && curr.1 == goal.1 &&                       //Last in path and
-                  world.data[curr.0 as usize][curr.1 as usize].is_mineable())){ //Minable
+                (curr.0 == goal.0 && curr.1 == goal.1 &&                       //Last in path and
+                (world.data[curr.0 as usize][curr.1 as usize].is_mineable() || //Minable or
+                world.data[curr.0 as usize][curr.1 as usize].id == TileType::Water.id()))){
                     i+=1;
                 } else {
                     vec.remove(i);
