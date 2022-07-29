@@ -2,7 +2,6 @@ use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
 use buildmenu::BuildMenu;
-use chrono::Utc;
 use macroquad::prelude::*;
 use macroquad::ui::*;
 use macroquad::rand::srand;
@@ -41,9 +40,7 @@ pub struct Game {
 
 #[macroquad::main("Bungo")]
 async fn main() {
-    let mut hash = DefaultHasher::new();
-    Utc::now().hash(&mut hash);
-    srand(hash.finish());
+    srand(macroquad::miniquad::date::now() as u64);
     //load font as bytes for buttons
     let font_bytes = include_bytes!("../assets/fonts/JMH Cthulhumbus Arcade.otf");
     //generate the tileset from the assets folder
