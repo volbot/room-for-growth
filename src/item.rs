@@ -15,7 +15,33 @@ impl Item {
         match self.id {
             0 => {"Log"}
             1 => {"Dirt"}
+            2 => {"Wax"}
             _ => {"None"}
+        }
+    }
+
+    pub fn tipo (&self) -> ItemType {
+        match self.id {
+            0 => {ItemType::Log}
+            1 => {ItemType::Dirt}
+            2 => {ItemType::Wax}
+            _ => {ItemType::Log}
+        }
+    }
+}
+
+pub enum ItemType {
+    Log,
+    Dirt,
+    Wax,
+}
+
+impl ItemType {
+    pub fn id(&self) -> usize {
+        match self {
+            ItemType::Log => {0}
+            ItemType::Dirt => {1}
+            ItemType::Wax => {2}
         }
     }
 }
