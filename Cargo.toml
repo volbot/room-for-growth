@@ -10,4 +10,5 @@ edition = "2021"
 macroquad = "0.3"
 pathfinding = "3.0.13"
 noise = "0.7.0"
+chrono = { version = "0.4", features = ["wasmbind"] }
 getrandom = { version = "0.2.7", features = ["js"] }
