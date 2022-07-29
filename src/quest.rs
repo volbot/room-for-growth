@@ -52,9 +52,9 @@ impl Quest {
 
 #[derive(Clone,Copy,Debug)]
 pub struct QuestObjective {
-    tipo: QuestType,
-    goal_num: Option<isize>,
-    goal_type: Option<isize>,
+    pub tipo: QuestType,
+    pub goal_num: Option<isize>,
+    pub goal_type: Option<isize>,
 }
 
 impl QuestObjective {

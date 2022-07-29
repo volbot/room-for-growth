@@ -79,7 +79,7 @@ async fn main() {
         for person in &mut game.world.people {
             draw_person(&game.camera, &person, &tileset);
             person.walk(world_copy);
-            person.update_quest(&game.player);
+            person.update_quest(&game.player, world_copy);
         }
         draw_person(&game.camera, &game.player.person, &tileset);
         match game.player.think(&mut game.world) {

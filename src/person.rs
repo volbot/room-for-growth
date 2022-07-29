@@ -1,6 +1,6 @@
 use crate::entity::Entity;
 use crate::player::Player;
-use crate::quest::Quest;
+use crate::quest::{Quest, QuestType};
 use crate::world::World;
 use crate::tile::TileType;
 use crate::interact::{Interaction, InteractType};
@@ -46,7 +46,7 @@ impl Person {
         self.quest = Some(quest);
     }
 
-    pub fn update_quest(&mut self, player: &Player) {
+    pub fn update_quest(&mut self, player: &Player, world: &World) {
         if self.quest.is_none() {
             return
         }
@@ -55,6 +55,12 @@ impl Person {
                 if self.quest.unwrap().is_completable(player) {
                     self.advance_quest();
                 }
+            }
+            _ => {}
+        }
+        match self.quest.unwrap().objec.tipo {
+            QuestType::Build => {
+            
             }
             _ => {}
         }
