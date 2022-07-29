@@ -91,10 +91,17 @@ pub fn draw_inventory(game: &mut Game, tileset: &TileSet) {
             let corner = (52.0 * i as f32 + 168.0, 75.0 * j as f32 + 285.0);
             if inventory.data[j][i].is_some() {
                 let item = inventory.data[j][i].unwrap();
-                let mut tooltip: String = item.name().to_string();
-                tooltip.push_str(" x");
-                tooltip.push_str(&item.quant.to_string());
-                draw_text_ex(&tooltip, corner.0, corner.1+69.0, TextParams {
+                let tooltip: String = item.name().to_string();
+                let mut quantity: String = " x".to_string();
+                quantity.push_str(&item.quant.to_string());
+                draw_texture(tileset.items.get(item.id).unwrap().unwrap(), corner.0+3., corner.1+10.0, WHITE);
+                draw_text_ex(&tooltip, corner.0, corner.1+59.0, TextParams {
+                    font_size: 10,
+                    font: tileset.font,
+                    color: BLACK,
+                    ..Default::default()
+                });
+                draw_text_ex(&quantity, corner.0, corner.1+69.0, TextParams {
                     font_size: 10,
                     font: tileset.font,
                     color: BLACK,
@@ -126,10 +133,17 @@ pub fn draw_build_menu(menu: &BuildMenu, game: &mut Game, tileset: &TileSet) {
             let corner = (52.0 * i as f32 + 168.0, 75.0 * j as f32 + 285.0);
             if menu.data[j][i].is_some() {
                 let item = menu.data[j][i].unwrap();
-                let mut tooltip: String = item.tile.name().to_string();
-                tooltip.push_str(" x");
-                tooltip.push_str(&item.count.to_string());
-                draw_text_ex(&tooltip, corner.0, corner.1+69.0, TextParams {
+                let tooltip: String = item.tile.name().to_string();
+                let mut quantity: String = " x".to_string();
+                quantity.push_str(&item.count.to_string());
+                draw_texture(tileset.tiles.get(item.tile.id).unwrap().unwrap(), corner.0+3., corner.1+10.0, WHITE);
+                draw_text_ex(&tooltip, corner.0, corner.1+59.0, TextParams {
+                    font_size: 10,
+                    font: tileset.font,
+                    color: BLACK,
+                    ..Default::default()
+                });
+                draw_text_ex(&quantity, corner.0, corner.1+69.0, TextParams {
                     font_size: 10,
                     font: tileset.font,
                     color: BLACK,
