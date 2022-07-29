@@ -55,12 +55,14 @@ impl Person {
                 if self.quest.unwrap().is_completable(player) {
                     self.advance_quest();
                 }
-            }
-            _ => {}
-        }
-        match self.quest.unwrap().objec.tipo {
-            QuestType::Build => {
-            
+                match self.quest.unwrap().objec.tipo {
+                    QuestType::Build => {
+                        if world.is_inside(self.entity.pos, &mut Vec::new()) {
+                            self.advance_quest();
+                        }
+                    }
+                    _ => {}
+                }
             }
             _ => {}
         }

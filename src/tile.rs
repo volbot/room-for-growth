@@ -21,6 +21,7 @@ impl Tile {
             3 => {TileType::Planks}
             4 => {TileType::Boards}
             5 => {TileType::Brush}
+            6 => {TileType::Seal}
             _ => {TileType::Grass}
         }
     }
@@ -61,12 +62,13 @@ impl Tile {
             3 => {"Planks"}
             4 => {"Boards"}
             5 => {"Brush"}
+            6 => {"Seal"}
             _ => {"None"}
         }
     }
     pub fn is_walkable(&self) -> bool{
         match self.id {
-            0 | 4 | 5 => {true},
+            0 | 4 | 5 | 6 => {true},
             _ => {false}
         }
     }
@@ -80,6 +82,7 @@ pub enum TileType {
     Planks,
     Boards,
     Brush,
+    Seal,
 }
 
 impl TileType {
@@ -91,6 +94,7 @@ impl TileType {
             TileType::Planks => {3}
             TileType::Boards => {4}
             TileType::Brush => {5}
+            TileType::Seal => {6}
         }
     }
 }

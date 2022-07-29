@@ -69,7 +69,7 @@ impl World {
                     world.data[x][y].id = TileType::Boards.id();
                 }
                 if x == 34 && y == 36 {
-                    world.data[x][y].id = TileType::Boards.id();
+                    world.data[x][y].id = TileType::Seal.id();
                 }
                 y += 1;
             }
@@ -88,8 +88,55 @@ impl World {
             y = 29;
             x += 1;
         }
-
         world
+    }
+
+    pub fn is_inside(&self, pos: (usize, usize), history: &mut Vec<(usize, usize)>) -> bool {
+        let tile = self.data[pos.0][pos.1];
+        history.push(pos);
+        match tile.tipo() {
+            TileType::Boards => {
+                let neighbors = self.neighbors(pos);
+                let mut results: Vec<bool> = Vec::new();
+                for neighbor in neighbors {
+                    if !history.contains(&neighbor) {
+                        results.push(self.is_inside(neighbor, history));
+                    }
+                }
+                let mut sum: i32 = 0;
+                let total = results.len() as i32;
+                for result in results {
+                    sum += result as i32;
+                }
+                return sum == total;
+            }
+            TileType::Planks | TileType::Seal => {
+                true
+            }
+            TileType::Grass => {
+                false
+            }
+            _ => {
+                false
+            }
+        }
+    }
+
+    pub fn neighbors(&self, pos: (usize, usize)) -> Vec<(usize, usize)> {
+        let mut vec = Vec::new();
+        if pos.0 > 0 {
+            vec.push((pos.0-1, pos.1));
+        }
+        if pos.1 > 0 {
+            vec.push((pos.0,pos.1-1));
+        }
+        if pos.0 < self.data.len()-1 {
+            vec.push((pos.0+1,pos.1));
+        }
+        if pos.1 < self.data[0].len()-1 {
+            vec.push((pos.0,pos.1+1));
+        }
+        vec
     }
 }
 
