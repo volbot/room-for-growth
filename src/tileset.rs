@@ -13,13 +13,15 @@ pub struct TileSet {
 impl TileSet {
     pub async fn new() -> TileSet {
         let font_bytes = include_bytes!("../assets/fonts/JMH Cthulhumbus Arcade.otf");
+        let tex1 = load_texture("assets/ui/windows/button_bg.png").await.unwrap().get_texture_data();
+        let tex2 = load_texture("assets/ui/windows/garbage_button.png").await.unwrap().get_texture_data();
         let button_style_1 = root_ui().style_builder()
-            .background(load_texture("assets/ui/windows/button_bg.png").await.unwrap().get_texture_data())
+            .background(tex1)
             .background_margin(RectOffset::new(67., 67., 18., 18.))
             .font(font_bytes).unwrap()
             .build();
         let button_style_2 = root_ui().style_builder()
-            .background(load_texture("assets/ui/windows/garbage_button.png").await.unwrap().get_texture_data())
+            .background(tex2)
             .background_margin(RectOffset::new(40.,0.,40.,0.))
             .build();
         let skin1 = Skin {
