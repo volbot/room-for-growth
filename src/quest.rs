@@ -78,13 +78,13 @@ pub fn get_quests() -> Vec<Quest> {
     vec![
         Quest::new(QuestObjective::new(QuestType::Materials,Some(20),Some(0)), [
                 "Hey, welcome to the neighborhood!^^...is what I'd say if there was anything here.^^Bring me 20 Logs if you want to^^help change that!", "Ok",
-                "Bring me 20 Logs, by right-clicking^^some Brush, so I can show you how to build ^^stuff. I'll even let you keep 'em.", "Ok",
+                "Bring me 20 Logs, by right-clicking^^some Brush, so I can show you how to build ^^stuff. I'll even let you keep 'em.", "Nice",
                 "Nice job! Here's some Sealing Wax,^^which you'll need in a sec.", "Thanks"], 
                 Some(1), Some(Item::new(2,1))),
         Quest::new(QuestObjective::new(QuestType::Build,None,None), [
                 "Now that you've got some resources,^^could you build me a house? You can use^^that Wax on a doorway to protect it^^from the elements.", "Sure",
-                "I couldn't build if I wanted to,^^without access to the 'Q' and 'E' keys,^^so I really appreciate this. Hey, and^^remember to Wax the doorway!", "Sorry",
-                "Thank you! It's like I can^^finally think straight.", "Ok"], 
+                "I couldn't build if I wanted to,^^without access to the 'Q' and 'E' keys.^^Hey, and remember to Wax the doorway!", "Sorry",
+                "Thank you! It's like I can^^finally think straight.", "Great"], 
                 None, None),
     ]
 }
