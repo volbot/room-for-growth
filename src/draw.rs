@@ -96,13 +96,11 @@ pub fn draw_inventory(game: &mut Game, tileset: &TileSet) {
                 quantity.push_str(&item.quant.to_string());
                 if inventory.sel.is_some() && inventory.sel.unwrap() == (j, i) {
                     draw_texture(tileset.windows.get(3).unwrap().unwrap(), corner.0-3., corner.1-3., WHITE);
-                    root_ui().pop_skin();
                     root_ui().push_skin(&tileset.skins[1].clone());
                     if root_ui().button(Vec2::new(395., 220.), "") {
                         inventory.pop(inventory.data[j][i].unwrap());
                     }
                     root_ui().pop_skin();
-                    root_ui().push_skin(&tileset.skins[0].clone());
                 }
                 draw_texture(tileset.items.get(item.id).unwrap().unwrap(), corner.0+3., corner.1+10.0, WHITE);
                 draw_text_ex(&tooltip, corner.0, corner.1+59.0, TextParams {
