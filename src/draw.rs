@@ -43,7 +43,7 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
                 continue
             }
             draw_texture(tileset.tiles[world.data[x][y].id].unwrap(),(x * 40) as f32 * camera.scale + camera.corner.0,
-                        (y * 40) as f32 * camera.scale + camera.corner.1,WHITE);
+            (y * 40) as f32 * camera.scale + camera.corner.1,WHITE);
             y += 1;
         }
         y = 0;
@@ -76,7 +76,7 @@ pub fn draw_popup(interact: &Interaction, game: &mut Game, tileset: &TileSet) {
 }
 
 pub fn draw_inventory(game: &mut Game, tileset: &TileSet) {
-    let inventory = game.player.inventory;
+    let inventory = &mut game.player.inventory;
     draw_texture(tileset.windows[2].unwrap(), 150.0, 200.0, WHITE);
     draw_text_ex("Inventory", 185.0, 255.0, TextParams {
         font_size: 30,
@@ -94,6 +94,16 @@ pub fn draw_inventory(game: &mut Game, tileset: &TileSet) {
                 let tooltip: String = item.name().to_string();
                 let mut quantity: String = " x".to_string();
                 quantity.push_str(&item.quant.to_string());
+                if inventory.sel.is_some() && inventory.sel.unwrap() == (j, i) {
+                    draw_texture(tileset.windows.get(3).unwrap().unwrap(), corner.0-3., corner.1-3., WHITE);
+                    root_ui().pop_skin();
+                    root_ui().push_skin(&tileset.skins[1].clone());
+                    if root_ui().button(Vec2::new(395., 220.), "") {
+                        inventory.pop(inventory.data[j][i].unwrap());
+                    }
+                    root_ui().pop_skin();
+                    root_ui().push_skin(&tileset.skins[0].clone());
+                }
                 draw_texture(tileset.items.get(item.id).unwrap().unwrap(), corner.0+3., corner.1+10.0, WHITE);
                 draw_text_ex(&tooltip, corner.0, corner.1+59.0, TextParams {
                     font_size: 10,
@@ -113,8 +123,20 @@ pub fn draw_inventory(game: &mut Game, tileset: &TileSet) {
         j = 0;
         i += 1;
     }
-    if root_ui().button(Vec2::new(445.0, 215.0), "Done") {
+    if root_ui().button(Vec2::new(460.0, 215.0), "Done") {
+        inventory.sel = None;
         game.window_active = None;
+    }
+    if is_mouse_button_pressed(MouseButton::Left) {
+        let mouse = mouse_position();
+        if mouse.0 > 168.0 && mouse.0 < 636.0 && mouse.1 > 285.0 && mouse.1 < 585.0 {
+            let x = (mouse.0 as usize - 168) / 52;
+            let y = (mouse.1 as usize - 285) / 75;
+            let dat = inventory.data[y][x];
+            if dat.is_some() {
+                inventory.sel = Some((y, x));
+            }
+        }
     }
 }
 

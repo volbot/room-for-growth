@@ -38,20 +38,8 @@ pub struct Game {
 #[macroquad::main("Bungo")]
 async fn main() {
     srand(macroquad::miniquad::date::now() as u64);
-    //load font as bytes for buttons
-    let font_bytes = include_bytes!("../assets/fonts/JMH Cthulhumbus Arcade.otf");
     //generate the tileset from the assets folder
     let tileset = TileSet::new().await;
-    //create a button style for menus
-    let button_style = root_ui().style_builder()
-        .background(tileset.windows[0].unwrap().get_texture_data())
-        .background_margin(RectOffset::new(67., 67., 18., 18.))
-        .font(font_bytes).unwrap()
-        .build();
-    let skin = Skin {
-        button_style,
-        ..root_ui().default_skin()
-    };
     let mut w = World::new();
     let p = Player::new((50, 50), &mut w);
     let mut game = Game {
@@ -60,7 +48,7 @@ async fn main() {
         camera: Camera::new((800,800),tiles_to_screen((40,40))),
         window_active: None
     };
-    root_ui().push_skin(&skin);
+    root_ui().push_skin(&tileset.skins[0]);
     //TEMP---------------
     let mut npc = Person::new((55,55), 1);
     npc.target = Some((34,34));

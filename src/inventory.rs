@@ -3,7 +3,7 @@ use crate::item::Item;
 #[derive(Clone,Copy,Debug)]
 pub struct Inventory {
     pub data: [[Option<Item>; 9]; 4],
-    pub sel: None,
+    pub sel: Option<(usize,  usize)>,
 }
 
 impl Inventory {
@@ -54,7 +54,11 @@ impl Inventory {
                     if curr_item.id == item.id {
                         if curr_item.quant >= work_item.quant {
                             curr_item.quant -= work_item.quant;
-                            self.data[i][j] = Some(curr_item);
+                            if curr_item.quant > 0 {
+                                self.data[i][j] = Some(curr_item);
+                            } else {
+                                self.data[i][j] = None;
+                            }
                             return
                         } else {
                             work_item.quant -= curr_item.quant;
