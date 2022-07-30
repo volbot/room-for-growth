@@ -27,6 +27,7 @@ pub mod inventory;
 pub mod item;
 pub mod buildmenu;
 pub mod tileset;
+pub mod seals;
 
 pub struct Game {
     pub world: World,
@@ -50,8 +51,7 @@ async fn main() {
     };
     root_ui().push_skin(&tileset.skins[0]);
     //TEMP---------------
-    let mut npc = Person::new((55,55), 1);
-    npc.target = Some((34,34));
+    let mut npc = Person::new((55,55), 1, &mut game.world);
     npc.set_quest(&game.world.quest_list.get(0).unwrap());
     game.world.people.push(npc);
     //END TEMP-----------

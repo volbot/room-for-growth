@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 use macroquad::rand::gen_range;
 
-use crate::{tile::{Tile, TileType}, person::Person, quest::{get_quests, Quest}};
+use crate::{tile::{Tile, TileType}, person::Person, quest::{get_quests, Quest}, seals::Seal};
 
 use noise::{Fbm, NoiseFn, Seedable};
 
@@ -9,6 +9,7 @@ use noise::{Fbm, NoiseFn, Seedable};
 pub struct World {
     pub data: [[Tile; 100]; 100],
     pub people: Vec<Person>,
+    pub seals: Vec<Seal>,
     pub quest_list: Vec<Quest>,
     noise: Fbm,
 }
@@ -19,6 +20,7 @@ impl World {
         let mut world = World {
             data: [[grass_template.clone(); 100]; 100],
             people: Vec::new(),
+            seals: Vec::new(),
             quest_list: get_quests(),
             noise: Fbm::new(),
         };
@@ -52,40 +54,6 @@ impl World {
                 y += 1;
             }
             y = 0;
-            x += 1;
-        }
-
-        x = 30;
-        y = 30;
-        while x < 38 {
-            while y < 37 {
-                if x == 37 || x == 30 || y == 36 || y == 30 {
-                    if gen_range(0,3)<2 {
-                        world.data[x][y].id = TileType::Planks.id();
-                    } else {
-                        world.data[x][y].id = TileType::Grass.id();
-                    }
-                } else {
-                    world.data[x][y].id = TileType::Boards.id();
-                }
-                if x == 34 && y == 36 {
-                    world.data[x][y].id = TileType::Seal.id();
-                }
-                y += 1;
-            }
-            y = 30;
-            x += 1;
-        }
-        x = 29;
-        y = 29;
-        while x < 39 {
-            while y < 38 {
-                if x == 38 || y == 37 || x == 29 || y == 29 {
-                    world.data[x][y].id = TileType::Grass.id();
-                }
-                y += 1;
-            }
-            y = 29;
             x += 1;
         }
         world

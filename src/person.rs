@@ -23,7 +23,13 @@ pub struct Person {
 }
 
 impl Person {
-    pub fn new(pos: (usize, usize), tex_id: usize) -> Person {
+    pub fn new(pos: (usize, usize), tex_id: usize, world: &mut World) -> Person {
+        for n1 in world.neighbors(pos) {
+            for n2 in  world.neighbors(n1) {
+                world.data[n2.0][n2.1].id = TileType::Grass.id();
+            }
+        }
+
         Person {
             target: None,
             entity: Entity::new(pos, tex_id),
@@ -57,6 +63,19 @@ impl Person {
                 }
                 match self.quest.unwrap().objec.tipo {
                     QuestType::Build => {
+                        if self.target.is_none() {
+                        for seal in &mut world.seals.clone() {
+                            if seal.owner.is_some() {
+                                continue
+                            }
+                            for n in world.neighbors(seal.pos) {
+                                if world.is_inside(n, &mut Vec::new()) && world.data[n.0][n.1].is_walkable() {
+                                    self.target = Some(n);
+                                    seal.owner=Some(*self);
+                                }
+                            }
+                        }
+                        }
                         if world.is_inside(self.entity.pos, &mut Vec::new()) {
                             self.advance_quest();
                         }

@@ -54,22 +54,16 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
 pub fn draw_popup(interact: &Interaction, game: &mut Game, tileset: &TileSet) {
     draw_texture(tileset.windows[1].unwrap(), 150.0, 600.0, WHITE);
     let split = interact.text.split("^^");
-    let mut vec = Vec::new();
+    let mut i = 640.;
     for s in split {
-        vec.push(s);
+        draw_text_ex(s, 190., i, TextParams {
+            font_size: 20,
+            font: tileset.font,
+            color: BLACK,
+            ..Default::default()
+        });
+        i+=20.
     }
-    draw_text_ex(vec.get(0).unwrap(), 190.0, 640.0, TextParams {
-        font_size: 20,
-        font: tileset.font,
-        color: BLACK,
-        ..Default::default()
-    });
-    draw_text_ex(vec.get(1).unwrap(), 190.0, 663.0, TextParams {
-        font_size: 20,
-        font: tileset.font,
-        color: BLACK,
-        ..Default::default()
-    });
     if root_ui().button(Vec2::new(445.0, 690.0), interact.text_button) {
         game.window_active = None;
     }

@@ -1,6 +1,7 @@
 use crate::interact::{Interaction, InteractType};
 use crate::inventory::Inventory;
 use crate::person::{Person, CanWalk};
+use crate::seals::Seal;
 use crate::tile::{TileType, Tile};
 use crate::world::{screen_to_tiles, World};
 use crate::camera::Camera;
@@ -16,20 +17,8 @@ pub struct Player {
 
 impl Player {
     pub fn new(pos: (usize, usize), world: &mut World) -> Player {
-        let mut x: isize = pos.0 as isize-1;
-        let mut y: isize = pos.1 as isize-1;
-        while x <= pos.0 as isize+1 {
-            while y <= pos.1 as isize+1 {
-                if x >= 0 && y >= 0 && x < world.data.len() as isize && y < world.data[0].len() as isize {
-                    world.data[x as usize][y as usize].id = TileType::Grass.id();
-                }
-                y += 1;
-            }
-            y = pos.1 as isize -1;
-            x += 1;
-        }
         Player {
-            person: Person::new(pos, 0),
+            person: Person::new(pos, 0, world),
             target_id: None,
             mode: PlayerMode::Talk,
             inventory: Inventory::new(),
@@ -57,6 +46,10 @@ impl Player {
                                 person.advance_quest();
                             }
                             InteractType::Complete => {
+                                let item = person.quest.unwrap().reward;
+                                if item.is_some(){
+                                    self.inventory.push(item.unwrap());
+                                }
                                 let next = person.interact.unwrap().data;
                                 if next.is_some() {
                                     person.set_quest(world.quest_list.get(next.unwrap() as usize).unwrap());
@@ -97,6 +90,9 @@ impl Player {
                         if self.inventory.item_count(tile.resources().id) >= tile.resources().quant as isize{
                             self.inventory.pop(tile.resources());
                             world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].id = self.target_id.unwrap();
+                            if self.target_id.unwrap() == TileType::Seal.id() {
+                                world.seals.push(Seal::new((self.person.target.unwrap().0,self.person.target.unwrap().1)));
+                            }
                         } else {
                             self.target_id = None;
                         }
