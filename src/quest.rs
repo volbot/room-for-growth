@@ -42,6 +42,13 @@ impl Quest {
                     false
                 }
             }
+            QuestType::House => {
+                if self.status == 2 {
+                    true
+                } else {
+                    false
+                }
+            }
             QuestType::Build => {
                 if self.status == 2 {
                     true
@@ -71,6 +78,7 @@ impl QuestObjective {
 #[derive(Clone,Copy,Debug)]
 pub enum QuestType {
     Materials,
+    House,
     Build,
 }
 
@@ -81,10 +89,15 @@ pub fn get_quests() -> Vec<Quest> {
                 "Bring me 20 Logs, by right-clicking^^some Brush, so I can show you how to build ^^stuff. I'll even let you keep 'em.", "Nice",
                 "Nice job! Here's some Sealing Wax,^^which you'll need in a sec.", "Thanks"], 
                 Some(1), Some(Item::new(2,1))),
-        Quest::new(QuestObjective::new(QuestType::Build,None,None), [
+        Quest::new(QuestObjective::new(QuestType::House,None,None), [
                 "Now that you've got some resources,^^could you build me a house? You can use^^that Wax on a doorway to protect it^^from the elements.", "Sure",
                 "I couldn't build if I wanted to,^^without access to the 'Q' and 'E' keys.^^Hey, and remember to Wax the doorway!", "Sorry",
                 "Thank you! It's like I can^^finally think straight.", "Great"], 
+                Some(2), None),
+        Quest::new(QuestObjective::new(QuestType::Build,Some(1),Some(7)), [
+                "I won't always be here to give you^^free materials. Paid materials, however,^^I could manage, if you set up a^^Register in my place!", "Ok",
+                "Just place down a Register in my^^house, and I'll be able to start selling^^essentials from there.","Ok",
+                "Awesome! Interact with the^^Register to see what I'm offering!","Cool"],
                 None, None),
     ]
 }

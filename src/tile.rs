@@ -22,6 +22,7 @@ impl Tile {
             4 => {TileType::Boards}
             5 => {TileType::Brush}
             6 => {TileType::Seal}
+            7 => {TileType::Register}
             _ => {TileType::Grass}
         }
     }
@@ -29,6 +30,12 @@ impl Tile {
         match self.id {
             0 => {
                 Item::new(1,4)
+            }
+            7 => {
+                Item::new(0,10)
+            }
+            6 => {
+                Item::new(2,1)
             }
             5 => {
                 Item::new(0,5)
@@ -46,7 +53,7 @@ impl Tile {
     }
     pub fn is_mineable(&self) -> bool {
         match self.id {
-            0 | 3 | 4 | 5 => {
+            0 | 3 | 4 | 5 | 7 => {
                 true
             }
             _ => {
@@ -63,6 +70,7 @@ impl Tile {
             4 => {"Boards"}
             5 => {"Brush"}
             6 => {"Seal"}
+            7 => {"Register"}
             _ => {"None"}
         }
     }
@@ -83,6 +91,7 @@ pub enum TileType {
     Boards,
     Brush,
     Seal,
+    Register,
 }
 
 impl TileType {
@@ -95,6 +104,7 @@ impl TileType {
             TileType::Boards => {4}
             TileType::Brush => {5}
             TileType::Seal => {6}
+            TileType::Register => {7}
         }
     }
 }

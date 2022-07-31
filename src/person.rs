@@ -63,7 +63,7 @@ impl Person {
                     self.advance_quest();
                 }
                 match self.quest.unwrap().objec.tipo {
-                    QuestType::Build => {
+                    QuestType::House => {
                         if self.target.is_none() {
                         for seal in &mut world.seals.clone() {
                             if seal.owner.is_some() {
