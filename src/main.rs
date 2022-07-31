@@ -65,7 +65,7 @@ async fn main() {
                                                                     //    returns an interaction
             Err(_s) => {}
         }
-        if game.window_active.is_some() {   //if game window exists,
+        if game.window_active.is_some() {                       //if game window exists,
             if game.window_active.unwrap().text == "**Inventory" { //check data for special cases
                 draw_inventory(&mut game, &tileset);                        //draw inventory
             } else if game.window_active.unwrap().text == "**Building" {

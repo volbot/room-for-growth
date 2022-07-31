@@ -24,6 +24,7 @@ pub struct Person {
 
 impl Person {
     pub fn new(pos: (usize, usize), tex_id: usize, world: &mut World) -> Person {
+        //clear land at person's position
         for n1 in world.neighbors(pos) {
             for n2 in  world.neighbors(n1) {
                 world.data[n2.0][n2.1].id = TileType::Grass.id();
