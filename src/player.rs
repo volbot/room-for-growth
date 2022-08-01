@@ -73,11 +73,7 @@ impl Player {
                         self.person.last_act = time;
                         let target = self.person.target.unwrap().clone();
                         self.inventory.push(world.data[target.0][target.1].resources());
-                        world.data[target.0][target.1].id = if world.data[target.0][target.1].id == TileType::Grass.id() {
-                            TileType::Water.id()
-                        } else {
-                            TileType::Grass.id()
-                        };
+                        world.data[target.0][target.1].id = world.data[target.0][target.1].under_id();
                         self.person.target = None;
                     }
                 } else {
@@ -150,10 +146,7 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
                 if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
                     return
                 }
-                if player.target_id.is_some() && world.data[x as usize][y as usize].id == match player.target_id.unwrap() {
-                    0 => {TileType::Water.id()}
-                    _ => {TileType::Grass.id()}
-                }{
+                if player.target_id.is_some() && world.data[x as usize][y as usize].id == Tile::new(player.target_id.unwrap()).under_id() {
                     player.person.target = Some((x as usize, y as usize));
                 } else {
                     player.mode = PlayerMode::Talk;
