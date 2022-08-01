@@ -49,7 +49,7 @@ impl Quest {
                     false
                 }
             }
-            QuestType::Build => {
+            QuestType::Assign => {
                 if self.status == 2 {
                     true
                 } else {
@@ -79,7 +79,7 @@ impl QuestObjective {
 pub enum QuestType {
     Materials,
     House,
-    Build,
+    Assign,
 }
 
 pub fn get_quests() -> Vec<Quest> {
@@ -94,7 +94,7 @@ pub fn get_quests() -> Vec<Quest> {
                 "I couldn't build if I wanted to,^^without access to the 'Q' and 'E' keys.^^Hey, and remember to Wax the doorway!", "Sorry",
                 "Thank you! It's like I can^^finally think straight.", "Great"], 
                 Some(2), None),
-        Quest::new(QuestObjective::new(QuestType::Build,Some(1),Some(7)), [
+        Quest::new(QuestObjective::new(QuestType::Assign,None,None), [
                 "I won't always be here to give you^^free materials. Paid materials, however,^^I could manage, if you set up a^^Register in my place!", "Ok",
                 "Just place down a Register in my^^house, and I'll be able to start selling^^essentials from there.","Ok",
                 "Awesome! Interact with the^^Register to see what I'm offering!","Cool"],

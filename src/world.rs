@@ -1,7 +1,8 @@
 use macroquad::prelude::*;
 use macroquad::rand::gen_range;
+use pathfinding::prelude::astar;
 
-use crate::{tile::{Tile, TileType}, person::Person, quest::{get_quests, Quest}, seals::Seal};
+use crate::{tile::{Tile, TileType}, person::Person, quest::{get_quests, Quest}, seals::Seal, pathing::{successors_inside, heuristic}};
 
 use noise::{Fbm, NoiseFn, Seedable};
 
@@ -105,6 +106,43 @@ impl World {
             vec.push((pos.0,pos.1+1));
         }
         vec
+    }
+
+    pub fn get_seal(&self, pos: (usize, usize)) -> Option<&Seal> {
+        let pos_i = (pos.0 as i32, pos.1 as i32);
+        for seal in &self.seals {
+            let goal = (seal.pos.0 as i32, seal.pos.1 as i32);
+            let result = astar( &(pos_i),
+                |&(x,y)| successors_inside((x,y), self)
+                .into_iter().map(|p| (p, 1)),
+                |&(x, y)| heuristic((x,y), goal, self),
+                |&p| p == goal);
+           if result.is_none() {
+               continue
+           } else {
+               return Some(&seal)
+           }
+        }
+        return None
+    }
+
+    pub fn get_seal_mut(&mut self, pos: (usize, usize)) -> Option<&mut Seal> {
+        let pos_i = (pos.0 as i32, pos.1 as i32);
+        let im_clone = &self.clone();
+        for seal in &mut self.seals {
+            let goal = (seal.pos.0 as i32, seal.pos.1 as i32);
+            let result = astar( &(pos_i),
+                |&(x,y)| successors_inside((x,y), im_clone)
+                .into_iter().map(|p| (p, 1)),
+                |&(x, y)| heuristic((x,y), goal, im_clone),
+                |&p| p == goal);
+           if result.is_none() {
+               continue
+           } else {
+               return Some(seal)
+           }
+        }
+        return None
     }
 }
 

@@ -2,6 +2,7 @@ use crate::interact::{Interaction, InteractType};
 use crate::inventory::Inventory;
 use crate::person::{Person, CanWalk};
 use crate::seals::Seal;
+use crate::shop::Register;
 use crate::tile::{TileType, Tile};
 use crate::world::{screen_to_tiles, World};
 use crate::camera::Camera;
@@ -89,9 +90,19 @@ impl Player {
                         let tile = Tile::new(self.target_id.unwrap());
                         if self.inventory.item_count(tile.resources().id) >= tile.resources().quant as isize{
                             self.inventory.pop(tile.resources());
-                            world.data[self.person.target.unwrap().0][self.person.target.unwrap().1].id = self.target_id.unwrap();
-                            if self.target_id.unwrap() == TileType::Seal.id() {
-                                world.seals.push(Seal::new((self.person.target.unwrap().0,self.person.target.unwrap().1)));
+                            let target = self.person.target.unwrap();
+                            world.data[target.0][target.1].id = tile.id;
+                            match tile.tipo() {
+                                TileType::Seal => {
+                                    world.seals.push(Seal::new((target.0,target.1)));
+                                }
+                                TileType::Register => {
+                                    let seal = world.get_seal_mut(target);
+                                    if seal.is_some() {
+                                        seal.unwrap().register = Some(Register::new(target, 0));
+                                    }
+                                }
+                                _ => {}
                             }
                         } else {
                             self.target_id = None;

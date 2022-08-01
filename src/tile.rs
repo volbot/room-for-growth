@@ -53,7 +53,7 @@ impl Tile {
     }
     pub fn is_mineable(&self) -> bool {
         match self.id {
-            0 | 3 | 4 | 5 | 7 => {
+            0 | 3 | 4 | 5 | 6 | 7 => {
                 true
             }
             _ => {
@@ -78,6 +78,13 @@ impl Tile {
         match self.id {
             0 | 4 | 5 | 6 => {true},
             _ => {false}
+        }
+    }
+    pub fn under_id(&self) -> usize {
+        match self.id {
+            0 => {TileType::Water.id()}
+            6 | 7 => {TileType::Boards.id()}
+            _ => {TileType::Grass.id()}
         }
     }
 }

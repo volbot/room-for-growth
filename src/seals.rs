@@ -1,9 +1,10 @@
-use crate::person::Person;
+use crate::{person::Person, shop::Register};
 
 #[derive(Clone,Copy,Debug)]
 pub struct Seal {
     pub pos: (usize, usize),
     pub owner: Option<Person>,
+    pub register: Option<Register>,
 }
 
 impl Seal {
@@ -11,6 +12,7 @@ impl Seal {
         Seal {
             pos,
             owner: None,
+            register: None,
         }
     }
 }

@@ -28,6 +28,7 @@ pub mod buildmenu;
 pub mod tileset;
 pub mod seals;
 pub mod storyhooks;
+pub mod shop;
 
 pub struct Game {
     pub world: World,
