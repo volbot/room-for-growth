@@ -12,7 +12,7 @@ pub trait CanWalk {
     fn walk(&mut self, world: &World);
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub struct Person {
     pub target: Option<(usize, usize)>,
     pub entity: Entity,
@@ -42,12 +42,12 @@ impl Person {
     }
 
     pub fn set_quest(&mut self, quest: &Quest) {
-        self.quest = Some(*quest);
+        self.quest = Some(quest.clone());
         self.interact = Some(quest.msgs[0]);
     }
 
     pub fn advance_quest(&mut self) {
-        let mut quest = self.quest.unwrap();
+        let mut quest = self.quest.clone().unwrap();
         quest.status += 1;
         self.interact = Some(quest.msgs[quest.status]);
         self.quest = Some(quest);
@@ -59,10 +59,10 @@ impl Person {
         }
         match self.interact.unwrap().tipo {
             InteractType::Waiting => {
-                if self.quest.unwrap().is_completable(player) {
+                if self.quest.clone().unwrap().is_completable(player) {
                     self.advance_quest();
                 }
-                match self.quest.unwrap().objec.tipo {
+                match self.quest.clone().unwrap().objec.tipo {
                     QuestType::House => {
                         if self.target.is_none() {
                         for seal in &mut world.seals.clone() {
@@ -72,7 +72,7 @@ impl Person {
                             for n in world.neighbors(seal.pos) {
                                 if world.is_inside(n, &mut Vec::new()) && world.data[n.0][n.1].is_walkable() {
                                     self.target = Some(n);
-                                    seal.owner=Some(*self);
+                                    seal.owner=Some(self.clone());
                                 }
                             }
                         }

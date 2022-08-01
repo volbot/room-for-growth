@@ -29,6 +29,8 @@ pub mod tileset;
 pub mod seals;
 pub mod storyhooks;
 pub mod shop;
+pub mod reward;
+pub mod recipe;
 
 pub struct Game {
     pub world: World,
@@ -70,7 +72,7 @@ async fn main() {
             if game.window_active.unwrap().text == "**Inventory" { //check data for special cases
                 draw_inventory(&mut game, &tileset);                        //draw inventory
             } else if game.window_active.unwrap().text == "**Building" {
-                draw_build_menu(&BuildMenu::new(&game.player.inventory), &mut game, &tileset); //draw 
+                draw_build_menu(&BuildMenu::new(&game.player), &mut game, &tileset); //draw 
                                                                                                //   buildmenu
             } else {
                 draw_popup(&game.window_active.unwrap(), &mut game, &tileset); //if no special

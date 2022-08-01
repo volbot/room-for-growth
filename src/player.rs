@@ -1,6 +1,8 @@
 use crate::interact::{Interaction, InteractType};
 use crate::inventory::Inventory;
 use crate::person::{Person, CanWalk};
+use crate::recipe::TileRecipe;
+use crate::reward::Reward;
 use crate::seals::Seal;
 use crate::shop::Register;
 use crate::tile::{TileType, Tile};
@@ -14,6 +16,7 @@ pub struct Player {
     pub target_id: Option<usize>,
     pub mode: PlayerMode,
     pub inventory: Inventory,
+    pub tilerecipes: Vec<TileRecipe>,
 }
 
 impl Player {
@@ -23,6 +26,7 @@ impl Player {
             target_id: None,
             mode: PlayerMode::Talk,
             inventory: Inventory::new(),
+            tilerecipes: vec![TileRecipe::new(TileType::Grass.id())],
         }
     }
 
@@ -47,9 +51,9 @@ impl Player {
                                 person.advance_quest();
                             }
                             InteractType::Complete => {
-                                let item = person.quest.unwrap().reward;
-                                if item.is_some(){
-                                    self.inventory.push(item.unwrap());
+                                let reward = &person.quest.clone().unwrap().reward;
+                                if reward.is_some(){
+                                    self.accept_reward(&reward.clone().unwrap());
                                 }
                                 let next = person.interact.unwrap().data;
                                 if next.is_some() {
@@ -111,6 +115,15 @@ impl Player {
             }
         }
         return Err("no target interactable");
+    }
+
+    pub fn accept_reward(&mut self, reward: &Reward) {
+        for item in &reward.items {
+            self.inventory.push(*item);
+        }
+        for recipe in &reward.tilerecipes {
+            self.tilerecipes.push(*recipe);
+        }
     }
 }
 

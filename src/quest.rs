@@ -1,17 +1,20 @@
 use crate::interact::{Interaction, InteractType};
 use crate::item::Item;
 use crate::player::Player;
+use crate::recipe::TileRecipe;
+use crate::reward::Reward;
+use crate::tile::TileType;
 
-#[derive(Clone,Copy,Debug)]
+#[derive(Clone,Debug)]
 pub struct Quest {
     pub objec: QuestObjective,
     pub msgs: [Interaction; 3],
     pub status: usize,
-    pub reward: Option<Item>,
+    pub reward: Option<Reward>,
 }
 
 impl Quest {
-    pub fn new(objec: QuestObjective, strs: [&'static str; 6], next: Option<i32>, reward: Option<Item>) -> Quest {
+    pub fn new(objec: QuestObjective, strs: [&'static str; 6], next: Option<i32>, reward: Option<Reward>) -> Quest {
         Quest {
             objec,
             msgs: [
@@ -88,12 +91,12 @@ pub fn get_quests() -> Vec<Quest> {
                 "Hey, welcome to the neighborhood!^^...is what I'd say if there was anything here.^^Bring me 20 Logs if you want to^^help change that!", "Ok",
                 "Bring me 20 Logs, by right-clicking^^some Brush, so I can show you how to build ^^stuff. I'll even let you keep 'em.", "Nice",
                 "Nice job! Here's some Sealing Wax,^^which you'll need in a sec.", "Thanks"], 
-                Some(1), Some(Item::new(2,1))),
+                Some(1), Some(Reward::new(vec![Item::new(2,1)],vec![TileRecipe::new(TileType::Planks.id()),TileRecipe::new(TileType::Boards.id()),TileRecipe::new(TileType::Seal.id())]))),
         Quest::new(QuestObjective::new(QuestType::House,None,None), [
                 "Now that you've got some resources,^^could you build me a house? You can use^^that Wax on a doorway to protect it^^from the elements.", "Sure",
                 "I couldn't build if I wanted to,^^without access to the 'Q' and 'E' keys.^^Hey, and remember to Wax the doorway!", "Sorry",
                 "Thank you! It's like I can^^finally think straight.", "Great"], 
-                Some(2), None),
+                Some(2), Some(Reward::new(Vec::new(),vec![TileRecipe::new(TileType::Register.id())]))),
         Quest::new(QuestObjective::new(QuestType::Assign,None,None), [
                 "I won't always be here to give you^^free materials. Paid materials, however,^^I could manage, if you set up a^^Register in my place!", "Ok",
                 "Just place down a Register in my^^house, and I'll be able to start selling^^essentials from there.","Ok",

@@ -1,6 +1,6 @@
 use crate::{person::Person, shop::Register};
 
-#[derive(Clone,Copy,Debug)]
+#[derive(Clone,Debug)]
 pub struct Seal {
     pub pos: (usize, usize),
     pub owner: Option<Person>,

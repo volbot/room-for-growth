@@ -1,4 +1,4 @@
-use crate::{inventory::Inventory, tile::{Tile, TileType}};
+use crate::{tile::Tile, player::Player};
 
 #[derive(Clone,Copy,Debug)]
 pub struct BuildMenu {
@@ -6,20 +6,26 @@ pub struct BuildMenu {
 }
 
 impl BuildMenu {
-    pub fn new(inv: &Inventory) -> BuildMenu {
+    pub fn new(player: &Player) -> BuildMenu {
+        let inv = player.inventory;
         let mut menu = BuildMenu {
             data: [[None; 9]; 4],
         };
-        let mut possible = (inv.item_count(0) as f32/4.).floor() as usize;
-        menu.data[0][0] = Some(BuildChoice::new(Tile::new(TileType::Planks.id()),possible as usize));
-        possible = (inv.item_count(0) as f32/3.).floor() as usize;
-        menu.data[0][1] = Some(BuildChoice::new(Tile::new(TileType::Boards.id()),possible as usize)); 
-        possible = (inv.item_count(1) as f32/4.).floor() as usize;
-        menu.data[0][2] = Some(BuildChoice::new(Tile::new(TileType::Grass.id()),possible as usize));
-        possible = (inv.item_count(2) as f32).floor() as usize;
-        menu.data[0][3] = Some(BuildChoice::new(Tile::new(TileType::Seal.id()),possible as usize));
-        possible = (inv.item_count(0) as f32/10.).floor() as usize;
-        menu.data[0][4] = Some(BuildChoice::new(Tile::new(TileType::Register.id()),possible as usize));
+        let mut i = 0;
+        let mut j = 0;
+        for recipe in &player.tilerecipes {
+            let tile = Tile::new(recipe.id);
+            let possible = (inv.item_count(tile.resources().id) as f32/tile.resources().quant as f32).floor() as usize;
+            menu.data[i][j] = Some(BuildChoice::new(Tile::new(tile.id),possible as usize));
+            j += 1;
+            if j == 9 {
+                j = 0;
+                i += 1;
+            }
+            if i == 4 {
+                return menu
+            }
+        }
         menu
     }
 }
