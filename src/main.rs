@@ -73,7 +73,6 @@ async fn main() {
             } else if game.window_active.unwrap().text == "**Shop" {
                 let seal = world_copy.get_seal(game.player.person.entity.pos); 
                 if seal.is_some() {
-                    println!("test");
                     draw_shop_menu(&seal.unwrap(), &mut game, &tileset);
                 }
             } else {
