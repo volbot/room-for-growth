@@ -2,6 +2,7 @@ use buildmenu::BuildMenu;
 use macroquad::prelude::*;
 use macroquad::ui::*;
 use macroquad::rand::srand;
+use player::think;
 
 use crate::storyhooks::start_main_story;
 use crate::world::{World, tiles_to_screen};
@@ -63,17 +64,18 @@ async fn main() {
             person.update_quest(&game.player, world_copy); //update their quest info
         }
         draw_person(&game.camera, &game.player.person, &tileset); //draw the player
-        match game.player.think(&mut game.world) {                  //do player data
-            Ok(interact) => { game.window_active = Some(interact) } //set active window if player
-                                                                    //    returns an interaction
-            Err(_s) => {}
-        }
+        think(&mut game);                  //do player data
         if game.window_active.is_some() {                       //if game window exists,
             if game.window_active.unwrap().text == "**Inventory" { //check data for special cases
                 draw_inventory(&mut game, &tileset);                        //draw inventory
             } else if game.window_active.unwrap().text == "**Building" {
-                draw_build_menu(&BuildMenu::new(&game.player), &mut game, &tileset); //draw 
-                                                                                               //   buildmenu
+                draw_build_menu(&BuildMenu::new(&game.player), &mut game, &tileset); //draw buildmenu
+            } else if game.window_active.unwrap().text == "**Shop" {
+                let seal = world_copy.get_seal(game.player.person.entity.pos); 
+                if seal.is_some() {
+                    println!("test");
+                    draw_shop_menu(&seal.unwrap(), &mut game, &tileset);
+                }
             } else {
                 draw_popup(&game.window_active.unwrap(), &mut game, &tileset); //if no special
                                                                                //   case, draw the
@@ -83,7 +85,7 @@ async fn main() {
             input_camera_movement(&mut game.camera);            //check camera movement
             input_player_target(&game.camera, &mut game.player, &game.world); //check player
                                                                               //   movement
-            game.window_active = input_player_keys(&mut game.player);       //check player keys
+            input_player_keys(&mut game);       //check player keys
         }
 
         next_frame().await //wait for next frame

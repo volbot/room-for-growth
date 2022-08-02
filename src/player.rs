@@ -1,5 +1,7 @@
+use crate::Game;
 use crate::interact::{Interaction, InteractType};
 use crate::inventory::Inventory;
+use crate::item::Item;
 use crate::person::{Person, CanWalk};
 use crate::recipe::TileRecipe;
 use crate::reward::Reward;
@@ -21,100 +23,15 @@ pub struct Player {
 
 impl Player {
     pub fn new(pos: (usize, usize), world: &mut World) -> Player {
-        Player {
+        let mut p = Player {
             person: Person::new(pos, 0, world),
             target_id: None,
             mode: PlayerMode::Talk,
             inventory: Inventory::new(),
             tilerecipes: vec![TileRecipe::new(TileType::Grass.id())],
-        }
-    }
-
-    pub fn think(&mut self, world: &mut World) -> Result<Interaction, &'static str> {
-        match self.mode {
-            PlayerMode::Talk => {
-                if self.target_id.is_none() {
-                    self.walk(world);
-                    return Err("no target interactable");
-                }
-                let person = &mut world.people.get_mut(self.target_id.unwrap()).unwrap();
-                let dist = self.person.entity.distance(&person.entity);
-                if dist <= 1 {
-                    let result = person.interact;
-                    self.target_id = None;
-                    self.person.target = None;
-                    if result.is_none() {
-                        return Err("person not interactable");
-                    } else {
-                        match result.unwrap().tipo { 
-                            InteractType::Quest => {
-                                person.advance_quest();
-                            }
-                            InteractType::Complete => {
-                                let reward = &person.quest.clone().unwrap().reward;
-                                if reward.is_some(){
-                                    self.accept_reward(&reward.clone().unwrap());
-                                }
-                                let next = person.interact.unwrap().data;
-                                if next.is_some() {
-                                    person.set_quest(world.quest_list.get(next.unwrap() as usize).unwrap());
-                                }
-                            }
-                            InteractType::Gift => {
-                                //give item
-                            }
-                            _ => {}
-                        }
-                        return Ok(result.unwrap());
-                    }
-                }
-                self.walk(world);
-            }
-            PlayerMode::Mine => {
-                if self.person.target.is_some() && self.person.entity.distance_pos(self.person.target.unwrap()) <= 1 {
-                    let time = get_time();
-                    if time >= self.person.last_act + 1.0 * self.person.speed {
-                        self.person.last_act = time;
-                        let target = self.person.target.unwrap().clone();
-                        self.inventory.push(world.data[target.0][target.1].resources());
-                        world.data[target.0][target.1].id = world.data[target.0][target.1].under_id();
-                        self.person.target = None;
-                    }
-                } else {
-                    self.walk(world);
-                }
-            }
-            PlayerMode::Build => {
-                if self.person.target.is_some() && self.person.entity.distance_pos(self.person.target.unwrap()) == 1 {
-                    if self.target_id.is_some() {
-                        let tile = Tile::new(self.target_id.unwrap());
-                        if self.inventory.item_count(tile.resources().id) >= tile.resources().quant as isize{
-                            self.inventory.pop(tile.resources());
-                            let target = self.person.target.unwrap();
-                            world.data[target.0][target.1].id = tile.id;
-                            match tile.tipo() {
-                                TileType::Seal => {
-                                    world.seals.push(Seal::new((target.0,target.1)));
-                                }
-                                TileType::Register => {
-                                    let seal = world.get_seal_mut(target);
-                                    if seal.is_some() {
-                                        seal.unwrap().register = Some(Register::new(target, 0));
-                                    }
-                                }
-                                _ => {}
-                            }
-                        } else {
-                            self.target_id = None;
-                        }
-                        self.person.target = None;
-                    }
-                } else {
-                    self.person.walk(world);
-                }
-            }
-        }
-        return Err("no target interactable");
+        };
+        p.inventory.push(Item::new(0,200));
+        p
     }
 
     pub fn accept_reward(&mut self, reward: &Reward) {
@@ -141,6 +58,102 @@ impl CanWalk for Player {
     }
 }
 
+pub fn think(game: &mut Game) {
+    match game.player.mode {
+        PlayerMode::Talk => {
+            if game.player.target_id.is_none() {
+                if game.player.person.target.is_none() {
+                    game.player.walk(&game.world);
+                } else {
+                    let tile = game.world.data[game.player.person.target.unwrap().0][game.player.person.target.unwrap().1];
+                    if tile.id == TileType::Register.id() {
+                        let dist = game.player.person.entity.distance_pos(game.player.person.target.unwrap());
+                        if dist <= 1 {
+                            game.player.target_id = None;
+                            game.player.person.target = None;
+                            game.window_active = Some(Interaction::new(InteractType::Complete, "**Shop", "", None));
+                        }
+                    }
+                }
+                game.player.walk(&game.world);
+                return
+            }
+            let person = &mut game.world.people.get_mut(game.player.target_id.unwrap()).unwrap();
+            let dist = game.player.person.entity.distance(&person.entity);
+            if dist <= 1 {
+                let result = person.interact;
+                game.player.target_id = None;
+                game.player.person.target = None;
+                if result.is_some() {
+                    match result.unwrap().tipo { 
+                        InteractType::Quest => {
+                            person.advance_quest();
+                        }
+                        InteractType::Complete => {
+                            let reward = &person.quest.clone().unwrap().reward;
+                            if reward.is_some(){
+                                game.player.accept_reward(&reward.clone().unwrap());
+                            }
+                            let next = person.interact.unwrap().data;
+                            if next.is_some() {
+                                person.set_quest(game.world.quest_list.get(next.unwrap() as usize).unwrap());
+                            }
+                        }
+                        InteractType::Gift => {
+                            //give item
+                        }
+                        _ => {}
+                    }
+                    game.window_active = result;
+                }
+            }
+            game.player.walk(&game.world);
+        }
+        PlayerMode::Mine => {
+            if game.player.person.target.is_some() && game.player.person.entity.distance_pos(game.player.person.target.unwrap()) <= 1 {
+                let time = get_time();
+                if time >= game.player.person.last_act + 1.0 * game.player.person.speed {
+                    game.player.person.last_act = time;
+                    let target = game.player.person.target.unwrap().clone();
+                    game.player.inventory.push(game.world.data[target.0][target.1].resources());
+                    game.world.data[target.0][target.1].id = game.world.data[target.0][target.1].under_id();
+                    game.player.person.target = None;
+                }
+            } else {
+                game.player.walk(&game.world);
+            }
+        }
+        PlayerMode::Build => {
+            if game.player.person.target.is_some() && game.player.person.entity.distance_pos(game.player.person.target.unwrap()) == 1 {
+                if game.player.target_id.is_some() {
+                    let tile = Tile::new(game.player.target_id.unwrap());
+                    if game.player.inventory.item_count(tile.resources().id) >= tile.resources().quant as isize{
+                        game.player.inventory.pop(tile.resources());
+                        let target = game.player.person.target.unwrap();
+                        game.world.data[target.0][target.1].id = tile.id;
+                        match tile.tipo() {
+                            TileType::Seal => {
+                                game.world.seals.push(Seal::new((target.0,target.1)));
+                            }
+                            TileType::Register => {
+                                let seal = game.world.get_seal_mut(target);
+                                if seal.is_some() {
+                                    seal.unwrap().register = Some(Register::new(target, 0));
+                                }
+                            }
+                            _ => {}
+                        }
+                    } else {
+                        game.player.target_id = None;
+                    }
+                    game.player.person.target = None;
+                }
+            } else {
+                game.player.person.walk(&game.world);
+            }
+        }
+    }
+}
 #[derive(Debug)]
 pub enum PlayerMode {
     Talk,
@@ -175,7 +188,8 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
                 if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
                     return
                 }
-                if world.data[x as usize][y as usize].is_walkable() {
+                let tile = world.data[x as usize][y as usize];
+                if tile.is_walkable() || tile.id == TileType::Register.id() {
                     player.person.target = Some((x as usize, y as usize));
                 } else {
                     player.person.target = None;
@@ -214,13 +228,12 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
     }
 }
 
-pub fn input_player_keys(player: &mut Player) -> Option<Interaction> {
+pub fn input_player_keys(game: &mut Game) {
     if is_key_pressed(KeyCode::E) {
-        return Some(Interaction::new(InteractType::Complete, "**Inventory", "", None));
+        game.window_active = Some(Interaction::new(InteractType::Complete, "**Inventory", "", None));
     }
     if is_key_pressed(KeyCode::Q) {
-        player.mode = PlayerMode::Build;
-        return Some(Interaction::new(InteractType::Complete, "**Building", "", None));
+        game.player.mode = PlayerMode::Build;
+        game.window_active = Some(Interaction::new(InteractType::Complete, "**Building", "", None));
     }
-    return None
 }

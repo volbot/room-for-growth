@@ -1,6 +1,7 @@
 use crate::Game;
 use crate::buildmenu::BuildMenu;
 use crate::interact::Interaction;
+use crate::seals::Seal;
 use crate::{person::Person, world::World, camera::Camera, entity::Entity};
 use crate::tileset::TileSet;
 use macroquad::prelude::*;
@@ -185,5 +186,15 @@ pub fn draw_build_menu(menu: &BuildMenu, game: &mut Game, tileset: &TileSet) {
                 game.window_active = None;
             }
         }
+    }
+}
+
+pub fn draw_shop_menu(seal: &Seal, game: &mut Game, tileset: &TileSet) {
+    draw_texture(tileset.windows[1].unwrap(), 150.0, 600.0, WHITE);
+
+    draw_texture(tileset.windows[5].unwrap(), 165.0, 615.0, GREEN);
+
+    if root_ui().button(Vec2::new(445.0, 690.0), "Done") {
+        game.window_active = None;
     }
 }
