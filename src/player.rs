@@ -1,7 +1,6 @@
 use crate::Game;
 use crate::interact::{Interaction, InteractType};
 use crate::inventory::Inventory;
-use crate::item::Item;
 use crate::person::{Person, CanWalk};
 use crate::recipe::TileRecipe;
 use crate::reward::Reward;
@@ -24,7 +23,7 @@ pub struct Player {
 
 impl Player {
     pub fn new(pos: (usize, usize), world: &mut World) -> Player {
-        let mut p = Player {
+        let p = Player {
             person: Person::new("Player", pos, 0, world),
             target_id: None,
             mode: PlayerMode::Talk,
@@ -32,7 +31,7 @@ impl Player {
             tilerecipes: vec![TileRecipe::new(TileType::Grass.id())],
             denars: 0,
         };
-        p.inventory.push(Item::new(0,200));
+        //p.inventory.push(Item::new(0,200));
         p
     }
 
