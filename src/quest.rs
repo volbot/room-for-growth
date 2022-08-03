@@ -100,7 +100,7 @@ pub fn get_quests() -> Vec<Quest> {
         Quest::new(QuestObjective::new(QuestType::Assign,None,None), [
                 "I won't always be here to give you^^free materials. Paid materials, however,^^I could manage, if you set up a^^Register in my place!", "Ok",
                 "Just place down a Register in my^^house, and I'll be able to start selling^^essentials from there.","Ok",
-                "Awesome! Interact with the^^Register to see what I'm offering!","Cool"],
+                "Awesome! For being such a pal,^^I'll buy Logs and Dirt off you from now^^on.","Cool"],
                 None, None),
     ]
 }

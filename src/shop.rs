@@ -48,7 +48,7 @@ impl ShopType {
             ShopType::Basic => {[
                 ShopItem::new(Item::new(ItemType::Wax.id(),1),10),
                 ShopItem::new(Item::new(ItemType::Dirt.id(),25),-4),
-                ShopItem::new(Item::new(ItemType::Log.id(),10),-4),
+                ShopItem::new(Item::new(ItemType::Log.id(),20),-5),
             ]}
         }
     }
