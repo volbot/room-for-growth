@@ -55,35 +55,32 @@ impl Person {
     pub fn think(&mut self, world: &World) {
         let time = get_time();
         let seal = world.get_seal(self.entity.pos);
+        if self.target.is_some() {
+            return
+        }
         if seal.is_some() {
             let owner = seal.unwrap().owner.clone();
             if owner.is_some() && owner.unwrap().entity.name == self.entity.name {
                 if seal.unwrap().register.is_some() {
-                    let register = seal.unwrap().register.unwrap();
-                    let xdist = register.pos.0 as i32 - seal.unwrap().pos.0 as i32;
-                    let ydist = register.pos.1 as i32 - seal.unwrap().pos.1 as i32;
-                    if xdist.abs() > ydist.abs() {
-                        self.target = Some((if xdist > 0 {
-                            register.pos.0 + 1
-                        } else {
-                            register.pos.0 - 1
-                        }, register.pos.1))
-                    } else {
-                        self.target = Some((register.pos.0, if ydist > 0 {
-                            register.pos.1 + 1
-                        } else {
-                            register.pos.1 - 1
-                        }))
+                    let mp = seal.unwrap().merchant_pos();
+                    if self.entity.pos != mp.unwrap() {
+                        self.target = seal.unwrap().merchant_pos();
                     }
+                    return
                 }
             }
         }
-        if self.quest.is_some() {
+        if self.quest.is_some() && !world.is_inside(self.entity.pos, &mut Vec::new()) {
             return
         }
         if time >= self.last_act + 5. && rand::gen_range(0, (time - self.last_act) as i32) < (time - self.last_act - 5.) as i32 {
             let (mut x, mut y) = (self.entity.pos.0 as i32 + rand::gen_range(-3,3), self.entity.pos.1 as i32 + rand::gen_range(-3,3));
-            while !world.data[x as usize][y as usize].is_walkable() {
+            while !world.data[x as usize][y as usize].is_walkable() && 
+                if world.is_inside(self.entity.pos,&mut Vec::new()) {
+                    world.is_inside((x as usize, y as usize),&mut Vec::new())
+                } else {
+                    true
+            }{
                 (x,y) = (self.entity.pos.0 as i32 + rand::gen_range(-3,3), self.entity.pos.1 as i32 + rand::gen_range(-3,3));
             }
             self.last_act = time;
@@ -119,6 +116,17 @@ impl Person {
                             }
                             if world_copy.is_inside(person.entity.pos, &mut Vec::new()) {
                                 person.advance_quest();
+                            }
+                        }
+                        QuestType::Assign => {
+                            if person.target.is_none() {
+                                for seal in &mut game.world.seals {
+                                    if seal.owner.is_some() &&
+                                        seal.owner.clone().unwrap().entity.name == person.entity.name
+                                            && seal.register.is_some() && person.entity.pos == seal.merchant_pos().unwrap() {
+                                                person.advance_quest();
+                                            }
+                                }
                             }
                         }
                         _ => {}

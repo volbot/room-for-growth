@@ -82,6 +82,9 @@ impl Player {
                                 let next = person.interact.unwrap().data;
                                 if next.is_some() {
                                     person.set_quest(game.world.quest_list.get(next.unwrap() as usize).unwrap());
+                                } else {
+                                    person.quest = None;
+                                    person.interact = None;
                                 }
                             }
                             InteractType::Gift => {
@@ -172,6 +175,15 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
                 let (x, y) = screen_to_tiles(camera.project(mouse));
                 if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
                     return
+                }
+                let mut i = 0;
+                while i < world.people.len() {
+                    if world.people.get(i).unwrap().entity.pos == (x as usize,y as usize) {
+                        player.mode = PlayerMode::Talk;
+                        input_player_target(camera, player, world);
+                        return
+                    }
+                    i += 1;
                 }
                 if player.target_id.is_some() && world.data[x as usize][y as usize].id == Tile::new(player.target_id.unwrap()).under_id() {
                     player.person.target = Some((x as usize, y as usize));
