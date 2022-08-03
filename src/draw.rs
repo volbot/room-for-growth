@@ -2,6 +2,7 @@ use crate::Game;
 use crate::buildmenu::BuildMenu;
 use crate::interact::Interaction;
 use crate::seals::Seal;
+use crate::shop::ShopItem;
 use crate::{person::Person, world::World, camera::Camera, entity::Entity};
 use crate::tileset::TileSet;
 use macroquad::prelude::*;
@@ -207,98 +208,12 @@ pub fn draw_shop_menu(seal: &Seal, game: &mut Game, tileset: &TileSet) {
 
     let shopitems = seal.register.unwrap().tipo().shop_items();
     let mut purchasable = [false; 3];
-    let mut si_type = if shopitems[0].cost >= 0 {
-        "BUY"
-    } else {
-        "SELL"
-    };
-    let mut color = match si_type {
-        "BUY" => {if shopitems[0].cost > game.player.denars as i32 {RED} else {
-            purchasable[0] = true;
-            GREEN
-        }}
-        "SELL" => {if game.player.inventory.item_stack_count(shopitems[0].item) > 0 {
-            purchasable[0] = true;
-            GREEN} else {RED}}
-        _ => {WHITE}
-    };
-    draw_text_ex(si_type, 195.,624.,header);
-    draw_texture(tileset.windows[5].unwrap(), 165.0, 630.0, color);
-    draw_texture(tileset.items[shopitems[0].item.id].unwrap(), 175.0, 640.0, WHITE);
-    draw_text_ex(shopitems[0].item.name(), 230.0, 650.0, info);
-    let mut quant_str: String = "x".to_string();
-    quant_str.push_str(&shopitems[0].item.quant.to_string());
-    draw_text_ex(&quant_str, 280., 650., info);
-    let mut cost_str: String = "D$:      ".to_string();
-    let cost = if si_type == "BUY" {
-        shopitems[0].cost
-    } else {
-        -shopitems[0].cost
-    };
-    cost_str.push_str(&cost.to_string());
-    draw_text_ex(&cost_str, 230., 670., info); 
 
-    si_type = if shopitems[1].cost >= 0 {
-        "BUY"
-    } else {
-        "SELL"
-    };
-    color = match si_type {
-        "BUY" => {if shopitems[1].cost > game.player.denars as i32 {RED} else {
-            purchasable[1] = true;
-            GREEN
-        }}
-        "SELL" => {if game.player.inventory.item_stack_count(shopitems[1].item) > 0 {
-            purchasable[1] = true;
-            GREEN} else {RED}}
-        _ => {WHITE}
-    };
-    draw_text_ex(si_type, 356.,624.,header);
-    draw_texture(tileset.windows[5].unwrap(), 326.0, 630.0, color);
-    draw_texture(tileset.items[shopitems[1].item.id].unwrap(), 336.0, 640.0, WHITE);
-    draw_text_ex(shopitems[1].item.name(), 391.0, 650.0, info);
-    quant_str = "x".to_string();
-    quant_str.push_str(&shopitems[1].item.quant.to_string());
-    draw_text_ex(&quant_str, 441., 650., info);
-    cost_str = "D$:      ".to_string();
-    let cost = if si_type == "BUY" {
-        shopitems[1].cost
-    } else {
-        -shopitems[1].cost
-    };
-    cost_str.push_str(&cost.to_string());
-    draw_text_ex(&cost_str, 391., 670., info); 
-
-    si_type = if shopitems[2].cost >= 0 {
-        "BUY"
-    } else {
-        "SELL"
-    };
-    color = match si_type {
-        "BUY" => {if shopitems[2].cost > game.player.denars as i32 {RED} else {
-            purchasable[2] = true;
-            GREEN
-        }}
-        "SELL" => {if game.player.inventory.item_stack_count(shopitems[2].item) > 0 {
-            purchasable[2] = true;
-            GREEN} else {RED}}
-        _ => {WHITE}
-    };
-    draw_text_ex(si_type, 517.,624.,header);
-    draw_texture(tileset.windows[5].unwrap(), 487.0, 630.0, color);
-    draw_texture(tileset.items[shopitems[2].item.id].unwrap(), 497.0, 640.0, WHITE);
-    draw_text_ex(shopitems[2].item.name(), 552.0, 650.0, info);
-    quant_str = "x".to_string();
-    quant_str.push_str(&shopitems[2].item.quant.to_string());
-    draw_text_ex(&quant_str, 602., 650., info);
-    cost_str = "D$:      ".to_string();
-    let cost = if si_type == "BUY" {
-        shopitems[2].cost
-    } else {
-        -shopitems[2].cost
-    };
-    cost_str.push_str(&cost.to_string());
-    draw_text_ex(&cost_str, 552., 670., info); 
+    let mut i = 0;
+    while i < shopitems.len() {
+        purchasable[i] = draw_shop_item(&shopitems[i], i, game, tileset, header, info);
+        i+=1;
+    }
 
     if is_mouse_button_pressed(MouseButton::Left) {
         let mp = mouse_position();
@@ -344,4 +259,44 @@ pub fn draw_shop_menu(seal: &Seal, game: &mut Game, tileset: &TileSet) {
     if root_ui().button(Vec2::new(445.0, 700.0), "Done") {
         game.window_active = None;
     }
+}
+
+pub fn draw_shop_item(shopitem: &ShopItem, win_pos: usize, game: &Game, tileset: &TileSet, par1: TextParams, par2: TextParams) -> bool {
+    let mut res = false;
+    let origin = match win_pos {
+        0 => {(165.,630.)}
+        1 => {(326.,630.)}
+        2 | _ => {(487.,630.)}
+    };
+    let si_type = if shopitem.cost >= 0 {
+        "BUY"
+    } else {
+        "SELL"
+    };
+    let color = match si_type {
+        "BUY" => {if shopitem.cost > game.player.denars as i32 {RED} else {
+            res = true;
+            GREEN
+        }}
+        "SELL" => {if game.player.inventory.item_stack_count(shopitem.item) > 0 {
+            res = true;
+            GREEN} else {RED}}
+        _ => {WHITE}
+    };
+    draw_text_ex(si_type, origin.0 + 30.,origin.1 - 6.,par1);
+    draw_texture(tileset.windows[5].unwrap(), origin.0, origin.1, color);
+    draw_texture(tileset.items[shopitem.item.id].unwrap(), origin.0 + 10., origin.1 + 10., WHITE);
+    draw_text_ex(shopitem.item.name(), origin.0 + 65., origin.1 + 20., par2);
+    let mut quant_str = "x".to_string();
+    quant_str.push_str(&shopitem.item.quant.to_string());
+    draw_text_ex(&quant_str, origin.0 + 115., origin.1 + 20., par2);
+    let mut cost_str = "D$:      ".to_string();
+    let cost = if si_type == "BUY" {
+        shopitem.cost
+    } else {
+        -shopitem.cost
+    };
+    cost_str.push_str(&cost.to_string());
+    draw_text_ex(&cost_str, origin.0 + 65., origin.1 + 40., par2); 
+    return res;
 }
