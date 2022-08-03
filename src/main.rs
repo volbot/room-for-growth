@@ -72,8 +72,10 @@ async fn main() {
                 draw_build_menu(&BuildMenu::new(&game.player), &mut game, &tileset); //draw buildmenu
             } else if game.window_active.unwrap().text == "**Shop" {
                 let seal = world_copy.get_seal(game.player.person.entity.pos); 
-                if seal.is_some() {
+                if seal.is_some() && seal.unwrap().register.is_some() {
                     draw_shop_menu(&seal.unwrap(), &mut game, &tileset);
+                } else {
+                    game.window_active = None;
                 }
             } else {
                 draw_popup(&game.window_active.unwrap(), &mut game, &tileset); //if no special

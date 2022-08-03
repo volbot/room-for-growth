@@ -192,9 +192,85 @@ pub fn draw_build_menu(menu: &BuildMenu, game: &mut Game, tileset: &TileSet) {
 pub fn draw_shop_menu(seal: &Seal, game: &mut Game, tileset: &TileSet) {
     draw_texture(tileset.windows[1].unwrap(), 150.0, 600.0, WHITE);
 
-    draw_texture(tileset.windows[5].unwrap(), 165.0, 615.0, GREEN);
+    let header = TextParams {
+        font_size: 14,
+        font: tileset.font,
+        color: BLACK,
+        ..Default::default()
+    };
+    let info = TextParams {
+        font_size: 12,
+        font: tileset.font,
+        color: BLACK,
+        ..Default::default()
+    };
 
-    if root_ui().button(Vec2::new(445.0, 690.0), "Done") {
+    let shopitems = seal.register.unwrap().tipo().shop_items();
+    
+    let mut si_type = if shopitems[0].cost >= 0 {
+        "BUY"
+    } else {
+        "SELL"
+    };
+    draw_text_ex(si_type, 195.,624.,header);
+    draw_texture(tileset.windows[5].unwrap(), 165.0, 630.0, WHITE);
+    draw_texture(tileset.items[shopitems[0].item.id].unwrap(), 175.0, 640.0, WHITE);
+    draw_text_ex(shopitems[0].item.name(), 230.0, 650.0, info);
+    let mut quant_str: String = "x".to_string();
+    quant_str.push_str(&shopitems[0].item.quant.to_string());
+    draw_text_ex(&quant_str, 280., 650., info);
+    let mut cost_str: String = "D$:      ".to_string();
+    let cost = if si_type == "BUY" {
+        shopitems[0].cost
+    } else {
+        -shopitems[0].cost
+    };
+    cost_str.push_str(&cost.to_string());
+    draw_text_ex(&cost_str, 230., 670., info); 
+
+    si_type = if shopitems[1].cost >= 0 {
+        "BUY"
+    } else {
+        "SELL"
+    };
+    draw_text_ex(si_type, 356.,624.,header);
+    draw_texture(tileset.windows[5].unwrap(), 326.0, 630.0, WHITE);
+    draw_texture(tileset.items[shopitems[1].item.id].unwrap(), 336.0, 640.0, WHITE);
+    draw_text_ex(shopitems[1].item.name(), 391.0, 650.0, info);
+    quant_str = "x".to_string();
+    quant_str.push_str(&shopitems[1].item.quant.to_string());
+    draw_text_ex(&quant_str, 441., 650., info);
+    cost_str = "D$:      ".to_string();
+    let cost = if si_type == "BUY" {
+        shopitems[1].cost
+    } else {
+        -shopitems[1].cost
+    };
+    cost_str.push_str(&cost.to_string());
+    draw_text_ex(&cost_str, 391., 670., info); 
+
+    si_type = if shopitems[2].cost >= 0 {
+        "BUY"
+    } else {
+        "SELL"
+    };
+    draw_text_ex(si_type, 517.,624.,header);
+    draw_texture(tileset.windows[5].unwrap(), 487.0, 630.0, WHITE);
+    draw_texture(tileset.items[shopitems[2].item.id].unwrap(), 497.0, 640.0, WHITE);
+    draw_text_ex(shopitems[2].item.name(), 552.0, 650.0, info);
+    quant_str = "x".to_string();
+    quant_str.push_str(&shopitems[2].item.quant.to_string());
+    draw_text_ex(&quant_str, 602., 650., info);
+    cost_str = "D$:      ".to_string();
+    let cost = if si_type == "BUY" {
+        shopitems[2].cost
+    } else {
+        -shopitems[2].cost
+    };
+    cost_str.push_str(&cost.to_string());
+    draw_text_ex(&cost_str, 552., 670., info); 
+
+    if root_ui().button(Vec2::new(445.0, 700.0), "Done") {
         game.window_active = None;
     }
 }
