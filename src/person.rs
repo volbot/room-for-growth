@@ -1,12 +1,11 @@
 use crate::entity::Entity;
-use crate::player::Player;
 use crate::quest::{Quest, QuestType};
 use crate::world::World;
 use crate::tile::TileType;
 use crate::interact::{Interaction, InteractType};
 use macroquad::{prelude::*, rand};
 use pathfinding::prelude::astar;
-use crate::pathing::*;
+use crate::{pathing::*, Game};
 
 pub trait CanWalk {
     fn walk(&mut self, world: &World);
@@ -23,7 +22,7 @@ pub struct Person {
 }
 
 impl Person {
-    pub fn new(pos: (usize, usize), tex_id: usize, world: &mut World) -> Person {
+    pub fn new(name: &str, pos: (usize, usize), tex_id: usize, world: &mut World) -> Person {
         //clear land at person's position
         for n1 in world.neighbors(pos) {
             for n2 in  world.neighbors(n1) {
@@ -33,7 +32,7 @@ impl Person {
 
         Person {
             target: None,
-            entity: Entity::new(pos, tex_id),
+            entity: Entity::new(name, pos, tex_id),
             last_act: get_time(),
             interact: None,
             quest: None,
@@ -53,56 +52,80 @@ impl Person {
         self.quest = Some(quest);
     }
 
-    pub fn update_quest(&mut self, player: &Player, world: &World) {
-        if self.quest.is_none() {
-            return
-        }
-        match self.interact.unwrap().tipo {
-            InteractType::Waiting => {
-                if self.quest.clone().unwrap().is_completable(player) {
-                    self.advance_quest();
-                }
-                match self.quest.clone().unwrap().objec.tipo {
-                    QuestType::House => {
-                        if self.target.is_none() {
-                        for seal in &mut world.seals.clone() {
-                            if seal.owner.is_some() {
-                                continue
-                            }
-                            for n in world.neighbors(seal.pos) {
-                                if world.is_inside(n, &mut Vec::new()) && world.data[n.0][n.1].is_walkable() {
-                                    self.target = Some(n);
-                                    seal.owner=Some(self.clone());
-                                }
-                            }
-                        }
-                        }
-                        if world.is_inside(self.entity.pos, &mut Vec::new()) {
-                            self.advance_quest();
-                        }
-                    }
-                    _ => {}
-                }
-            }
-            _ => {}
-        }
-    }
-
     pub fn think(&mut self, world: &World) {
         let time = get_time();
         let seal = world.get_seal(self.entity.pos);
+        if seal.is_some() {
+            let owner = seal.unwrap().owner.clone();
+            if owner.is_some() && owner.unwrap().entity.name == self.entity.name {
+                if seal.unwrap().register.is_some() {
+                    let register = seal.unwrap().register.unwrap();
+                    let xdist = register.pos.0 as i32 - seal.unwrap().pos.0 as i32;
+                    let ydist = register.pos.1 as i32 - seal.unwrap().pos.1 as i32;
+                    if xdist.abs() > ydist.abs() {
+                        self.target = Some((if xdist > 0 {
+                            register.pos.0 + 1
+                        } else {
+                            register.pos.0 - 1
+                        }, register.pos.1))
+                    } else {
+                        self.target = Some((register.pos.0, if ydist > 0 {
+                            register.pos.1 + 1
+                        } else {
+                            register.pos.1 - 1
+                        }))
+                    }
+                }
+            }
+        }
+        if self.quest.is_some() {
+            return
+        }
         if time >= self.last_act + 5. && rand::gen_range(0, (time - self.last_act) as i32) < (time - self.last_act - 5.) as i32 {
             let (mut x, mut y) = (self.entity.pos.0 as i32 + rand::gen_range(-3,3), self.entity.pos.1 as i32 + rand::gen_range(-3,3));
             while !world.data[x as usize][y as usize].is_walkable() {
                 (x,y) = (self.entity.pos.0 as i32 + rand::gen_range(-3,3), self.entity.pos.1 as i32 + rand::gen_range(-3,3));
             }
-            let mut new_seal = world.get_seal((x as usize,y as usize));
-            while !world.data[x as usize][y as usize].is_walkable() || (seal.is_some() && ((new_seal.is_some() && seal.unwrap().pos != new_seal.unwrap().pos)||new_seal.is_none())) {
-                (x,y) = (self.entity.pos.0 as i32 + rand::gen_range(-3,3), self.entity.pos.1 as i32 + rand::gen_range(-3,3));
-                new_seal = world.get_seal((x as usize,y as usize));
-            }
             self.last_act = time;
             self.target = Some((x as usize,y as usize));
+        }
+    }
+
+    pub fn update_quests(game: &mut Game) {
+        let world_copy = &game.world.clone();
+        for person in &mut game.world.people {
+            if person.quest.is_none() {
+                return
+            }
+            match person.interact.unwrap().tipo {
+                InteractType::Waiting => {
+                    if person.quest.clone().unwrap().is_completable(&game.player) {
+                        person.advance_quest();
+                    }
+                    match person.quest.clone().unwrap().objec.tipo {
+                        QuestType::House => {
+                            if person.target.is_none() {
+                                for seal in &mut game.world.seals {
+                                    if seal.owner.is_some() {
+                                        continue
+                                    }
+                                    for n in world_copy.neighbors(seal.pos) {
+                                        if world_copy.is_inside(n, &mut Vec::new()) && game.world.data[n.0][n.1].is_walkable() {
+                                            person.target = Some(n);
+                                            seal.owner = Some(person.clone()); 
+                                        }
+                                    }
+                                }
+                            }
+                            if world_copy.is_inside(person.entity.pos, &mut Vec::new()) {
+                                person.advance_quest();
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+                _ => {}
+            }
         }
     }
 }
@@ -125,10 +148,10 @@ impl CanWalk for Person {
                 return
             }
             let result = astar( &(curr),
-                            |&(x, y)| successors((x,y), goal, world)
-                            .into_iter().map(|p| (p, 1)),
-                            |&(x, y)| heuristic((x,y), goal, world),
-                            |&p| p == goal);
+            |&(x, y)| successors((x,y), goal, world)
+            .into_iter().map(|p| (p, 1)),
+            |&(x, y)| heuristic((x,y), goal, world),
+            |&p| p == goal);
             if result.is_none() {
                 self.target = None;
                 return

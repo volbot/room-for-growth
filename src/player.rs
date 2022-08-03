@@ -24,7 +24,7 @@ pub struct Player {
 impl Player {
     pub fn new(pos: (usize, usize), world: &mut World) -> Player {
         let mut p = Player {
-            person: Person::new(pos, 0, world),
+            person: Person::new("Player", pos, 0, world),
             target_id: None,
             mode: PlayerMode::Talk,
             inventory: Inventory::new(),

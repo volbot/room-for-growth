@@ -11,6 +11,7 @@ use crate::player::{Player, input_player_target, input_player_keys};
 use crate::camera::{Camera, input_camera_movement};
 use crate::draw::*;
 use crate::interact::Interaction;
+use crate::person::Person;
 
 pub mod tile;
 pub mod world;
@@ -61,8 +62,8 @@ async fn main() {
             draw_person(&game.camera, &person, &tileset); //draw them
             person.think(world_copy);
             person.walk(world_copy);                    //move them
-            person.update_quest(&game.player, world_copy); //update their quest info
         }
+        Person::update_quests(&mut game);
         draw_person(&game.camera, &game.player.person, &tileset); //draw the player
         Player::think(&mut game);                  //do player data
         if game.window_active.is_some() {                       //if game window exists,

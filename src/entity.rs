@@ -1,13 +1,15 @@
-#[derive(Clone,Copy,Debug)]
+#[derive(Clone,Debug)]
 pub struct Entity {
     pub pos: (usize, usize),
     pub tex_id: usize,
+    pub name: String,
 }
 
 impl Entity {
-    pub fn new(pos: (usize, usize), tex_id: usize) -> Entity {
+    pub fn new(name: &str, pos: (usize, usize), tex_id: usize) -> Entity {
         Entity {
-            pos, tex_id,
+            pos, tex_id, 
+            name: name.to_string()
         }
     }
 
