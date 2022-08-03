@@ -62,9 +62,9 @@ impl Person {
             let owner = seal.unwrap().owner.clone();
             if owner.is_some() && owner.unwrap().entity.name == self.entity.name {
                 if seal.unwrap().register.is_some() {
-                    let mp = seal.unwrap().merchant_pos();
-                    if self.entity.pos != mp.unwrap() {
-                        self.target = seal.unwrap().merchant_pos();
+                    let mp = seal.unwrap().merchant_pos().unwrap();
+                    if world.data[mp.0][mp.1].is_walkable() && self.entity.pos != mp {
+                        self.target = Some(mp);
                     }
                     return
                 }

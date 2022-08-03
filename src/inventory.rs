@@ -87,4 +87,9 @@ impl Inventory {
         }
         total as isize
     }
+
+    pub fn item_stack_count(&self, item: Item) -> isize {
+        let total = self.item_count(item.id);
+        return (total as f32 / item.quant as f32).floor() as isize; 
+    }
 }

@@ -19,6 +19,7 @@ pub struct Player {
     pub mode: PlayerMode,
     pub inventory: Inventory,
     pub tilerecipes: Vec<TileRecipe>,
+    pub denars: usize,
 }
 
 impl Player {
@@ -29,6 +30,7 @@ impl Player {
             mode: PlayerMode::Talk,
             inventory: Inventory::new(),
             tilerecipes: vec![TileRecipe::new(TileType::Grass.id())],
+            denars: 0,
         };
         p.inventory.push(Item::new(0,200));
         p
