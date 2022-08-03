@@ -2,7 +2,6 @@ use buildmenu::BuildMenu;
 use macroquad::prelude::*;
 use macroquad::ui::*;
 use macroquad::rand::srand;
-use player::think;
 
 use crate::storyhooks::start_main_story;
 use crate::world::{World, tiles_to_screen};
@@ -60,11 +59,12 @@ async fn main() {
         let world_copy = &game.world.clone(); //create clone of world for non-mutable references
         for person in &mut game.world.people { //loop through people in the world
             draw_person(&game.camera, &person, &tileset); //draw them
+            person.think(world_copy);
             person.walk(world_copy);                    //move them
             person.update_quest(&game.player, world_copy); //update their quest info
         }
         draw_person(&game.camera, &game.player.person, &tileset); //draw the player
-        think(&mut game);                  //do player data
+        Player::think(&mut game);                  //do player data
         if game.window_active.is_some() {                       //if game window exists,
             if game.window_active.unwrap().text == "**Inventory" { //check data for special cases
                 draw_inventory(&mut game, &tileset);                        //draw inventory

@@ -4,7 +4,7 @@ use crate::quest::{Quest, QuestType};
 use crate::world::World;
 use crate::tile::TileType;
 use crate::interact::{Interaction, InteractType};
-use macroquad::prelude::*;
+use macroquad::{prelude::*, rand};
 use pathfinding::prelude::astar;
 use crate::pathing::*;
 
@@ -85,6 +85,24 @@ impl Person {
                 }
             }
             _ => {}
+        }
+    }
+
+    pub fn think(&mut self, world: &World) {
+        let time = get_time();
+        let seal = world.get_seal(self.entity.pos);
+        if time >= self.last_act + 5. && rand::gen_range(0, (time - self.last_act) as i32) < (time - self.last_act - 5.) as i32 {
+            let (mut x, mut y) = (self.entity.pos.0 as i32 + rand::gen_range(-3,3), self.entity.pos.1 as i32 + rand::gen_range(-3,3));
+            while !world.data[x as usize][y as usize].is_walkable() {
+                (x,y) = (self.entity.pos.0 as i32 + rand::gen_range(-3,3), self.entity.pos.1 as i32 + rand::gen_range(-3,3));
+            }
+            let mut new_seal = world.get_seal((x as usize,y as usize));
+            while !world.data[x as usize][y as usize].is_walkable() || (seal.is_some() && ((new_seal.is_some() && seal.unwrap().pos != new_seal.unwrap().pos)||new_seal.is_none())) {
+                (x,y) = (self.entity.pos.0 as i32 + rand::gen_range(-3,3), self.entity.pos.1 as i32 + rand::gen_range(-3,3));
+                new_seal = world.get_seal((x as usize,y as usize));
+            }
+            self.last_act = time;
+            self.target = Some((x as usize,y as usize));
         }
     }
 }

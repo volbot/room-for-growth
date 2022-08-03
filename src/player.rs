@@ -42,6 +42,103 @@ impl Player {
             self.tilerecipes.push(*recipe);
         }
     }
+
+    pub fn think(game: &mut Game) {
+        match game.player.mode {
+            PlayerMode::Talk => {
+                if game.player.target_id.is_none() {
+                    if game.player.person.target.is_none() {
+                        game.player.walk(&game.world);
+                    } else {
+                        let tile = game.world.data[game.player.person.target.unwrap().0][game.player.person.target.unwrap().1];
+                        if tile.id == TileType::Register.id() {
+                            let dist = game.player.person.entity.distance_pos(game.player.person.target.unwrap());
+                            if dist <= 1 {
+                                game.player.target_id = None;
+                                game.player.person.target = None;
+                                game.window_active = Some(Interaction::new(InteractType::Complete, "**Shop", "", None));
+                            }
+                        }
+                    }
+                    game.player.walk(&game.world);
+                    return
+                }
+                let person = &mut game.world.people.get_mut(game.player.target_id.unwrap()).unwrap();
+                let dist = game.player.person.entity.distance(&person.entity);
+                if dist <= 1 {
+                    let result = person.interact;
+                    game.player.target_id = None;
+                    game.player.person.target = None;
+                    if result.is_some() {
+                        match result.unwrap().tipo { 
+                            InteractType::Quest => {
+                                person.advance_quest();
+                            }
+                            InteractType::Complete => {
+                                let reward = &person.quest.clone().unwrap().reward;
+                                if reward.is_some(){
+                                    game.player.accept_reward(&reward.clone().unwrap());
+                                }
+                                let next = person.interact.unwrap().data;
+                                if next.is_some() {
+                                    person.set_quest(game.world.quest_list.get(next.unwrap() as usize).unwrap());
+                                }
+                            }
+                            InteractType::Gift => {
+                                //give item
+                            }
+                            _ => {}
+                        }
+                        game.window_active = result;
+                    }
+                }
+                game.player.walk(&game.world);
+            }
+            PlayerMode::Mine => {
+                if game.player.person.target.is_some() && game.player.person.entity.distance_pos(game.player.person.target.unwrap()) <= 1 {
+                    let time = get_time();
+                    if time >= game.player.person.last_act + 1.0 * game.player.person.speed {
+                        game.player.person.last_act = time;
+                        let target = game.player.person.target.unwrap().clone();
+                        game.player.inventory.push(game.world.data[target.0][target.1].resources());
+                        game.world.data[target.0][target.1].id = game.world.data[target.0][target.1].under_id();
+                        game.player.person.target = None;
+                    }
+                } else {
+                    game.player.walk(&game.world);
+                }
+            }
+            PlayerMode::Build => {
+                if game.player.person.target.is_some() && game.player.person.entity.distance_pos(game.player.person.target.unwrap()) == 1 {
+                    if game.player.target_id.is_some() {
+                        let tile = Tile::new(game.player.target_id.unwrap());
+                        if game.player.inventory.item_count(tile.resources().id) >= tile.resources().quant as isize{
+                            game.player.inventory.pop(tile.resources());
+                            let target = game.player.person.target.unwrap();
+                            game.world.data[target.0][target.1].id = tile.id;
+                            match tile.tipo() {
+                                TileType::Seal => {
+                                    game.world.seals.push(Seal::new((target.0,target.1)));
+                                }
+                                TileType::Register => {
+                                    let seal = game.world.get_seal_mut(target);
+                                    if seal.is_some() {
+                                        seal.unwrap().register = Some(Register::new(target, 0));
+                                    }
+                                }
+                                _ => {}
+                            }
+                        } else {
+                            game.player.target_id = None;
+                        }
+                        game.player.person.target = None;
+                    }
+                } else {
+                    game.player.person.walk(&game.world);
+                }
+            }
+        }
+    }
 }
 
 impl CanWalk for Player {
@@ -58,102 +155,6 @@ impl CanWalk for Player {
     }
 }
 
-pub fn think(game: &mut Game) {
-    match game.player.mode {
-        PlayerMode::Talk => {
-            if game.player.target_id.is_none() {
-                if game.player.person.target.is_none() {
-                    game.player.walk(&game.world);
-                } else {
-                    let tile = game.world.data[game.player.person.target.unwrap().0][game.player.person.target.unwrap().1];
-                    if tile.id == TileType::Register.id() {
-                        let dist = game.player.person.entity.distance_pos(game.player.person.target.unwrap());
-                        if dist <= 1 {
-                            game.player.target_id = None;
-                            game.player.person.target = None;
-                            game.window_active = Some(Interaction::new(InteractType::Complete, "**Shop", "", None));
-                        }
-                    }
-                }
-                game.player.walk(&game.world);
-                return
-            }
-            let person = &mut game.world.people.get_mut(game.player.target_id.unwrap()).unwrap();
-            let dist = game.player.person.entity.distance(&person.entity);
-            if dist <= 1 {
-                let result = person.interact;
-                game.player.target_id = None;
-                game.player.person.target = None;
-                if result.is_some() {
-                    match result.unwrap().tipo { 
-                        InteractType::Quest => {
-                            person.advance_quest();
-                        }
-                        InteractType::Complete => {
-                            let reward = &person.quest.clone().unwrap().reward;
-                            if reward.is_some(){
-                                game.player.accept_reward(&reward.clone().unwrap());
-                            }
-                            let next = person.interact.unwrap().data;
-                            if next.is_some() {
-                                person.set_quest(game.world.quest_list.get(next.unwrap() as usize).unwrap());
-                            }
-                        }
-                        InteractType::Gift => {
-                            //give item
-                        }
-                        _ => {}
-                    }
-                    game.window_active = result;
-                }
-            }
-            game.player.walk(&game.world);
-        }
-        PlayerMode::Mine => {
-            if game.player.person.target.is_some() && game.player.person.entity.distance_pos(game.player.person.target.unwrap()) <= 1 {
-                let time = get_time();
-                if time >= game.player.person.last_act + 1.0 * game.player.person.speed {
-                    game.player.person.last_act = time;
-                    let target = game.player.person.target.unwrap().clone();
-                    game.player.inventory.push(game.world.data[target.0][target.1].resources());
-                    game.world.data[target.0][target.1].id = game.world.data[target.0][target.1].under_id();
-                    game.player.person.target = None;
-                }
-            } else {
-                game.player.walk(&game.world);
-            }
-        }
-        PlayerMode::Build => {
-            if game.player.person.target.is_some() && game.player.person.entity.distance_pos(game.player.person.target.unwrap()) == 1 {
-                if game.player.target_id.is_some() {
-                    let tile = Tile::new(game.player.target_id.unwrap());
-                    if game.player.inventory.item_count(tile.resources().id) >= tile.resources().quant as isize{
-                        game.player.inventory.pop(tile.resources());
-                        let target = game.player.person.target.unwrap();
-                        game.world.data[target.0][target.1].id = tile.id;
-                        match tile.tipo() {
-                            TileType::Seal => {
-                                game.world.seals.push(Seal::new((target.0,target.1)));
-                            }
-                            TileType::Register => {
-                                let seal = game.world.get_seal_mut(target);
-                                if seal.is_some() {
-                                    seal.unwrap().register = Some(Register::new(target, 0));
-                                }
-                            }
-                            _ => {}
-                        }
-                    } else {
-                        game.player.target_id = None;
-                    }
-                    game.player.person.target = None;
-                }
-            } else {
-                game.player.person.walk(&game.world);
-            }
-        }
-    }
-}
 #[derive(Debug)]
 pub enum PlayerMode {
     Talk,
