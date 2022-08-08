@@ -100,8 +100,8 @@ impl Player {
             }
             PlayerMode::Mine => {
                 if game.player.person.target.is_some() && game.player.person.entity.distance_pos(game.player.person.target.unwrap()) <= 1 {
-                    for person in &game.world.people {
-                        if person.entity.pos == game.player.person.target.unwrap() {
+                    for person in game.world.people {
+                        if person.entity.pos == player.person.entity.pos {
                             game.player.person.target = None;
                             return
                         }

@@ -2,6 +2,7 @@ use buildmenu::BuildMenu;
 use macroquad::prelude::*;
 use macroquad::ui::*;
 use macroquad::rand::srand;
+use player::PlayerMode;
 
 use crate::storyhooks::start_main_story;
 use crate::world::{World, tiles_to_screen};
@@ -85,11 +86,18 @@ async fn main() {
             }
         } else { //if no window
             input_camera_movement(&mut game.camera);            //check camera movement
-            input_player_target(&game.camera, &mut game.player, &game.world); //check player
-                                                                              //   movement
+            input_player_target(&game.camera, &mut game.player, &game.world); //check player movement
             input_player_keys(&mut game);       //check player keys
         }
 
+        match game.player.mode {
+            PlayerMode::Build => {
+                draw_build_ui(&game, &tileset);
+            }
+            _ => {
+                draw_main_ui(&game, &tileset);
+            }
+        }
         next_frame().await //wait for next frame
     }
 }

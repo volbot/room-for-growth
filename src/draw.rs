@@ -3,6 +3,7 @@ use crate::buildmenu::BuildMenu;
 use crate::interact::Interaction;
 use crate::seals::Seal;
 use crate::shop::ShopItem;
+use crate::tile::Tile;
 use crate::{person::Person, world::World, camera::Camera, entity::Entity};
 use crate::tileset::TileSet;
 use macroquad::prelude::*;
@@ -251,4 +252,30 @@ pub fn draw_shop_item(shopitem: &ShopItem, win_pos: usize, game: &Game, tileset:
     cost_str.push_str(&cost.to_string());
     draw_text_ex(&cost_str, origin.0 + 65., origin.1 + 40., tileset.textpar[1]); 
     return res;
+}
+
+pub fn draw_main_ui(game: &Game, tileset: &TileSet) {
+    let mut moneytext = "Denars: $".to_string();
+    moneytext.push_str(&game.player.denars.to_string());
+    draw_text_ex(&moneytext, 2., 20., tileset.textpar[4]);
+}
+pub fn draw_build_ui(game: &Game, tileset: &TileSet) {
+    draw_text_ex("BUILD MODE", 2., 20., tileset.textpar[4]);
+    let mut seltext = "Building: ".to_string();
+    let mut availtext = "Remaining: ".to_string();
+    let tid = game.player.target_id;
+    let mut avail = -1;
+    if tid.is_some() {
+        let tile = Tile::new(tid.unwrap());
+        seltext.push_str(tile.name());
+        avail = game.player.inventory.item_stack_count(tile.resources());
+        availtext.push_str(&avail.to_string());
+    } else {
+        seltext.push_str("None");
+    }
+    draw_text_ex(&seltext, 2., 40., tileset.textpar[4]);
+    if avail == -1 {
+        availtext.push_str("_");
+    }
+    draw_text_ex(&availtext, 2., 60., tileset.textpar[4]);
 }
