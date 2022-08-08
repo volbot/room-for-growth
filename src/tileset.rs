@@ -7,6 +7,7 @@ pub struct TileSet {
     pub windows: [Option<Texture2D>; 6],
     pub items: [Option<Texture2D>; 3],
     pub skins: [Skin; 2],
+    pub textpar: [TextParams; 4],
     pub font: Font,
 }
 
@@ -30,6 +31,31 @@ impl TileSet {
         let skin2 = Skin {
             button_style: button_style_2, ..root_ui().default_skin()
         };
+        let header = TextParams {
+            font_size: 14,
+            font: load_ttf_font_from_bytes(font_bytes).unwrap(),
+            color: BLACK,
+            ..Default::default()
+        };
+        let info = TextParams {
+            font_size: 12,
+            font: load_ttf_font_from_bytes(font_bytes).unwrap(),
+            color: BLACK,
+            ..Default::default()
+        };
+        let body = TextParams {
+            font_size: 20,
+            font: load_ttf_font_from_bytes(font_bytes).unwrap(),
+            color: BLACK,
+            ..Default::default()
+        };
+        let bighead = TextParams {
+            font_size: 30,
+            font: load_ttf_font_from_bytes(font_bytes).unwrap(),
+            color: BLACK,
+            ..Default::default()
+        };
+        let textpar = [header, info, body, bighead];
         let skins = [skin1, skin2];
         let mut ts = TileSet{
             tiles: [None; 8],
@@ -37,8 +63,8 @@ impl TileSet {
             icons: [None; 3],
             windows: [None; 6],
             items: [None; 3],
-            skins,
-            font: load_ttf_font("assets/fonts/JMH Cthulhumbus Arcade.otf").await.unwrap(),
+            skins,textpar,
+            font: load_ttf_font_from_bytes(font_bytes).unwrap(),
         };
         ts.tiles[0] = Some(load_texture("assets/tiles/turf.png").await.unwrap());
         ts.tiles[1] = Some(load_texture("assets/tiles/wall.png").await.unwrap());

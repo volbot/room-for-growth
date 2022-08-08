@@ -70,7 +70,7 @@ impl Person {
                 }
             }
         }
-        if self.quest.is_some() && !world.is_inside(self.entity.pos, &mut Vec::new()) {
+        if self.quest.is_some() {
             return
         }
         if time >= self.last_act + 5. && rand::gen_range(0, (time - self.last_act) as i32) < (time - self.last_act - 5.) as i32 {

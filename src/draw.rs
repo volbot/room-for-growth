@@ -58,12 +58,7 @@ pub fn draw_popup(interact: &Interaction, game: &mut Game, tileset: &TileSet) {
     let split = interact.text.split("^^");
     let mut i = 640.;
     for s in split {
-        draw_text_ex(s, 190., i, TextParams {
-            font_size: 20,
-            font: tileset.font,
-            color: BLACK,
-            ..Default::default()
-        });
+        draw_text_ex(s, 190., i, tileset.textpar[2]);
         i+=20.
     }
     if root_ui().button(Vec2::new(445.0, 690.0), interact.text_button) {
@@ -74,12 +69,7 @@ pub fn draw_popup(interact: &Interaction, game: &mut Game, tileset: &TileSet) {
 pub fn draw_inventory(game: &mut Game, tileset: &TileSet) {
     let inventory = &mut game.player.inventory;
     draw_texture(tileset.windows[2].unwrap(), 150.0, 200.0, WHITE);
-    draw_text_ex("Inventory", 185.0, 255.0, TextParams {
-        font_size: 30,
-        font: tileset.font,
-        color: BLACK,
-        ..Default::default()
-    });
+    draw_text_ex("Inventory", 185.0, 255.0, tileset.textpar[3]);
     let mut i = 0;
     let mut j = 0;
     while i < 9 {
@@ -99,18 +89,8 @@ pub fn draw_inventory(game: &mut Game, tileset: &TileSet) {
                     root_ui().pop_skin();
                 }
                 draw_texture(tileset.items.get(item.id).unwrap().unwrap(), corner.0+3., corner.1+10.0, WHITE);
-                draw_text_ex(&tooltip, corner.0, corner.1+59.0, TextParams {
-                    font_size: 10,
-                    font: tileset.font,
-                    color: BLACK,
-                    ..Default::default()
-                });
-                draw_text_ex(&quantity, corner.0, corner.1+69.0, TextParams {
-                    font_size: 10,
-                    font: tileset.font,
-                    color: BLACK,
-                    ..Default::default()
-                });
+                draw_text_ex(&tooltip, corner.0, corner.1+59.0, tileset.textpar[1]);
+                draw_text_ex(&quantity, corner.0, corner.1+71.0, tileset.textpar[1]);
             }
             j += 1;
         }
@@ -136,12 +116,7 @@ pub fn draw_inventory(game: &mut Game, tileset: &TileSet) {
 
 pub fn draw_build_menu(menu: &BuildMenu, game: &mut Game, tileset: &TileSet) {
     draw_texture(tileset.windows[2].unwrap(), 150.0, 200.0, WHITE);
-    draw_text_ex("Building", 185.0, 255.0, TextParams {
-        font_size: 30,
-        font: tileset.font,
-        color: BLACK,
-        ..Default::default()
-    });
+    draw_text_ex("Building", 185.0, 255.0, tileset.textpar[3]);
     let mut i = 0;
     let mut j = 0;
     while i < 9 {
@@ -153,18 +128,8 @@ pub fn draw_build_menu(menu: &BuildMenu, game: &mut Game, tileset: &TileSet) {
                 let mut quantity: String = " x".to_string();
                 quantity.push_str(&item.count.to_string());
                 draw_texture(tileset.tiles.get(item.tile.id).unwrap().unwrap(), corner.0+3., corner.1+10.0, WHITE);
-                draw_text_ex(&tooltip, corner.0, corner.1+59.0, TextParams {
-                    font_size: 10,
-                    font: tileset.font,
-                    color: BLACK,
-                    ..Default::default()
-                });
-                draw_text_ex(&quantity, corner.0, corner.1+69.0, TextParams {
-                    font_size: 10,
-                    font: tileset.font,
-                    color: BLACK,
-                    ..Default::default()
-                });
+                draw_text_ex(&tooltip, corner.0, corner.1+59.0, tileset.textpar[1]);
+                draw_text_ex(&quantity, corner.0, corner.1+69.0, tileset.textpar[1]);
             }
             j += 1;
         }
@@ -193,25 +158,12 @@ pub fn draw_build_menu(menu: &BuildMenu, game: &mut Game, tileset: &TileSet) {
 pub fn draw_shop_menu(seal: &Seal, game: &mut Game, tileset: &TileSet) {
     draw_texture(tileset.windows[1].unwrap(), 150.0, 600.0, WHITE);
 
-    let header = TextParams {
-        font_size: 14,
-        font: tileset.font,
-        color: BLACK,
-        ..Default::default()
-    };
-    let info = TextParams {
-        font_size: 12,
-        font: tileset.font,
-        color: BLACK,
-        ..Default::default()
-    };
-
     let shopitems = seal.register.unwrap().tipo().shop_items();
     let mut purchasable = [false; 3];
 
     let mut i = 0;
     while i < shopitems.len() {
-        purchasable[i] = draw_shop_item(&shopitems[i], i, game, tileset, header, info);
+        purchasable[i] = draw_shop_item(&shopitems[i], i, game, tileset);
         i+=1;
     }
 
@@ -261,7 +213,7 @@ pub fn draw_shop_menu(seal: &Seal, game: &mut Game, tileset: &TileSet) {
     }
 }
 
-pub fn draw_shop_item(shopitem: &ShopItem, win_pos: usize, game: &Game, tileset: &TileSet, par1: TextParams, par2: TextParams) -> bool {
+pub fn draw_shop_item(shopitem: &ShopItem, win_pos: usize, game: &Game, tileset: &TileSet) -> bool {
     let mut res = false;
     let origin = match win_pos {
         0 => {(165.,630.)}
@@ -283,13 +235,13 @@ pub fn draw_shop_item(shopitem: &ShopItem, win_pos: usize, game: &Game, tileset:
             GREEN} else {RED}}
         _ => {WHITE}
     };
-    draw_text_ex(si_type, origin.0 + 30.,origin.1 - 6.,par1);
+    draw_text_ex(si_type, origin.0 + 30.,origin.1 - 6.,tileset.textpar[0]);
     draw_texture(tileset.windows[5].unwrap(), origin.0, origin.1, color);
     draw_texture(tileset.items[shopitem.item.id].unwrap(), origin.0 + 10., origin.1 + 10., WHITE);
-    draw_text_ex(shopitem.item.name(), origin.0 + 65., origin.1 + 20., par2);
+    draw_text_ex(shopitem.item.name(), origin.0 + 65., origin.1 + 20., tileset.textpar[0]);
     let mut quant_str = "x".to_string();
     quant_str.push_str(&shopitem.item.quant.to_string());
-    draw_text_ex(&quant_str, origin.0 + 115., origin.1 + 20., par2);
+    draw_text_ex(&quant_str, origin.0 + 115., origin.1 + 20., tileset.textpar[1]);
     let mut cost_str = "D$:      ".to_string();
     let cost = if si_type == "BUY" {
         shopitem.cost
@@ -297,6 +249,6 @@ pub fn draw_shop_item(shopitem: &ShopItem, win_pos: usize, game: &Game, tileset:
         -shopitem.cost
     };
     cost_str.push_str(&cost.to_string());
-    draw_text_ex(&cost_str, origin.0 + 65., origin.1 + 40., par2); 
+    draw_text_ex(&cost_str, origin.0 + 65., origin.1 + 40., tileset.textpar[1]); 
     return res;
 }
