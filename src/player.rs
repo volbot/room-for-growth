@@ -12,6 +12,7 @@ use crate::world::{screen_to_tiles, World};
 use crate::camera::Camera;
 
 use macroquad::prelude::*;
+use macroquad::rand::gen_range;
 
 pub struct Player {
     pub person: Person,
@@ -108,7 +109,12 @@ impl Player {
                         }
                     }
                     let time = get_time();
+                    if game.mine_state == -1 {
+                        game.mine_state = gen_range(0,3);
+                        game.mine_time = time;
+                    }
                     if time >= game.player.person.last_act + 1.0 * game.player.person.speed {
+                        game.mine_state = -1;
                         game.player.person.last_act = time;
                         let target = game.player.person.target.unwrap().clone();
                         game.player.inventory.push(game.world.data[target.0][target.1].resources());
@@ -238,6 +244,7 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World, 
     }
     let clicked = is_mouse_button_pressed(MouseButton::Right);
     if clicked {
+        player.person.last_act = get_time();
         player.mode = PlayerMode::Mine;
         player.person.target = None;
         player.target_id = None;

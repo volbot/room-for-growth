@@ -1,5 +1,6 @@
 use buildmenu::BuildMenu;
 use macroquad::prelude::*;
+use macroquad::rand::gen_range;
 use macroquad::ui::*;
 use macroquad::rand::srand;
 use message::WorldMessage;
@@ -41,6 +42,8 @@ pub struct Game {
     pub player: Player,
     pub camera: Camera,
     pub window_active: Option<Interaction>,
+    pub mine_state: i32,
+    pub mine_time: f64,
 }
 
 #[macroquad::main("Bungo")]
@@ -53,7 +56,9 @@ async fn main() {
         world: w,
         player: p,
         camera: Camera::new((800,800),tiles_to_screen((40,40))), //create camera, 800x800, at tile 40,40
-        window_active: None
+        window_active: None,
+        mine_state: -1,
+        mine_time: get_time(),
     };
     let mut worldmsg: Vec<WorldMessage> = Vec::new();
     root_ui().push_skin(&tileset.skins[0]); //set default skin
@@ -92,6 +97,18 @@ async fn main() {
             input_player_target(&game.camera, &mut game.player, &game.world, &mut worldmsg); //check player movement
             input_player_keys(&mut game);       //check player keys
             draw_world_msg(&game, &mut worldmsg, &tileset);
+
+            if game.mine_state >= 0 && game.player.person.target.is_some() {
+                let mut t = tiles_to_screen(game.player.person.target.unwrap());
+                t.0 -= game.camera.corner.0;
+                t.1 -= game.camera.corner.1;
+                draw_texture(tileset.mine[game.mine_state as usize].unwrap(), -t.0 as f32, -t.1 as f32, WHITE);
+                let time = get_time();
+                if time >= game.mine_time + 0.3  {
+                    game.mine_state = gen_range(0, 3);
+                    game.mine_time = time;
+                }
+            }
         }
 
         match game.player.mode {
@@ -102,7 +119,6 @@ async fn main() {
                 draw_main_ui(&game, &tileset);
             }
         }
-
 
         next_frame().await //wait for next frame
     }

@@ -6,6 +6,7 @@ pub struct TileSet {
     pub icons: [Option<Texture2D>; 3],
     pub windows: [Option<Texture2D>; 6],
     pub items: [Option<Texture2D>; 3],
+    pub mine: [Option<Texture2D>; 4],
     pub skins: [Skin; 2],
     pub textpar: [TextParams; 6],
     pub font: Font,
@@ -76,6 +77,7 @@ impl TileSet {
             icons: [None; 3],
             windows: [None; 6],
             items: [None; 3],
+            mine: [None; 4],
             skins,textpar,
             font: load_ttf_font_from_bytes(font_bytes).unwrap(),
         };
@@ -101,6 +103,11 @@ impl TileSet {
         ts.windows[3] = Some(load_texture("assets/ui/windows/selected.png").await.unwrap());
         ts.windows[4] = Some(load_texture("assets/ui/windows/garbage_button.png").await.unwrap());
         ts.windows[5] = Some(load_texture("assets/ui/windows/shopslot.png").await.unwrap());
+
+        ts.mine[0] = Some(load_texture("assets/ui/world/mine/mine0.png").await.unwrap());
+        ts.mine[1] = Some(load_texture("assets/ui/world/mine/mine1.png").await.unwrap());
+        ts.mine[2] = Some(load_texture("assets/ui/world/mine/mine2.png").await.unwrap());
+        ts.mine[3] = Some(load_texture("assets/ui/world/mine/mine3.png").await.unwrap());
 
         ts.items[0] = Some(load_texture("assets/items/logs.png").await.unwrap());
         ts.items[1] = Some(load_texture("assets/items/dirt.png").await.unwrap());
