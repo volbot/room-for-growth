@@ -94,7 +94,7 @@ pub fn get_quests() -> Vec<Quest> {
                 Some(1), Some(Reward::new(vec![Item::new(2,1)],vec![TileRecipe::new(TileType::Planks.id()),TileRecipe::new(TileType::Boards.id()),TileRecipe::new(TileType::Seal.id())]))),
         Quest::new(QuestObjective::new(QuestType::House,None,None), [
                 "Now that you've got some resources,^^could you build me a house? You can use^^that Wax on a doorway to protect it^^from the elements.", "Sure",
-                "I couldn't build if I wanted to,^^without access to the 'Q' and 'E' keys.^^Hey, and remember to Wax the doorway!", "Sorry",
+                "I couldn't build if I wanted to,^^without access to the 'Q' and 'E' keys.^^You can Middle-Click a Seal to assign^^me to it.", "Sorry",
                 "Thank you! It's like I can^^finally think straight.", "Great"], 
                 Some(2), Some(Reward::new(Vec::new(),vec![TileRecipe::new(TileType::Register.id())]))),
         Quest::new(QuestObjective::new(QuestType::Assign,None,None), [
