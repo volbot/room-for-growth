@@ -1,9 +1,11 @@
 use crate::Game;
 use crate::buildmenu::BuildMenu;
 use crate::interact::Interaction;
+use crate::message::WorldMessage;
 use crate::seals::Seal;
 use crate::shop::ShopItem;
 use crate::tile::Tile;
+use crate::world::tiles_to_screen;
 use crate::{person::Person, world::World, camera::Camera, entity::Entity};
 use crate::tileset::TileSet;
 use macroquad::prelude::*;
@@ -278,4 +280,22 @@ pub fn draw_build_ui(game: &Game, tileset: &TileSet) {
         availtext.push_str("_");
     }
     draw_text_ex(&availtext, 2., 60., tileset.textpar[4]);
+}
+
+pub fn draw_world_msg(game: &Game, worldmsg: &mut Vec<WorldMessage>, tileset: &TileSet) {
+    let mut i = 0;
+    while i < worldmsg.len() {
+        let mut msg = worldmsg.get_mut(i).unwrap();
+        let mut pos = tiles_to_screen((msg.pos.0, msg.pos.1));
+        pos.0 -= game.camera.corner.0;
+        pos.1 -= game.camera.corner.1;
+        let dims = measure_text(&msg.msg, Some(tileset.font), 12, 1.);
+        draw_text_ex(&msg.msg, -pos.0 as f32-(dims.width/2.), -pos.1 as f32+20., tileset.textpar[5]);
+        msg.timer += 1;
+        if msg.timer >= msg.limit {
+            worldmsg.remove(i);
+        } else {
+            i += 1;
+        }
+    }
 }

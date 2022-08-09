@@ -2,6 +2,7 @@ use buildmenu::BuildMenu;
 use macroquad::prelude::*;
 use macroquad::ui::*;
 use macroquad::rand::srand;
+use message::WorldMessage;
 use player::PlayerMode;
 
 use crate::storyhooks::start_main_story;
@@ -33,6 +34,7 @@ pub mod storyhooks;
 pub mod shop;
 pub mod reward;
 pub mod recipe;
+pub mod message;
 
 pub struct Game {
     pub world: World,
@@ -53,6 +55,7 @@ async fn main() {
         camera: Camera::new((800,800),tiles_to_screen((40,40))), //create camera, 800x800, at tile 40,40
         window_active: None
     };
+    let mut worldmsg: Vec<WorldMessage> = Vec::new();
     root_ui().push_skin(&tileset.skins[0]); //set default skin
     start_main_story(&mut game.world); //spawn things for main story
     loop {
@@ -86,8 +89,9 @@ async fn main() {
             }
         } else { //if no window
             input_camera_movement(&mut game.camera);            //check camera movement
-            input_player_target(&game.camera, &mut game.player, &game.world); //check player movement
+            input_player_target(&game.camera, &mut game.player, &game.world, &mut worldmsg); //check player movement
             input_player_keys(&mut game);       //check player keys
+            draw_world_msg(&game, &mut worldmsg, &tileset);
         }
 
         match game.player.mode {
@@ -98,6 +102,8 @@ async fn main() {
                 draw_main_ui(&game, &tileset);
             }
         }
+
+
         next_frame().await //wait for next frame
     }
 }

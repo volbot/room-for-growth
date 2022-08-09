@@ -1,3 +1,4 @@
+use crate::message::WorldMessage;
 use crate::Game;
 use crate::interact::{Interaction, InteractType};
 use crate::inventory::Inventory;
@@ -172,7 +173,7 @@ pub enum PlayerMode {
     Build, 
 }
 
-pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) {
+pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World, worldmsg: &mut Vec<WorldMessage>) {
     let clicked = is_mouse_button_pressed(MouseButton::Left);
     if clicked {
         match player.mode {
@@ -187,16 +188,25 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World) 
                 while i < world.people.len() {
                     if world.people.get(i).unwrap().entity.pos == (x as usize,y as usize) {
                         player.mode = PlayerMode::Talk;
-                        input_player_target(camera, player, world);
+                        input_player_target(camera, player, world, worldmsg);
                         return
                     }
                     i += 1;
                 }
-                if player.target_id.is_some() && world.data[x as usize][y as usize].id == Tile::new(player.target_id.unwrap()).under_id() {
-                    player.person.target = Some((x as usize, y as usize));
+                if player.target_id.is_some() {
+                    if world.data[x as usize][y as usize].id == Tile::new(player.target_id.unwrap()).under_id() {
+                        player.person.target = Some((x as usize, y as usize));
+                    } else {
+                        let mut errtext = "".to_string();
+                        let tile = Tile::new(player.target_id.unwrap());
+                        errtext.push_str(tile.name());
+                        errtext.push_str(" goes on ");
+                        errtext.push_str(Tile::new(tile.under_id()).name());
+                        worldmsg.push(WorldMessage::new(&errtext,(x as usize, y as usize)));
+                    }
                 } else {
                     player.mode = PlayerMode::Talk;
-                    input_player_target(camera, player, world);
+                    input_player_target(camera, player, world, worldmsg);
                 }
             }
             _ => {

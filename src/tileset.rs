@@ -7,7 +7,7 @@ pub struct TileSet {
     pub windows: [Option<Texture2D>; 6],
     pub items: [Option<Texture2D>; 3],
     pub skins: [Skin; 2],
-    pub textpar: [TextParams; 5],
+    pub textpar: [TextParams; 6],
     pub font: Font,
 }
 
@@ -61,7 +61,14 @@ impl TileSet {
             color: WHITE,
             ..Default::default()
         };
-        let textpar = [header, info, body, bighead, uitext];
+        let msgtext = TextParams {
+            font_size: 12,
+            font_scale: 1.,
+            font: load_ttf_font_from_bytes(font_bytes).unwrap(),
+            color: WHITE,
+            ..Default::default()
+        };
+        let textpar = [header, info, body, bighead, uitext, msgtext];
         let skins = [skin1, skin2];
         let mut ts = TileSet{
             tiles: [None; 8],
