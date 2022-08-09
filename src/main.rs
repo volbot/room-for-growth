@@ -116,7 +116,7 @@ async fn main() {
                 draw_build_ui(&game, &tileset);
             }
             PlayerMode::Assign => {
-                draw_assign_ui(&tileset);
+                draw_assign_ui(&game, &tileset);
             }
             _ => {
                 draw_main_ui(&game, &tileset);
