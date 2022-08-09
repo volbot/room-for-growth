@@ -1,3 +1,4 @@
+use crate::item::Item;
 use crate::message::WorldMessage;
 use crate::Game;
 use crate::interact::{Interaction, InteractType};
@@ -9,7 +10,6 @@ use crate::seals::Seal;
 use crate::shop::Register;
 use crate::tile::{TileType, Tile};
 use crate::world::{screen_to_tiles, World};
-use crate::camera::Camera;
 
 use macroquad::prelude::*;
 use macroquad::rand::gen_range;
@@ -25,7 +25,7 @@ pub struct Player {
 
 impl Player {
     pub fn new(pos: (usize, usize), world: &mut World) -> Player {
-        let p = Player {
+        let mut p = Player {
             person: Person::new("Player", pos, 0, world),
             target_id: None,
             mode: PlayerMode::Talk,
@@ -33,7 +33,7 @@ impl Player {
             tilerecipes: vec![TileRecipe::new(TileType::Grass.id())],
             denars: 0,
         };
-        //p.inventory.push(Item::new(0,200));
+        p.inventory.push(Item::new(0,200));
         p
     }
 
@@ -154,6 +154,7 @@ impl Player {
                     game.player.person.walk(&game.world);
                 }
             }
+            PlayerMode::Assign => { }
         }
     }
 }
@@ -176,11 +177,23 @@ impl CanWalk for Player {
 pub enum PlayerMode {
     Talk,
     Mine,
-    Build, 
+    Build,
+    Assign,
 }
 
-pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World, worldmsg: &mut Vec<WorldMessage>) {
+pub fn input_player_target(game: &mut Game, worldmsg: &mut Vec<WorldMessage>) {
+    match game.player.mode {
+        PlayerMode::Mine => {}
+        _ => {
+            if game.mine_state > -1 {
+                game.mine_state = -1;
+            }
+        }
+    }
     let clicked = is_mouse_button_pressed(MouseButton::Left);
+    let player = &mut game.player;
+    let world = &mut game.world;
+    let camera = &game.camera;
     if clicked {
         match player.mode {
             PlayerMode::Build => {
@@ -194,7 +207,7 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World, 
                 while i < world.people.len() {
                     if world.people.get(i).unwrap().entity.pos == (x as usize,y as usize) {
                         player.mode = PlayerMode::Talk;
-                        input_player_target(camera, player, world, worldmsg);
+                        input_player_target(game, worldmsg);
                         return
                     }
                     i += 1;
@@ -212,8 +225,51 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World, 
                     }
                 } else {
                     player.mode = PlayerMode::Talk;
-                    input_player_target(camera, player, world, worldmsg);
+                    input_player_target(game, worldmsg);
+                    return
                 }
+            }
+            PlayerMode::Assign => {
+                let mouse = mouse_position();
+                let (x, y) = screen_to_tiles(camera.project(mouse));
+                if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
+                    return
+                }
+                let wc = world.clone();
+                let seal = world.seals.get_mut(player.target_id.unwrap()).unwrap();
+                let sealpos = seal.pos.clone();
+                let mut i = 0;
+                while i < wc.people.len() {
+                    let person = wc.people.get(i).unwrap();
+                    if person.entity.pos == (x as usize, y as usize) {
+                        seal.owner = Some(person.clone());
+                        break;
+                    }
+                    i+=1;
+                }
+                if i < wc.people.len() {
+                    let person: &mut Person = world.people.get_mut(i).unwrap();
+                    for n in wc.neighbors(sealpos) {
+                        if wc.data[n.0][n.1].is_walkable() && wc.is_inside(n, &mut Vec::new()) {
+                            person.target = Some((n.0, n.1));
+                            player.target_id = None;
+                            player.mode = PlayerMode::Talk;
+                            break
+                        }
+                    }
+                    for seal2 in &mut world.seals {
+                        if seal2.owner.is_some() && seal2.pos != sealpos {
+                            let owner = seal2.owner.clone().unwrap();
+                            if owner.entity.name == person.entity.name {
+                                seal2.owner = None;
+                            }
+                        }
+                    }
+                } else {
+                    player.mode = PlayerMode::Talk;
+                    input_player_target(game, worldmsg);
+                }
+                return
             }
             _ => {
                 player.mode = PlayerMode::Talk;
@@ -263,6 +319,25 @@ pub fn input_player_target(camera: &Camera, player: &mut Player, world: &World, 
             return
         }
     }
+    let clicked = is_mouse_button_pressed(MouseButton::Middle);
+    if clicked {
+        let mouse = mouse_position();
+        let (x, y) = screen_to_tiles(camera.project(mouse));
+        if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
+            return
+        }
+        if world.data[x as usize][y as usize].id == TileType::Seal.id() {
+            let mut i = 0;
+            while i < world.seals.len() {
+                let seal = world.seals.get(i).unwrap();
+                if seal.pos == (x as usize, y as usize) {
+                    player.mode = PlayerMode::Assign;
+                    player.target_id = Some(i);
+                }
+                i+=1;
+            }
+        }
+    }
 }
 
 pub fn input_player_keys(game: &mut Game) {
@@ -272,5 +347,9 @@ pub fn input_player_keys(game: &mut Game) {
     if is_key_pressed(KeyCode::Q) {
         game.player.mode = PlayerMode::Build;
         game.window_active = Some(Interaction::new(InteractType::Complete, "**Building", "", None));
+    }
+    if is_key_pressed(KeyCode::Escape) {
+        game.player.target_id = None;
+        game.player.mode = PlayerMode::Talk;
     }
 }

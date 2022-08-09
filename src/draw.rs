@@ -261,6 +261,11 @@ pub fn draw_main_ui(game: &Game, tileset: &TileSet) {
     moneytext.push_str(&game.player.denars.to_string());
     draw_text_ex(&moneytext, 2., 20., tileset.textpar[4]);
 }
+pub fn draw_assign_ui(tileset: &TileSet) {
+    draw_text_ex("ASSIGN MODE", 2., 20., tileset.textpar[4]);
+    draw_text_ex("Click a person to assign", 2., 40., tileset.textpar[4]);
+    draw_text_ex("to the selected seal.", 2., 60., tileset.textpar[4]);
+}
 pub fn draw_build_ui(game: &Game, tileset: &TileSet) {
     draw_text_ex("BUILD MODE", 2., 20., tileset.textpar[4]);
     let mut seltext = "Building: ".to_string();

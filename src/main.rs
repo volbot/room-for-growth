@@ -94,7 +94,7 @@ async fn main() {
             }
         } else { //if no window
             input_camera_movement(&mut game.camera);            //check camera movement
-            input_player_target(&game.camera, &mut game.player, &game.world, &mut worldmsg); //check player movement
+            input_player_target(&mut game, &mut worldmsg); //check player movement
             input_player_keys(&mut game);       //check player keys
             draw_world_msg(&game, &mut worldmsg, &tileset);
 
@@ -114,6 +114,9 @@ async fn main() {
         match game.player.mode {
             PlayerMode::Build => {
                 draw_build_ui(&game, &tileset);
+            }
+            PlayerMode::Assign => {
+                draw_assign_ui(&tileset);
             }
             _ => {
                 draw_main_ui(&game, &tileset);

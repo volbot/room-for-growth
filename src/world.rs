@@ -79,7 +79,7 @@ impl World {
                 }
                 return sum == total;
             }
-            TileType::Planks | TileType::Seal => {
+            TileType::Planks | TileType::Seal | TileType::Register => {
                 true
             }
             TileType::Grass => {

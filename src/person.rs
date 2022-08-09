@@ -54,10 +54,10 @@ impl Person {
 
     pub fn think(&mut self, world: &World) {
         let time = get_time();
-        let seal = world.get_seal(self.entity.pos);
         if self.target.is_some() {
             return
         }
+        let seal = world.get_seal(self.entity.pos);
         if seal.is_some() {
             let owner = seal.unwrap().owner.clone();
             if owner.is_some() && owner.unwrap().entity.name == self.entity.name {
@@ -101,19 +101,6 @@ impl Person {
                     }
                     match person.quest.clone().unwrap().objec.tipo {
                         QuestType::House => {
-                            if person.target.is_none() {
-                                for seal in &mut game.world.seals {
-                                    if seal.owner.is_some() {
-                                        continue
-                                    }
-                                    for n in world_copy.neighbors(seal.pos) {
-                                        if world_copy.is_inside(n, &mut Vec::new()) && game.world.data[n.0][n.1].is_walkable() {
-                                            person.target = Some(n);
-                                            seal.owner = Some(person.clone()); 
-                                        }
-                                    }
-                                }
-                            }
                             if world_copy.is_inside(person.entity.pos, &mut Vec::new()) {
                                 person.advance_quest();
                             }
