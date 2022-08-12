@@ -80,11 +80,11 @@ async fn main() {
         draw_person(&game.camera, &game.player.person, &tileset); //draw the player
         Player::think(&mut game);                  //do player data
         if game.window_active.is_some() {                       //if game window exists,
-            if game.window_active.unwrap().text == "**Inventory" { //check data for special cases
+            if game.window_active.as_ref().unwrap().text == "**Inventory" { //check data for special cases
                 draw_inventory(&mut game, &tileset);                        //draw inventory
-            } else if game.window_active.unwrap().text == "**Building" {
+            } else if game.window_active.as_ref().unwrap().text == "**Building" {
                 draw_build_menu(&BuildMenu::new(&game.player), &mut game, &tileset); //draw buildmenu
-            } else if game.window_active.unwrap().text == "**Shop" {
+            } else if game.window_active.as_ref().unwrap().text == "**Shop" {
                 let seal = world_copy.get_seal(game.player.person.entity.pos); 
                 if seal.is_some() && seal.unwrap().register.is_some() {
                     draw_shop_menu(&seal.unwrap(), &mut game, &tileset);
@@ -92,7 +92,7 @@ async fn main() {
                     game.window_active = None;
                 }
             } else {
-                draw_popup(&game.window_active.unwrap(), &mut game, &tileset); //if no special
+                draw_popup(&game.window_active.clone().unwrap(), &mut game, &tileset); //if no special
                                                                                //   case, draw the
                                                                                //   interaction as-is
             }

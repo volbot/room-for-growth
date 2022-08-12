@@ -28,7 +28,7 @@ pub fn draw_person(cam: &Camera, person: &Person, tileset: &TileSet) {
     draw_entity(cam, &person.entity, tileset);
     if person.interact.is_some() {
         draw_texture(
-            person.interact.unwrap().tex(tileset), 
+            person.interact.clone().unwrap().tex(tileset), 
             ((person.entity.pos.0)*40) as f32 * cam.scale + cam.corner.0, 
             ((person.entity.pos.1)*40-40) as f32 * cam.scale + cam.corner.1, 
             WHITE);
@@ -65,7 +65,7 @@ pub fn draw_popup(interact: &Interaction, game: &mut Game, tileset: &TileSet) {
         draw_text_ex(s, 190., i, tileset.textpar[2]);
         i+=20.
     }
-    if root_ui().button(Vec2::new(445.0, 690.0), interact.text_button) {
+    if root_ui().button(Vec2::new(445.0, 690.0), interact.text_button.clone()) {
         game.window_active = None;
     }
 }
@@ -326,13 +326,9 @@ pub fn draw_loc_indic(game: &Game, tileset: &TileSet) {
     }
     let scr_player_pos = tiles_to_screen(player_pos);
     let mut cam_pos = game.camera.corner;
-    println!("P {:?}",scr_player_pos);
-    println!("B {:?}",cam_pos);
     cam_pos.0 -= game.camera.res.0 as f32/2.;
     cam_pos.1 -= game.camera.res.1 as f32/2.;
-    println!("A {:?}",cam_pos);
     let ang = (cam_pos.1 - scr_player_pos.1).atan2(cam_pos.0 - scr_player_pos.0);
-    println!("{}", ang);
     let par = DrawTextureParams {
         rotation: ang,
         ..Default::default()

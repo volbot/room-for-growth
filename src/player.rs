@@ -69,11 +69,11 @@ impl Player {
                 let person = &mut game.world.people.get_mut(game.player.target_id.unwrap()).unwrap();
                 let dist = game.player.person.entity.distance(&person.entity);
                 if dist <= 1 {
-                    let result = person.interact;
+                    let result = person.interact.clone();
                     game.player.target_id = None;
                     game.player.person.target = None;
                     if result.is_some() {
-                        match result.unwrap().tipo { 
+                        match result.clone().unwrap().tipo { 
                             InteractType::Quest => {
                                 person.advance_quest();
                             }
@@ -82,7 +82,7 @@ impl Player {
                                 if reward.is_some(){
                                     game.player.accept_reward(&reward.clone().unwrap());
                                 }
-                                let next = person.interact.unwrap().data;
+                                let next = person.interact.clone().unwrap().data;
                                 if next.is_some() {
                                     person.set_quest(game.world.quest_list.get(next.unwrap() as usize).unwrap());
                                 } else {
@@ -107,6 +107,10 @@ impl Player {
                             game.player.person.target = None;
                             return
                         }
+                    }
+                    if game.player.person.target.unwrap() == game.player.person.entity.pos {
+                        game.player.person.target = None;
+                        return
                     }
                     let time = get_time();
                     if game.mine_state == -1 {

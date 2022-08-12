@@ -42,13 +42,13 @@ impl Person {
 
     pub fn set_quest(&mut self, quest: &Quest) {
         self.quest = Some(quest.clone());
-        self.interact = Some(quest.msgs[0]);
+        self.interact = Some(quest.msgs[0].clone());
     }
 
     pub fn advance_quest(&mut self) {
         let mut quest = self.quest.clone().unwrap();
         quest.status += 1;
-        self.interact = Some(quest.msgs[quest.status]);
+        self.interact = Some(quest.msgs[quest.status].clone());
         self.quest = Some(quest);
     }
 
@@ -94,7 +94,7 @@ impl Person {
             if person.quest.is_none() {
                 return
             }
-            match person.interact.unwrap().tipo {
+            match person.interact.clone().unwrap().tipo {
                 InteractType::Waiting => {
                     if person.quest.clone().unwrap().is_completable(&game.player) {
                         person.advance_quest();

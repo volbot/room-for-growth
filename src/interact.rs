@@ -1,19 +1,22 @@
-use crate::tileset::TileSet;
+use crate::{tileset::TileSet, person::Person};
 
 use macroquad::prelude::*;
 
-#[derive(Clone,Copy,Debug)]
+#[derive(Clone,Debug)]
 pub struct Interaction {
     pub tipo: InteractType,
-    pub text: &'static str,
-    pub text_button: &'static str,
+    pub text: String,
+    pub text_button: String,
     pub data: Option<i32>,
 }
 
 impl Interaction {
-    pub fn new(tipo: InteractType, text: &'static str, text_button: &'static str, data: Option<i32>) -> Interaction {
+    pub fn new(tipo: InteractType, text: &str, text_button: &str, data: Option<i32>) -> Interaction {
         Interaction {
-            tipo, text, text_button, data
+            tipo, 
+            text: text.to_string(), 
+            text_button: text.to_string(), 
+            data
         }
     }
 
