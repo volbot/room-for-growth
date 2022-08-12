@@ -48,9 +48,10 @@ pub struct Game {
 
 #[macroquad::main("Bungo")]
 async fn main() {
-    next_frame().await;
     clear_background(BLACK);
-    draw_texture(load_texture("assets/ui/loadscreen.png").await.unwrap(),0.,0.,WHITE);
+    let tex = load_texture("assets/ui/loadscreen.png").await.unwrap(); 
+    draw_texture(tex,0.,0.,WHITE);
+    next_frame().await;
     srand(macroquad::miniquad::date::now() as u64); //seed randomness with current date/time
     let tileset = TileSet::new().await; //generate tileset and wait for it to complete
     let mut w = World::new();           //create world
