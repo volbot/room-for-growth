@@ -48,6 +48,7 @@ pub struct Game {
 
 #[macroquad::main("Bungo")]
 async fn main() {
+    next_frame().await;
     clear_background(BLACK);
     draw_texture(load_texture("assets/ui/loadscreen.png").await.unwrap(),0.,0.,WHITE);
     next_frame().await;
