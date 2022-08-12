@@ -59,10 +59,13 @@ pub fn draw_world(camera: &Camera, world: &World, tileset: &TileSet) {
 
 pub fn draw_popup(interact: &Interaction, game: &mut Game, tileset: &TileSet) {
     draw_texture(tileset.windows[1].unwrap(), 150.0, 600.0, WHITE);
+    let mut name_str = interact.name.clone();
+    name_str.push_str(": ");
+    draw_text_ex(&name_str, 180., 630., tileset.textpar[2]);
     let split = interact.text.split("^^");
-    let mut i = 640.;
+    let mut i = 650.;
     for s in split {
-        draw_text_ex(s, 190., i, tileset.textpar[2]);
+        draw_text_ex(s, 190., i, tileset.textpar[0]);
         i+=20.
     }
     if root_ui().button(Vec2::new(445.0, 690.0), interact.text_button.clone()) {

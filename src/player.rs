@@ -59,7 +59,7 @@ impl Player {
                             if dist <= 1 {
                                 game.player.target_id = None;
                                 game.player.person.target = None;
-                                game.window_active = Some(Interaction::new(InteractType::Complete, "**Shop", "", None));
+                                game.window_active = Some(Interaction::new(InteractType::Complete, "", "**Shop", "", None));
                             }
                         }
                     }
@@ -346,11 +346,11 @@ pub fn input_player_target(game: &mut Game, worldmsg: &mut Vec<WorldMessage>) {
 
 pub fn input_player_keys(game: &mut Game) {
     if is_key_pressed(KeyCode::E) {
-        game.window_active = Some(Interaction::new(InteractType::Complete, "**Inventory", "", None));
+        game.window_active = Some(Interaction::new(InteractType::Complete, "", "**Inventory", "", None));
     }
     if is_key_pressed(KeyCode::Q) {
         game.player.mode = PlayerMode::Build;
-        game.window_active = Some(Interaction::new(InteractType::Complete, "**Building", "", None));
+        game.window_active = Some(Interaction::new(InteractType::Complete, "", "**Building", "", None));
     }
     if is_key_pressed(KeyCode::Escape) {
         game.player.target_id = None;
