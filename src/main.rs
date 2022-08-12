@@ -97,6 +97,7 @@ async fn main() {
             input_player_target(&mut game, &mut worldmsg); //check player movement
             input_player_keys(&mut game);       //check player keys
             draw_world_msg(&game, &mut worldmsg, &tileset);
+            draw_loc_indic(&game, &tileset);
 
             if game.mine_state >= 0 && game.player.person.target.is_some() {
                 let mut t = tiles_to_screen(game.player.person.target.unwrap());

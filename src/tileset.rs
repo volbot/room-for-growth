@@ -3,7 +3,7 @@ use macroquad::{prelude::*, ui::{Skin, root_ui}};
 pub struct TileSet {
     pub tiles: [Option<Texture2D>; 8],
     pub people: [Option<Texture2D>; 3],
-    pub icons: [Option<Texture2D>; 3],
+    pub icons: [Option<Texture2D>; 4],
     pub windows: [Option<Texture2D>; 6],
     pub items: [Option<Texture2D>; 3],
     pub mine: [Option<Texture2D>; 4],
@@ -74,7 +74,7 @@ impl TileSet {
         let mut ts = TileSet{
             tiles: [None; 8],
             people: [None; 3],
-            icons: [None; 3],
+            icons: [None; 4],
             windows: [None; 6],
             items: [None; 3],
             mine: [None; 4],
@@ -97,6 +97,7 @@ impl TileSet {
         ts.icons[0] = Some(load_texture("assets/ui/ingame/new_info.png").await.unwrap());
         ts.icons[1] = Some(load_texture("assets/ui/ingame/good_info.png").await.unwrap());
         ts.icons[2] = Some(load_texture("assets/ui/ingame/dec_info.png").await.unwrap());
+        ts.icons[3] = Some(load_texture("assets/ui/world/indic.png").await.unwrap());
 
         ts.windows[0] = Some(load_texture("assets/ui/windows/button_bg.png").await.unwrap());
         ts.windows[1] = Some(load_texture("assets/ui/windows/popup_bg.png").await.unwrap());

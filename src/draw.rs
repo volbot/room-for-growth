@@ -1,3 +1,4 @@
+use crate::camera::Camera;
 use crate::Game;
 use crate::buildmenu::BuildMenu;
 use crate::interact::Interaction;
@@ -6,7 +7,7 @@ use crate::seals::Seal;
 use crate::shop::ShopItem;
 use crate::tile::Tile;
 use crate::world::tiles_to_screen;
-use crate::{person::Person, world::World, camera::Camera, entity::Entity};
+use crate::{person::Person, world::World, entity::Entity};
 use crate::tileset::TileSet;
 use macroquad::prelude::*;
 use macroquad::ui::*;
@@ -306,9 +307,7 @@ pub fn draw_world_msg(game: &Game, worldmsg: &mut Vec<WorldMessage>, tileset: &T
     let mut i = 0;
     while i < worldmsg.len() {
         let mut msg = worldmsg.get_mut(i).unwrap();
-        let mut pos = tiles_to_screen((msg.pos.0, msg.pos.1));
-        pos.0 -= game.camera.corner.0;
-        pos.1 -= game.camera.corner.1;
+        let pos = game.camera.project(tiles_to_screen((msg.pos.0, msg.pos.1)));
         let dims = measure_text(&msg.msg, Some(tileset.font), 12, 1.);
         draw_text_ex(&msg.msg, -pos.0 as f32-(dims.width/2.), -pos.1 as f32+20., tileset.textpar[5]);
         msg.timer += 1;
@@ -318,4 +317,25 @@ pub fn draw_world_msg(game: &Game, worldmsg: &mut Vec<WorldMessage>, tileset: &T
             i += 1;
         }
     }
+}
+
+pub fn draw_loc_indic(game: &Game, tileset: &TileSet) {
+    let player_pos = game.player.person.entity.pos;
+    if game.camera.is_tile_visible(player_pos) {
+        return
+    }
+    let scr_player_pos = tiles_to_screen(player_pos);
+    let mut cam_pos = game.camera.corner;
+    println!("P {:?}",scr_player_pos);
+    println!("B {:?}",cam_pos);
+    cam_pos.0 -= game.camera.res.0 as f32/2.;
+    cam_pos.1 -= game.camera.res.1 as f32/2.;
+    println!("A {:?}",cam_pos);
+    let ang = (cam_pos.1 - scr_player_pos.1).atan2(cam_pos.0 - scr_player_pos.0);
+    println!("{}", ang);
+    let par = DrawTextureParams {
+        rotation: ang,
+        ..Default::default()
+    };
+    draw_texture_ex(tileset.icons[3].unwrap(), -50. + game.camera.res.0 as f32, 10., WHITE, par);
 }
