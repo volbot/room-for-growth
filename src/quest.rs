@@ -91,7 +91,7 @@ pub fn get_quests() -> Vec<Quest> {
                 "Hey, welcome to the neighborhood!^^...is what I'd say if there was anything here.^^Bring me 20 Logs if you want to^^help change that!", "Ok",
                 "Bring me 20 Logs, by right-clicking^^some Brush, so I can show you how to build ^^stuff. I'll even let you keep 'em.", "Nice",
                 "Nice job! Here's some Sealing Wax,^^which you'll need in a sec.", "Thanks"], 
-                Some(1), Some(Reward::new(vec![Item::new(2,1)],vec![TileRecipe::new(TileType::Planks.id()),TileRecipe::new(TileType::Boards.id()),TileRecipe::new(TileType::Seal.id())]))),
+                Some(1), Some(Reward::new(vec![Item::new(2,1)],vec![TileRecipe::new(TileType::Planks.id()),TileRecipe::new(TileType::Boards.id()),TileRecipe::new(TileType::ShopSeal.id())]))),
         Quest::new(QuestObjective::new(QuestType::House,None,None), [
                 "Now that you've got some resources,^^could you build me a house? You can use^^that Wax on a doorway to protect it^^from the elements.", "Sure",
                 "I couldn't build if I wanted to,^^without access to the 'Q' and 'E' keys.^^You can Middle-Click a Seal to assign^^me to it.", "Sorry",
@@ -101,7 +101,7 @@ pub fn get_quests() -> Vec<Quest> {
                 "I won't always be here to give you^^free materials. Paid materials, however,^^I could manage, if you set up a^^Register in my place!", "Ok",
                 "Just place down a Register in my^^house, and I'll be able to start selling^^essentials from there.","Ok",
                 "Awesome! For being such a pal,^^I'll buy Logs and Dirt off you from now^^on.","Cool"],
-                Some(3), None),
+                Some(3), Some(Reward::new(Vec::new(),vec![TileRecipe::new(TileType::HomeSeal.id())]))),
         Quest::new(QuestObjective::new(QuestType::House,None,None), [
                 "Hey, I heard there was a new builder in the area!^^I'd love a house, if you're building 'em!", "Ok",
                 "Sorry to be forward, but there hasn't been a^^builder around in years! It's cold out here,^^man.", "Jeez",

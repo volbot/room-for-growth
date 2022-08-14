@@ -47,7 +47,7 @@ pub fn successors_inside(pos: (i32, i32), world: &World) -> Vec<(i32, i32)> {
         if curr.0 < world.data.len() as i32 && curr.1 < world.data[0].len() as i32 && //WorldLim
             curr.0 >= 0 && curr.1 >= 0 { //WorldLim
                     let id = world.data[curr.0 as usize][curr.1 as usize].id;
-                    if id == TileType::Boards.id() || id == TileType::Seal.id() {
+                    if id == TileType::Boards.id() || id == TileType::ShopSeal.id() || id == TileType::HomeSeal.id() {
                         i += 1;
                         continue
                     }

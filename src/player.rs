@@ -146,8 +146,11 @@ impl Player {
                             let target = game.player.person.target.unwrap();
                             game.world.data[target.0][target.1].id = tile.id;
                             match tile.tipo() {
-                                TileType::Seal => {
+                                TileType::ShopSeal => {
                                     game.world.seals.push(Seal::new((target.0,target.1), SealType::Shop));
+                                } 
+                                TileType::HomeSeal => {
+                                    game.world.seals.push(Seal::new((target.0,target.1), SealType::House));
                                 }
                                 TileType::Register => {
                                     let seal = game.world.get_seal_mut(target);
@@ -338,7 +341,7 @@ pub fn input_player_target(game: &mut Game, worldmsg: &mut Vec<WorldMessage>) {
         if x < 0 || y < 0 || x as usize >= world.data.len() || y as usize >= world.data[0].len() {
             return
         }
-        if world.data[x as usize][y as usize].id == TileType::Seal.id() {
+        if world.data[x as usize][y as usize].id == TileType::HomeSeal.id() || world.data[x as usize][y as usize].id == TileType::ShopSeal.id() {
             let mut i = 0;
             while i < world.seals.len() {
                 let seal = world.seals.get(i).unwrap();

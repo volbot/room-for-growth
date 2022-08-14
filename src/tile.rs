@@ -21,8 +21,9 @@ impl Tile {
             3 => {TileType::Planks}
             4 => {TileType::Boards}
             5 => {TileType::Brush}
-            6 => {TileType::Seal}
+            6 => {TileType::ShopSeal}
             7 => {TileType::Register}
+            8 => {TileType::HomeSeal}
             _ => {TileType::Grass}
         }
     }
@@ -34,7 +35,7 @@ impl Tile {
             7 => {
                 Item::new(0,10)
             }
-            6 => {
+            6 | 8 => {
                 Item::new(2,1)
             }
             5 => {
@@ -53,7 +54,7 @@ impl Tile {
     }
     pub fn is_mineable(&self) -> bool {
         match self.id {
-            0 | 3 | 4 | 5 | 6 | 7 => {
+            0 | 3 | 4 | 5 | 6 | 7 | 8 => {
                 true
             }
             _ => {
@@ -69,21 +70,21 @@ impl Tile {
             3 => {"Planks"}
             4 => {"Boards"}
             5 => {"Brush"}
-            6 => {"Seal"}
+            6 | 8 => {"Seal"}
             7 => {"Register"}
             _ => {"None"}
         }
     }
     pub fn is_walkable(&self) -> bool{
         match self.id {
-            0 | 4 | 5 | 6 => {true},
+            0 | 4 | 5 | 6 | 8 => {true},
             _ => {false}
         }
     }
     pub fn under_id(&self) -> usize {
         match self.id {
             0 => {TileType::Water.id()}
-            6 | 7 => {TileType::Boards.id()}
+            6 | 7 | 8 => {TileType::Boards.id()}
             _ => {TileType::Grass.id()}
         }
     }
@@ -97,7 +98,8 @@ pub enum TileType {
     Planks,
     Boards,
     Brush,
-    Seal,
+    ShopSeal,
+    HomeSeal,
     Register,
 }
 
@@ -110,8 +112,9 @@ impl TileType {
             TileType::Planks => {3}
             TileType::Boards => {4}
             TileType::Brush => {5}
-            TileType::Seal => {6}
+            TileType::ShopSeal => {6}
             TileType::Register => {7}
+            TileType::HomeSeal => {8}
         }
     }
 }
