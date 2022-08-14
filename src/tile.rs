@@ -70,8 +70,9 @@ impl Tile {
             3 => {"Planks"}
             4 => {"Boards"}
             5 => {"Brush"}
-            6 | 8 => {"Seal"}
+            6 => {"Shop Seal"}
             7 => {"Register"}
+            8 => {"Home Seal"}
             _ => {"None"}
         }
     }
