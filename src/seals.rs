@@ -3,14 +3,15 @@ use crate::{person::Person, shop::Register};
 #[derive(Clone,Debug)]
 pub struct Seal {
     pub pos: (usize, usize),
+    pub tipo: SealType,
     pub owner: Option<Person>,
     pub register: Option<Register>,
 }
 
 impl Seal {
-    pub fn new(pos: (usize, usize)) -> Seal {
+    pub fn new(pos: (usize, usize), tipo: SealType) -> Seal {
         Seal {
-            pos,
+            pos, tipo,
             owner: None,
             register: None,
         }
@@ -37,4 +38,10 @@ impl Seal {
             }))
         }
     }
+}
+
+#[derive(Clone,Debug)]
+pub enum SealType {
+    Shop,
+    House,
 }

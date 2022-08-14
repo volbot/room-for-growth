@@ -12,10 +12,10 @@ pub struct Interaction {
 }
 
 impl Interaction {
-    pub fn new(tipo: InteractType, name: &str, text: &str, text_button: &str, data: Option<i32>) -> Interaction {
+    pub fn new(tipo: InteractType, text: &str, text_button: &str, data: Option<i32>) -> Interaction {
         Interaction {
             tipo, 
-            name: name.to_string(),
+            name: "".to_string(),
             text: text.to_string(),
             text_button: text_button.to_string(), 
             data

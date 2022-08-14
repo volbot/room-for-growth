@@ -42,13 +42,17 @@ impl Person {
 
     pub fn set_quest(&mut self, quest: &Quest) {
         self.quest = Some(quest.clone());
-        self.interact = Some(quest.msgs[0].clone());
+        let mut inter = quest.msgs[0].clone();
+        inter.name = self.entity.name.clone();
+        self.interact = Some(inter);
     }
 
     pub fn advance_quest(&mut self) {
         let mut quest = self.quest.clone().unwrap();
         quest.status += 1;
-        self.interact = Some(quest.msgs[quest.status].clone());
+        let mut inter = quest.msgs[quest.status].clone();
+        inter.name = self.entity.name.clone();
+        self.interact = Some(inter);
         self.quest = Some(quest);
     }
 
@@ -92,7 +96,7 @@ impl Person {
         let world_copy = &game.world.clone();
         for person in &mut game.world.people {
             if person.quest.is_none() {
-                return
+                continue
             }
             match person.interact.clone().unwrap().tipo {
                 InteractType::Waiting => {

@@ -6,8 +6,9 @@ use crate::inventory::Inventory;
 use crate::person::{Person, CanWalk};
 use crate::recipe::TileRecipe;
 use crate::reward::Reward;
-use crate::seals::Seal;
+use crate::seals::{Seal, SealType};
 use crate::shop::Register;
+use crate::storyhooks::insert_character_2;
 use crate::tile::{TileType, Tile};
 use crate::world::{screen_to_tiles, World};
 
@@ -59,7 +60,7 @@ impl Player {
                             if dist <= 1 {
                                 game.player.target_id = None;
                                 game.player.person.target = None;
-                                game.window_active = Some(Interaction::new(InteractType::Complete, "", "**Shop", "", None));
+                                game.window_active = Some(Interaction::new(InteractType::Complete, "**Shop", "", None));
                             }
                         }
                     }
@@ -84,7 +85,14 @@ impl Player {
                                 }
                                 let next = person.interact.clone().unwrap().data;
                                 if next.is_some() {
-                                    person.set_quest(game.world.quest_list.get(next.unwrap() as usize).unwrap());
+                                    match next.clone().unwrap() {
+                                        3 => { 
+                                            person.quest = None;
+                                            person.interact = None;
+                                            insert_character_2(&mut game.world); 
+                                        }
+                                        _ => { person.set_quest(game.world.quest_list.get(next.unwrap() as usize).unwrap()); }
+                                    }
                                 } else {
                                     person.quest = None;
                                     person.interact = None;
@@ -139,7 +147,7 @@ impl Player {
                             game.world.data[target.0][target.1].id = tile.id;
                             match tile.tipo() {
                                 TileType::Seal => {
-                                    game.world.seals.push(Seal::new((target.0,target.1)));
+                                    game.world.seals.push(Seal::new((target.0,target.1), SealType::Shop));
                                 }
                                 TileType::Register => {
                                     let seal = game.world.get_seal_mut(target);
@@ -346,11 +354,11 @@ pub fn input_player_target(game: &mut Game, worldmsg: &mut Vec<WorldMessage>) {
 
 pub fn input_player_keys(game: &mut Game) {
     if is_key_pressed(KeyCode::E) {
-        game.window_active = Some(Interaction::new(InteractType::Complete, "", "**Inventory", "", None));
+        game.window_active = Some(Interaction::new(InteractType::Complete, "**Inventory", "", None));
     }
     if is_key_pressed(KeyCode::Q) {
         game.player.mode = PlayerMode::Build;
-        game.window_active = Some(Interaction::new(InteractType::Complete, "", "**Building", "", None));
+        game.window_active = Some(Interaction::new(InteractType::Complete, "**Building", "", None));
     }
     if is_key_pressed(KeyCode::Escape) {
         game.player.target_id = None;
