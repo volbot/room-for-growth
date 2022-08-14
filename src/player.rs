@@ -155,7 +155,10 @@ impl Player {
                                 TileType::Register => {
                                     let seal = game.world.get_seal_mut(target);
                                     if seal.is_some() {
-                                        seal.unwrap().register = Some(Register::new(target, 0));
+                                        match seal.as_ref().unwrap().tipo {
+                                            SealType::Shop => {seal.unwrap().register = Some(Register::new(target, 0));}
+                                            _ => {}
+                                        }
                                     }
                                 }
                                 _ => {}

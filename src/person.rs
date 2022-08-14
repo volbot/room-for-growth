@@ -61,8 +61,10 @@ impl Person {
         if self.target.is_some() {
             return
         }
+        let mut in_seal: Option<(usize, usize)> = None;
         let seal = world.get_seal(self.entity.pos);
         if seal.is_some() {
+            in_seal = Some(seal.clone().unwrap().pos);
             let owner = seal.unwrap().owner.clone();
             if owner.is_some() && owner.unwrap().entity.name == self.entity.name {
                 if seal.unwrap().register.is_some() {
@@ -79,11 +81,16 @@ impl Person {
         }
         if time >= self.last_act + 5. && rand::gen_range(0, (time - self.last_act) as i32) < (time - self.last_act - 5.) as i32 {
             let (mut x, mut y) = (self.entity.pos.0 as i32 + rand::gen_range(-3,3), self.entity.pos.1 as i32 + rand::gen_range(-3,3));
-            while !world.data[x as usize][y as usize].is_walkable() && 
-                if world.is_inside(self.entity.pos,&mut Vec::new()) {
-                    world.is_inside((x as usize, y as usize),&mut Vec::new())
+            while !world.data[x as usize][y as usize].is_walkable() || 
+                if in_seal.is_some() {
+                    let out_seal = world.get_seal((x as usize, y as usize));
+                    if out_seal.is_some() {
+                        out_seal.unwrap().pos != in_seal.unwrap()
+                    } else {
+                        true
+                    }
                 } else {
-                    true
+                    false
             }{
                 (x,y) = (self.entity.pos.0 as i32 + rand::gen_range(-3,3), self.entity.pos.1 as i32 + rand::gen_range(-3,3));
             }
