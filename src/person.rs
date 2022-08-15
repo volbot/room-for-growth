@@ -137,6 +137,20 @@ impl Person {
                                 }
                             }
                         }
+                        QuestType::Build => {
+                            let mut i = 0;
+                            while i < game.tracked_tiles.len() {
+                                let tup = game.tracked_tiles.get(i).unwrap();
+                                if tup.0 == person.quest.clone().unwrap().objec.goal_type.unwrap() as usize {
+                                    if tup.1 >= tup.2 {
+                                        game.tracked_tiles.remove(i);
+                                        person.advance_quest();
+                                        break
+                                    }
+                                }
+                                i += 1;
+                            }
+                        }
                         _ => {}
                     }
                 }
@@ -154,6 +168,7 @@ impl CanWalk for Person {
         let time = get_time();
         let mult = match world.data[self.entity.pos.0][self.entity.pos.1].tipo() {
             TileType::Brush => {2.0}
+            TileType::Path => {0.7}
             _ => {1.0}
         };
         if time >= self.last_act + 0.25 * self.speed * mult {

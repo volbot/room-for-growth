@@ -24,6 +24,7 @@ impl Tile {
             6 => {TileType::ShopSeal}
             7 => {TileType::Register}
             8 => {TileType::HomeSeal}
+            9 => {TileType::Path}
             _ => {TileType::Grass}
         }
     }
@@ -31,6 +32,9 @@ impl Tile {
         match self.id {
             0 => {
                 Item::new(1,4)
+            }
+            9 => {
+                Item::new(0,0)
             }
             7 => {
                 Item::new(0,10)
@@ -54,7 +58,7 @@ impl Tile {
     }
     pub fn is_mineable(&self) -> bool {
         match self.id {
-            0 | 3 | 4 | 5 | 6 | 7 | 8 => {
+            0 | 3 | 4 | 5 | 6 | 7 | 8 | 9 => {
                 true
             }
             _ => {
@@ -73,12 +77,13 @@ impl Tile {
             6 => {"Shop Seal"}
             7 => {"Register"}
             8 => {"Home Seal"}
+            9 => {"Path"}
             _ => {"None"}
         }
     }
     pub fn is_walkable(&self) -> bool{
         match self.id {
-            0 | 4 | 5 | 6 | 8 => {true},
+            0 | 4 | 5 | 6 | 8 | 9 => {true},
             _ => {false}
         }
     }
@@ -102,6 +107,7 @@ pub enum TileType {
     ShopSeal,
     HomeSeal,
     Register,
+    Path,
 }
 
 impl TileType {
@@ -116,6 +122,7 @@ impl TileType {
             TileType::ShopSeal => {6}
             TileType::Register => {7}
             TileType::HomeSeal => {8}
+            TileType::Path => {9}
         }
     }
 }

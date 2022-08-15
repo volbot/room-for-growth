@@ -4,6 +4,7 @@ use crate::Game;
 use crate::interact::{Interaction, InteractType};
 use crate::inventory::Inventory;
 use crate::person::{Person, CanWalk};
+use crate::quest::QuestType;
 use crate::recipe::TileRecipe;
 use crate::reward::Reward;
 use crate::seals::{Seal, SealType};
@@ -77,6 +78,10 @@ impl Player {
                         match result.clone().unwrap().tipo { 
                             InteractType::Quest => {
                                 person.advance_quest();
+                                let q = person.quest.clone().unwrap();
+                                if q.objec.tipo == QuestType::Build {
+                                    game.tracked_tiles.push((q.objec.goal_type.unwrap() as usize, 0, q.objec.goal_num.unwrap()));
+                                }
                             }
                             InteractType::Complete => {
                                 let reward = &person.quest.clone().unwrap().reward;
@@ -150,6 +155,11 @@ impl Player {
                             game.player.inventory.pop(tile.resources());
                             let target = game.player.person.target.unwrap();
                             game.world.data[target.0][target.1].id = tile.id;
+                            for tup in &mut game.tracked_tiles {
+                                if tup.0 == tile.id {
+                                    tup.1+=1;
+                                }
+                            }
                             match tile.tipo() {
                                 TileType::ShopSeal => {
                                     game.world.seals.push(Seal::new((target.0,target.1), SealType::Shop));

@@ -71,12 +71,13 @@ impl QuestObjective {
     }
 }
 
-#[derive(Clone,Copy,Debug)]
+#[derive(Eq, PartialEq, Clone,Copy,Debug)]
 pub enum QuestType {
     Materials,
     House,
     HouseS,
     Assign,
+    Build,
 }
 
 pub fn get_quests() -> Vec<Quest> {
@@ -100,6 +101,11 @@ pub fn get_quests() -> Vec<Quest> {
                 "Hey, I heard there was a new builder in the area! I'd^^love a house with a Home Seal, if you're^^building!", "Ok",
                 "I totally WOULD start a shop, but I don't really have^^any wares, myself. I'm just looking for a^^place to crash.", "Jeez",
                 "Thank you! It's like I can finally^^think straight!", "Sure"],
+                Some(4), Some(Reward::new(Vec::new(),vec![TileRecipe::new(TileType::Path.id())]))),
+        Quest::new(QuestObjective::new(QuestType::Build,Some(10),Some(9)), [
+                "Now, I couldn't help but notice that there don't happen^^to be any paths, anywhere in town. That's^^pretty dangerous, man! You should^^place 10 or so around town.","Ok",
+                "I'm no snitch, but lack of pathing is a pretty serious^^thing. Think of the lawsuits if someone^^trips!","Wow",
+                "Great job! Now, if someone trips, all they have to^^blame is themselves!","Nice"],
                 None, None)
     ]
 }

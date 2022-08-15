@@ -1,7 +1,7 @@
 use macroquad::{prelude::*, ui::{Skin, root_ui}};
 
 pub struct TileSet {
-    pub tiles: [Option<Texture2D>; 9],
+    pub tiles: [Option<Texture2D>; 10],
     pub people: [Option<Texture2D>; 3],
     pub icons: [Option<Texture2D>; 4],
     pub windows: [Option<Texture2D>; 6],
@@ -72,7 +72,7 @@ impl TileSet {
         let textpar = [header, info, body, bighead, uitext, msgtext];
         let skins = [skin1, skin2];
         let mut ts = TileSet{
-            tiles: [None; 9],
+            tiles: [None; 10],
             people: [None; 3],
             icons: [None; 4],
             windows: [None; 6],
@@ -90,6 +90,7 @@ impl TileSet {
         ts.tiles[6] = Some(load_texture("assets/tiles/shopseal.png").await.unwrap());
         ts.tiles[7] = Some(load_texture("assets/tiles/register.png").await.unwrap());
         ts.tiles[8] = Some(load_texture("assets/tiles/homeseal.png").await.unwrap());
+        ts.tiles[9] = Some(load_texture("assets/tiles/path.png").await.unwrap());
 
         ts.people[0] = Some(load_texture("assets/entities/people/gunder.png").await.unwrap());
         ts.people[1] = Some(load_texture("assets/entities/people/shortstack.png").await.unwrap());

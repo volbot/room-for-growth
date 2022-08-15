@@ -44,6 +44,7 @@ pub struct Game {
     pub window_active: Option<Interaction>,
     pub mine_state: i32,
     pub mine_time: f64,
+    pub tracked_tiles: Vec<(usize, isize, isize)>,
 }
 
 #[macroquad::main("Bungo")]
@@ -63,6 +64,7 @@ async fn main() {
         window_active: None,
         mine_state: -1,
         mine_time: get_time(),
+        tracked_tiles: Vec::new(),
     };
     let mut worldmsg: Vec<WorldMessage> = Vec::new();
     root_ui().push_skin(&tileset.skins[0]); //set default skin

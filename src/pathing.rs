@@ -9,6 +9,9 @@ pub fn heuristic(pos: (i32, i32), goal: (i32, i32), world: &World) -> i32 {
             TileType::Brush => {
                 h*2+4
             }
+            TileType::Path => {
+                (h/2-4).max(0)
+            }
             _ => {
                 h
             }

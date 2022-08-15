@@ -15,8 +15,11 @@ impl BuildMenu {
         let mut j = 0;
         for recipe in &player.tilerecipes {
             let tile = Tile::new(recipe.id);
-            let possible = (inv.item_count(tile.resources().id) as f32/tile.resources().quant as f32).floor() as usize;
-            menu.data[i][j] = Some(BuildChoice::new(Tile::new(tile.id),possible as usize));
+            let mut possible = (inv.item_count(tile.resources().id) as f32/tile.resources().quant as f32).floor() as isize;
+            if tile.resources().quant == 0 {
+                possible = -1
+            }
+            menu.data[i][j] = Some(BuildChoice::new(Tile::new(tile.id),possible));
             j += 1;
             if j == 9 {
                 j = 0;
@@ -33,11 +36,11 @@ impl BuildMenu {
 #[derive(Clone,Copy,Debug)]
 pub struct BuildChoice {
     pub tile: Tile,
-    pub count: usize,
+    pub count: isize,
 }
 
 impl BuildChoice {
-    pub fn new(tile: Tile, count: usize) -> BuildChoice {
+    pub fn new(tile: Tile, count: isize) -> BuildChoice {
         BuildChoice {tile, count}
     }
 }

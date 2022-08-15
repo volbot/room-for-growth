@@ -133,7 +133,11 @@ pub fn draw_build_menu(menu: &BuildMenu, game: &mut Game, tileset: &TileSet) {
                 let item = menu.data[j][i].unwrap();
                 let tooltip: String = item.tile.name().to_string();
                 let mut quantity: String = " x".to_string();
-                quantity.push_str(&item.count.to_string());
+                if item.count == -1 {
+                    quantity.push_str("INF");
+                } else {
+                    quantity.push_str(&item.count.to_string());
+                }
                 draw_texture(tileset.tiles.get(item.tile.id).unwrap().unwrap(), corner.0+3., corner.1+10.0, WHITE);
                 draw_text_ex(&tooltip, corner.0, corner.1+59.0, tileset.textpar[1]);
                 draw_text_ex(&quantity, corner.0, corner.1+69.0, tileset.textpar[1]);
@@ -294,8 +298,13 @@ pub fn draw_build_ui(game: &Game, tileset: &TileSet) {
     if tid.is_some() {
         let tile = Tile::new(tid.unwrap());
         seltext.push_str(tile.name());
-        avail = game.player.inventory.item_stack_count(tile.resources());
-        availtext.push_str(&avail.to_string());
+        let res = tile.resources();
+        if res.quant == 0 {
+            availtext.push_str("INF");
+        } else {
+            avail = game.player.inventory.item_stack_count(tile.resources());
+            availtext.push_str(&avail.to_string());
+        }
     } else {
         seltext.push_str("None");
     }
