@@ -144,6 +144,17 @@ impl World {
         }
         return None
     }
+
+    pub fn del_seal(&mut self, pos: (usize, usize)) { 
+        let mut i = 0;
+        while i < self.seals.len() {
+            let seal = self.seals.get(i).unwrap();
+            if seal.pos == pos {
+                self.seals.remove(i);
+            }
+            i+=1;
+        }
+    }
 }
 
 pub fn screen_to_tiles(screen_coords: (f32, f32)) -> (isize, isize) {

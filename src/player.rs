@@ -129,7 +129,12 @@ impl Player {
                         game.mine_state = -1;
                         game.player.person.last_act = time;
                         let target = game.player.person.target.unwrap().clone();
-                        game.player.inventory.push(game.world.data[target.0][target.1].resources());
+                        let tile = game.world.data[target.0][target.1];
+                        match tile.tipo() {
+                            TileType::HomeSeal | TileType::ShopSeal => {game.world.del_seal((target.0,target.1))}
+                            _ => {}
+                        }
+                        game.player.inventory.push(tile.resources());
                         game.world.data[target.0][target.1].id = game.world.data[target.0][target.1].under_id();
                         game.player.person.target = None;
                     }

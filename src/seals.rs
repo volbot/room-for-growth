@@ -40,7 +40,7 @@ impl Seal {
     }
 }
 
-#[derive(Clone,Debug)]
+#[derive(Eq, PartialEq, Clone,Debug)]
 pub enum SealType {
     Shop,
     House,

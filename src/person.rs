@@ -1,5 +1,6 @@
 use crate::entity::Entity;
 use crate::quest::{Quest, QuestType};
+use crate::seals::SealType;
 use crate::world::World;
 use crate::tile::TileType;
 use crate::interact::{Interaction, InteractType};
@@ -111,9 +112,18 @@ impl Person {
                         person.advance_quest();
                     }
                     match person.quest.clone().unwrap().objec.tipo {
-                        QuestType::House => {
+                        QuestType::House | QuestType::HouseS => {
                             if world_copy.is_inside(person.entity.pos, &mut Vec::new()) {
-                                person.advance_quest();
+                                let seal = world_copy.get_seal(person.entity.pos);
+                                let obj_type = match person.quest.clone().unwrap().objec.tipo {
+                                     QuestType::House => {SealType::House},
+                                     QuestType::HouseS => {SealType::Shop},
+                                     _ => {SealType::House}
+                                };
+                                if seal.is_some() && seal.unwrap().tipo == obj_type && 
+                                    seal.unwrap().owner.is_some() && seal.unwrap().owner.clone().unwrap().entity.name == person.entity.name {
+                                    person.advance_quest();
+                                }
                             }
                         }
                         QuestType::Assign => {
