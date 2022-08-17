@@ -111,6 +111,11 @@ pub fn get_quests() -> Vec<Quest> {
                 "Wow, a town with no electronics! How did you achieve^^all this without any technology? You need^^to set me up a shop to fix that,^^IMMEDIATELY!","It's wood",
                 "I understand that you can place wood planks without^^a computer. My curiosity is with the fact^^that you found the motivation.","Lol",
                 "Awesome! Now I can sell you electronics! Check it^^out!","Nice"],
-                None, Some(Reward::new(Vec::new(),vec![TileRecipe::new(TileType::Beacon.id())]))),
+                Some(6), Some(Reward::new(Vec::new(),vec![TileRecipe::new(TileType::Beacon.id())]))),
+        Quest::new(QuestObjective::new(QuestType::Build,Some(1),Some(11)), [
+                "Using these Antennas, you can build a Beacon,^^and send word to more people! Then you won't ^^have to wait for them to blow^^into town like I did.","Cool",
+                "You should need three Antennas to build the^^Beacon. Then, you can make this a real town,^^with people and everything!","Nice",
+                "Awesome! Unfortunately, the beacon is not^^implemented yet. Thanks for playing the demo!","Fun!"],
+                None, Some(Reward::new(vec![Item::new(0,1000)],Vec::new()))),
     ]
 }

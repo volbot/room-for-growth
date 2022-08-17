@@ -393,6 +393,7 @@ pub fn input_player_keys(game: &mut Game) {
     }
     if is_key_pressed(KeyCode::Q) {
         game.player.mode = PlayerMode::Build;
+        game.player.person.target = None;
         game.window_active = Some(Interaction::new(InteractType::Complete, "**Building", "", None));
     }
     if is_key_pressed(KeyCode::Escape) {
