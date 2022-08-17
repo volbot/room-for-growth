@@ -9,7 +9,7 @@ use crate::recipe::TileRecipe;
 use crate::reward::Reward;
 use crate::seals::{Seal, SealType};
 use crate::shop::Register;
-use crate::storyhooks::insert_character_2;
+use crate::storyhooks::{insert_character_2, insert_character_3};
 use crate::tile::{TileType, Tile};
 use crate::world::{screen_to_tiles, World};
 
@@ -35,7 +35,7 @@ impl Player {
             tilerecipes: vec![TileRecipe::new(TileType::Grass.id())],
             denars: 0,
         };
-        p.inventory.push(Item::new(0,200));
+        p.inventory.push(Item::new(0,400));
         p
     }
 
@@ -56,7 +56,7 @@ impl Player {
                         game.player.walk(&game.world);
                     } else {
                         let tile = game.world.data[game.player.person.target.unwrap().0][game.player.person.target.unwrap().1];
-                        if tile.id == TileType::Register.id() {
+                        if tile.id == TileType::Register.id() || tile.id == TileType::TechReg.id() {
                             let dist = game.player.person.entity.distance_pos(game.player.person.target.unwrap());
                             if dist <= 1 {
                                 game.player.target_id = None;
@@ -95,6 +95,11 @@ impl Player {
                                             person.quest = None;
                                             person.interact = None;
                                             insert_character_2(&mut game.world); 
+                                        }
+                                        5 => {
+                                            person.quest = None;
+                                            person.interact = None;
+                                            insert_character_3(&mut game.world);
                                         }
                                         _ => { person.set_quest(game.world.quest_list.get(next.unwrap() as usize).unwrap()); }
                                     }
@@ -172,6 +177,15 @@ impl Player {
                                     if seal.is_some() {
                                         match seal.as_ref().unwrap().tipo {
                                             SealType::Shop => {seal.unwrap().register = Some(Register::new(target, 0));}
+                                            _ => {}
+                                        }
+                                    }
+                                }
+                                TileType::TechReg => {
+                                    let seal = game.world.get_seal_mut(target);
+                                    if seal.is_some() {
+                                        match seal.as_ref().unwrap().tipo {
+                                            SealType::Shop => {seal.unwrap().register = Some(Register::new(target, 1));}
                                             _ => {}
                                         }
                                     }
@@ -314,7 +328,7 @@ pub fn input_player_target(game: &mut Game, worldmsg: &mut Vec<WorldMessage>) {
                     return
                 }
                 let tile = world.data[x as usize][y as usize];
-                if tile.is_walkable() || tile.id == TileType::Register.id() {
+                if tile.is_walkable() || tile.is_interactable() {
                     player.person.target = Some((x as usize, y as usize));
                 } else {
                     player.person.target = None;

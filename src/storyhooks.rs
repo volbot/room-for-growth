@@ -17,6 +17,6 @@ pub fn insert_character_2(world: &mut World) {
 pub fn insert_character_3(world: &mut World) {
     let mut npc = Person::new("Techpriest Furlus",  (5,5), 3, world);
     npc.target = Some((40,40));
-    npc.set_quest(world.quest_list.get(4).unwrap());
+    npc.set_quest(world.quest_list.get(5).unwrap());
     world.people.push(npc);
 }

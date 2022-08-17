@@ -5,7 +5,7 @@ pub struct TileSet {
     pub people: [Option<Texture2D>; 4],
     pub icons: [Option<Texture2D>; 4],
     pub windows: [Option<Texture2D>; 6],
-    pub items: [Option<Texture2D>; 3],
+    pub items: [Option<Texture2D>; 5],
     pub mine: [Option<Texture2D>; 4],
     pub skins: [Skin; 2],
     pub textpar: [TextParams; 6],
@@ -76,7 +76,7 @@ impl TileSet {
             people: [None; 4],
             icons: [None; 4],
             windows: [None; 6],
-            items: [None; 3],
+            items: [None; 5],
             mine: [None; 4],
             skins,textpar,
             font: load_ttf_font_from_bytes(font_bytes).unwrap(),
@@ -119,6 +119,8 @@ impl TileSet {
         ts.items[0] = Some(load_texture("assets/items/logs.png").await.unwrap());
         ts.items[1] = Some(load_texture("assets/items/dirt.png").await.unwrap());
         ts.items[2] = Some(load_texture("assets/items/wax.png").await.unwrap());
+        ts.items[3] = Some(load_texture("assets/items/chip.png").await.unwrap());
+        ts.items[4] = Some(load_texture("assets/items/antenna.png").await.unwrap());
 
         ts
     }

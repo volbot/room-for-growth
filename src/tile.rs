@@ -35,6 +35,9 @@ impl Tile {
             0 => {
                 Item::new(1,4)
             }
+            11 => {
+                Item::new(4,3)
+            }
             9 => {
                 Item::new(0,0)
             }
@@ -87,7 +90,13 @@ impl Tile {
     }
     pub fn is_walkable(&self) -> bool{
         match self.id {
-            0 | 4 | 5 | 6 | 8 | 9 => {true},
+            0 | 4 | 5 | 6 | 8 | 9 => {true}
+            _ => {false}
+        }
+    }
+    pub fn is_interactable(&self) -> bool {
+        match self.id {
+            7 | 10 => {true}
             _ => {false}
         }
     }

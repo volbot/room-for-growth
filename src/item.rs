@@ -16,6 +16,8 @@ impl Item {
             0 => {"Log"}
             1 => {"Dirt"}
             2 => {"Wax"}
+            3 => {"Chip"}
+            4 => {"Antenna"}
             _ => {"None"}
         }
     }
@@ -25,6 +27,8 @@ impl Item {
             0 => {ItemType::Log}
             1 => {ItemType::Dirt}
             2 => {ItemType::Wax}
+            3 => {ItemType::Chip}
+            4 => {ItemType::Antenna}
             _ => {ItemType::Log}
         }
     }
@@ -34,6 +38,8 @@ pub enum ItemType {
     Log,
     Dirt,
     Wax,
+    Chip,
+    Antenna,
 }
 
 impl ItemType {
@@ -42,6 +48,8 @@ impl ItemType {
             ItemType::Log => {0}
             ItemType::Dirt => {1}
             ItemType::Wax => {2}
+            ItemType::Chip => {3}
+            ItemType::Antenna => {4}
         }
     }
 }

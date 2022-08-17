@@ -14,6 +14,7 @@ impl Register {
     pub fn tipo(&self) -> ShopType {
         match self.id {
             0 => {ShopType::Basic}
+            1 => {ShopType::Elec}
             _ => {ShopType::Basic}
         }
     }
@@ -33,13 +34,15 @@ impl ShopItem {
 
 #[derive(Clone,Copy,Debug)]
 pub enum ShopType {
-    Basic
+    Basic,
+    Elec,
 }
 
 impl ShopType {
     pub fn id(&self) -> usize {
         match self {
             ShopType::Basic => {0}
+            ShopType::Elec => {1}
         }
     }
 
@@ -49,6 +52,11 @@ impl ShopType {
                 ShopItem::new(Item::new(ItemType::Wax.id(),1),10),
                 ShopItem::new(Item::new(ItemType::Dirt.id(),25),-4),
                 ShopItem::new(Item::new(ItemType::Log.id(),20),-5),
+            ]}
+            ShopType::Elec => {[
+                ShopItem::new(Item::new(ItemType::Chip.id(),1),8),
+                ShopItem::new(Item::new(ItemType::Antenna.id(),1),10),
+                ShopItem::new(Item::new(ItemType::Log.id(),4),-1),
             ]}
         }
     }
