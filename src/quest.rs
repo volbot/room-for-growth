@@ -106,6 +106,11 @@ pub fn get_quests() -> Vec<Quest> {
                 "Now, I couldn't help but notice that there don't happen^^to be any paths, anywhere in town. That's^^pretty dangerous, man! You should^^place 10 or so around town.","Ok",
                 "I'm no snitch, but lack of pathing is a pretty serious^^thing. Think of the lawsuits if someone^^trips!","Wow",
                 "Great job! Now, if someone trips, all they have to^^blame is themselves!","Nice"],
-                None, None)
+                None, None),
+        Quest::new(QuestObjective::new(QuestType::Assign,None,None), [
+                "Wow, a town with no electronics! How did you achieve^^all this without any technology? You need^^to set me up a shop to fix that,^^IMMEDIATELY!","It's wood",
+                "I understand that you can place wood planks without^^a computer. My curiosity is with the fact^^that you found the motivation.","Lol",
+                "Awesome! Now I can sell you electronics! Check it^^out!","Nice"],
+                None, None),
     ]
 }
